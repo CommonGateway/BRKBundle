@@ -1,5 +1,5 @@
 {
-    "name": "common-gateway/pet-store-bundle",
+    "name": "common-gateway/brk-bundle",
     "description": "An example package for creating symfony flex bundles as plugins",
     "type": "symfony-bundle",
     "keywords": [
@@ -23,12 +23,12 @@
     },
     "autoload": {
         "psr-4": {
-            "CommonGateway\\PetStoreBundle\\": ""
+            "CommonGateway\\BRKBundle\\": ""
         }
     },
     "scripts": {
-        "post-package-install": "bin/console common-gateway/pet-store-bundle",
-        "post-package-update": "bin/console common-gateway/pet-store-bundle",
-        "post-package-uninstall": "bin/console common-gateway/pet-store-bundle"
+        "post-package-install": "bin/console common-gateway/brk-bundle",
+        "post-package-update": "bin/console common-gateway/brk-bundle",
+        "post-package-uninstall": "bin/console common-gateway/brk-bundle"
     }
 }
