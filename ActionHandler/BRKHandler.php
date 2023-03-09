@@ -21,8 +21,8 @@ class BRKHandler
     public function getConfiguration(): array
     {
         return [
-            '$id'         => 'https://example.com/person.schema.json',
-            '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
+            '$id'         => 'https://example.com/ActionHandler/BRKHandler.ActionHandler.json',
+            '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
             'title'       => 'BRK Action',
             'description' => 'This handler returns a welcoming string',
             'required'    => [],
