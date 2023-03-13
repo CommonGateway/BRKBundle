@@ -1,0 +1,13 @@
+{
+    "$id": "https://opencatalogi.nl/geboorte.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Geboorte",
+    "description": "Geboorte is een groep gegevens over de geboorte van een persoon.\nWaardelijst in deze component :\n  [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)\n",
+    "type": "object",
+    "properties": {
+        "plaats": {},
+        "datum": {},
+        "land": {}
+    }
+}

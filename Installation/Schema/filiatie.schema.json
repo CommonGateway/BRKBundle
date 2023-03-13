@@ -1,0 +1,11 @@
+{
+    "$id": "https://opencatalogi.nl/filiatie.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Filiatie",
+    "type": "object",
+    "properties": {
+        "aard": {},
+        "kadastraalOnroerendeZaken": {}
+    }
+}

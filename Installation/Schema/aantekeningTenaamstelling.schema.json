@@ -1,0 +1,52 @@
+{
+    "$id": "https://opencatalogi.nl/aantekeningTenaamstelling.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Aantekening Tenaamstelling",
+    "description": "Waardelijst in deze component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)\n",
+    "type": "object",
+    "properties": {
+        "aard": {},
+        "omschrijving": {
+            "type": "string"
+        },
+        "betreftGedeelteVanPerceel": {
+            "type": "boolean",
+            "deprecated": true
+        },
+        "identificatie": {
+            "type": "string"
+        },
+        "domein": {
+            "type": "string",
+            "description": "Het domein waartoe de identificatie behoort."
+        },
+        "einddatum": {
+            "type": "string",
+            "format": "date"
+        },
+        "einddatumRecht": {
+            "type": "string",
+            "format": "date"
+        },
+        "stukIdentificaties": {
+            "type": "string",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn."
+        },
+        "isGebaseerdOpStukdeelIdentificatie": {
+            "type": "string",
+            "description": "De identificatie van het stukdeel (paragraaf in een akte met een rechtsfeit) waarop deze aantekening is gebaseerd."
+        },
+        "isVermeldInStukdeelIdentificaties": {
+            "type": "string",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze aantekening is vermeld."
+        },
+        "begrenzing": {
+            "deprecated": true
+        },
+        "indicatieOorspronkelijkObject": {
+            "type": "boolean",
+            "deprecated": true
+        }
+    }
+}

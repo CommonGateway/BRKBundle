@@ -1,0 +1,45 @@
+{
+    "$id": "https://opencatalogi.nl/kadasterNatuurlijkPersoon.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Kadaster Natuurlijk Persoon",
+    "description": "Een bij het kadaster geregistreerde natuurlijke persoon die niet in de basisregistratie personen (BRP) is ingeschreven. Kadasternatuurlijkpersonen worden niet geactualiseerd.\nWaardelijst in deze component :\n  [beschikkingsbevoegdheid](http://www.kadaster.nl/schemas/waardelijsten/Beschikkingsbevoegdheid/) en [landWaarnaarVertrokken](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)\n",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string",
+            "description": "Unieke identificatie voor de persoon. Voor een Kadasterpersoon is dit de identificatie zoals die door het Kadaster is vastgesteld. Voor een ingeschreven natuurlijk persoon is dit het burgerservicenummer. Voor een ingeschreven niet-natuurlijk persoon is dit het RSIN. Of de waarde in identificatie een burgerservicenummer, een RSIN of een kadasterpersoonidentificatie is kan worden afgeleid uit het type persoon."
+        },
+        "omschrijving": {
+            "type": "string",
+            "description": "Voor mensen leesbare, herkenbare en identificerende omschrijving van de persoon (met bijvoorbeeld de naam)."
+        },
+        "domein": {
+            "type": "string",
+            "description": "Het domein waartoe de identificatie behoort."
+        },
+        "indicatieNietToonbareDiakriet": {
+            "type": "boolean"
+        },
+        "beschikkingsbevoegdheid": {},
+        "woonadres": {},
+        "postadres": {},
+        "kadastraalOnroerendeZaakIdentificaties": {
+            "type": "string"
+        },
+        "landWaarnaarVertrokken": {},
+        "geslachtsaanduiding": {
+            "type": "string",
+            "description": "Een aanduiding die aangeeft dat de ingeschrevene een man of een vrouw is, of dat het geslacht (nog) onbekend is:",
+            "enum": [
+                "man",
+                "vrouw",
+                "onbekend"
+            ]
+        },
+        "heeftPartnerschap": {},
+        "naam": {},
+        "geboorte": {},
+        "overlijden": {}
+    }
+}

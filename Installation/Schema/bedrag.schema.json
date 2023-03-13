@@ -1,0 +1,16 @@
+{
+    "$id": "https://opencatalogi.nl/bedrag.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Bedrag",
+    "description": "Hoeveelheid geld in cijfers in een bepaalde valuta.\nWaardelijst in deze component :\n  [Valuta](http://www.kadaster.nl/schemas/waardelijsten/Valuta/)\"\n",
+    "type": "object",
+    "properties": {
+        "som": {
+            "type": "number",
+            "format": "float",
+            "description": "Het bedrag. Dit is een waarde met max. 2 decimalen.\n"
+        },
+        "valuta": {}
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "$id": "https://opencatalogi.nl/heeftPartnerschap.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Heeft Partnerschap",
+    "description": "Partnerschap is een groep gegevens over de huwelijkse- of partnerschapstatus van een persoon.\n",
+    "type": "object",
+    "properties": {
+        "datumOntbinding": {},
+        "datumSluiting": {},
+        "naam": {}
+    }
+}

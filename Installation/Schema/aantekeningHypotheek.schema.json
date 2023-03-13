@@ -1,0 +1,18 @@
+{
+    "$id": "https://opencatalogi.nl/aantekeningHypotheek.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Aantekening Hypotheek",
+    "description": "Waardelijst in deze component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)\n",
+    "type": "object",
+    "properties": {
+        "aard": {},
+        "omschrijving": {
+            "type": "string"
+        },
+        "betreftGedeelteVanPerceel": {
+            "type": "boolean",
+            "deprecated": false
+        }
+    }
+}

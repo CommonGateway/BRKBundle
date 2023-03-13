@@ -1,0 +1,45 @@
+{
+    "$id": "https://opencatalogi.nl/adresUitgebreid.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Adres Uitgebereid",
+    "description": "Waardelijst in deze component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)\n",
+    "type": "object",
+    "properties": {
+        "straat": {},
+        "huisnummer": {
+            "type": "integer",
+            "description": "Een nummer dat door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "huisletter": {
+            "type": "string",
+            "description": "Een toevoeging aan een huisnummer in de vorm van een letter die door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "huisnummertoevoeging": {
+            "type": "string",
+            "description": "Een toevoeging aan een huisnummer of een combinatie van huisnummer en huisletter die door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "postcode": {
+            "type": "string",
+            "description": "De door PostNL vastgestelde code die bij een bepaalde combinatie van een straatnaam en een huisnummer hoort."
+        },
+        "woonplaats": {},
+        "nummeraanduidingIdentificatie": {
+            "type": "string",
+            "description": "Identificatie van het adres in het geval dit adres in BAG geregistreerd is."
+        },
+        "adresregel1": {
+            "type": "string",
+            "description": "Het eerste deel van een adres is een combinatie van de straat en huisnummer."
+        },
+        "adresregel2": {
+            "type": "string",
+            "description": "Het tweede deel van een adres is een combinatie van woonplaats eventueel in combinatie met de postcode."
+        },
+        "adresregel3": {
+            "type": "string",
+            "description": "Het derde deel van een adres is optioneel een of meer geografische gebieden van het adres in het buitenland."
+        },
+        "land": {}
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "$id": "https://opencatalogi.nl/kadasterNietNatuurlijkPersoon.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Kadaster Niet Natuurlijk Persoon",
+    "description": "Een bij het kadaster geregistreerde niet natuurlijke persoon, al dan niet ingeschreven in het handelsregister. Kadasternietnatuurlijkpersonen worden niet geactualiseerd.\nDe property beschikkingsbevoegdheid is bij een KadasterNietNatuurlijkPersoon nooit gevuld.\nWaardelijst in deze component :\n  [rechtsvorm](http://www.kadaster.nl/schemas/waardelijsten/Rechtsvorm/)\n",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string",
+            "description": "Unieke identificatie voor de persoon. Voor een Kadasterpersoon is dit de identificatie zoals die door het Kadaster is vastgesteld. Voor een ingeschreven natuurlijk persoon is dit het burgerservicenummer. Voor een ingeschreven niet-natuurlijk persoon is dit het RSIN. Of de waarde in identificatie een burgerservicenummer, een RSIN of een kadasterpersoonidentificatie is kan worden afgeleid uit het type persoon."
+        },
+        "omschrijving": {
+            "type": "string",
+            "description": "Voor mensen leesbare, herkenbare en identificerende omschrijving van de persoon (met bijvoorbeeld de naam)."
+        },
+        "domein": {
+            "type": "string",
+            "description": "Het domein waartoe de identificatie behoort."
+        },
+        "indicatieNietToonbareDiakriet": {
+            "type": "boolean"
+        },
+        "beschikkingsbevoegdheid": {},
+        "woonadres": {},
+        "postadres": {},
+        "kadastraalOnroerendeZaakIdentificaties": {
+            "type": "string"
+        },
+        "statutaireNaam": {
+            "type": "string"
+        },
+        "statutaireZetel": {
+            "type": "string"
+        },
+        "rechtsvorm": {},
+        "kvkNummer": {
+            "type": "string"
+        },
+        "rsin": {
+            "type": "string"
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "$id": "https://opencatalogi.nl/appartementsrechtBasis.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Appartementsrecht Basis",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string"
+        },
+        "volgnummer": {
+            "type": "integer"
+        },
+        "indicatieSluimerend": {
+            "type": "boolean",
+            "description": "Indicatie waarmee aangegeven wordt of een appartementsrecht sluimerend is of niet."
+        }
+    }
+}
