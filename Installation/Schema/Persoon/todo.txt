@@ -1,0 +1,7 @@
+TODO: delete this file after adding these schema's in this folder: Installation/Schema/Persoon
+(SEE: https://vng-realisatie.github.io/Haal-Centraal-BRK-bevragen/swagger-ui)
+
+- NatuurlijkPersoonBeperkt
+- PersoonBasis
+- NietNatuurlijkPersoonBeperkt
+- KadasterPersoon

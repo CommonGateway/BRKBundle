@@ -1,0 +1,23 @@
+TODO: delete this file after adding these schema's in this folder: Installation/Schema
+(SEE: https://vng-realisatie.github.io/Haal-Centraal-BRK-bevragen/swagger-ui)
+
+- Href
+- BadRequestFoutBericht
+- Foutbericht
+- InvalidParams
+- KadastraalOnroerendeZaak
+- polygonGeoJSON
+- pointGeoJSON
+- LocatieKadastraalObject
+- Adres
+- PerceelFiliatie
+- PerceelBasis
+- KadastraalOnroerendeZaakBasis
+- ZakelijkGerechtigde
+- Tenaamstelling
+- ZakelijkRecht
+- PubliekrechtelijkeBeperking
+- Stuk
+- Kadasterverzoek
+- RedenVerzoek
+- Stukdeel
