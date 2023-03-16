@@ -1,11 +1,18 @@
 {
-    "$id": "https://opencatalogi.nl/filiatie.schema.json",
+    "$id": "https://brk.commonground.nu/filiatie.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.2",
     "title": "Filiatie",
     "type": "object",
     "properties": {
-        "aard": {},
-        "kadastraalOnroerendeZaken": {}
+        "aard": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json"
+        },
+        "kadastraalOnroerendeZaken": {
+            "type": "array",
+            "items": {
+                "$ref": "https://brk.commonground.nu/kadastraalOnroerendeZaakFiliatie.schema.json"
+            }
+        }
     }
 }

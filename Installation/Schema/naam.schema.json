@@ -1,9 +1,9 @@
 {
-    "$id": "https://brk.commonground.nu/equivalentieVerklaarder.schema.json",
+    "$id": "https://brk.commonground.nu/naam.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.2",
-    "title": "Equivalentie Verklaarder",
-    "description": "De persoon (bijvoorbeeld de notaris) die heeft verklaard dat het stuk dat hij inschrijft in de openbare registers hetzelfde is als\nhet stuk dat hij zelf onder zich houdt ( equivalentieverklaring).",
+    "version": "0.1",
+    "title": "Naam",
+    "description": "Naam is een groep gegevens met de geslachtsnaam, voorletters en voornamen die men wil gebruiken bij aanschrijving.",
     "type": "object",
     "properties": {
         "geslachtsnaam": {
@@ -18,10 +18,6 @@
             "type": "string",
             "title": "voorvoegselsgeslachtsnaam",
             "description": "Voorvoegselsgeslachtsnaam is het deel van de geslachtsnaam dat, gescheiden door een spatie, vooraf gaat aan de rest van de geslachtsnaam."
-        },
-        "standplaats": {
-            "type": "string",
-            "description": "Adres of standplaats/plaats van vestiging van de ondertekenaar."
         }
     }
 }

@@ -1,13 +1,18 @@
 {
-    "$id": "https://opencatalogi.nl/erfpachtCanon.schema.json",
+    "$id": "https://brk.commonground.nu/erfpachtCanon.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.2",
     "title": "Erfpacht Canon",
-    "description": "Het bedrag dat een erfpachter moet betalen aan de eigenaar van een stuk grond omdat hij zijn grond gebruikt.\nWaardelijst in deze component :\n  [soortErfpachtCanon](http://www.kadaster.nl/schemas/waardelijsten/SoortErfpachtcanon/)\n",
+    "description": "Het bedrag dat een erfpachter moet betalen aan de eigenaar van een stuk grond omdat hij zijn grond gebruikt.\nWaardelijst in dit component :\n  [soortErfpachtCanon](http://www.kadaster.nl/schemas/waardelijsten/SoortErfpachtcanon/)",
     "type": "object",
     "properties": {
-        "soortErfpachtCanon": {},
-        "jaarlijksBedrag": {},
+        "soortErfpachtCanon": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [soortErfpachtCanon](http://www.kadaster.nl/schemas/waardelijsten/SoortErfpachtcanon/)"
+        },
+        "jaarlijksBedrag": {
+            "$ref": "https://brk.commonground.nu/bedrag.schema.json"
+        },
         "betrefMeerOnroerendeZaken": {
             "type": "boolean",
             "description": "Indicatie waarmee wordt aangegeven dat het jaarlijks bedrag meerdere onroerende zaken betreft."
@@ -25,12 +30,18 @@
             "description": "De identificatie van het stukdeel (paragraaf in een akte met een rechtsfeit) waarop deze erfpachtcanon is gebaseerd."
         },
         "isVermeldInStukdeelIdentificaties": {
-            "type": "string",
-            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze erfpachtcanon is vermeld."
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze erfpachtcanon is vermeld.",
+            "items": {
+                "type": "string"
+            }
         },
         "stukIdentificaties": {
-            "type": "string",
-            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn."
+            "type": "array",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn.",
+            "items": {
+                "type": "string"
+            }
         }
     }
 }

@@ -35,6 +35,6 @@ class InstallationService implements InstallerInterface
 
     public function checkDataConsistency()
     {
-        $this->entityManager->flush();
+//        $this->entityManager->flush();
     }
 }

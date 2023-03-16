@@ -1,10 +1,11 @@
 {
-    "$id": "https://brk.commonground.nu/adresUitgebreid.schema.json",
+    "$id": "https://brk.commonground.nu/postadres.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.2",
-    "title": "Adres Uitgebereid",
+    "version": "0.1",
+    "title": "Postadres",
     "description": "Waardelijst in dit component :\n  [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)",
     "type": "object",
+    "example": "OrderedMap { \"postbusnummer\": 1021, \"postcode\": \"1234AA\", \"woonplaats\": \"Nootdorp\", \"adresregel1\": \"Postbus 1021\", \"adresregel2\": \"1234AA Nootdorp\" }",
     "properties": {
         "straat": {
             "type": "string",
@@ -61,6 +62,9 @@
         "land": {
             "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n  [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)"
+        },
+        "postbusnummer": {
+            "type": "integer"
         }
     }
 }

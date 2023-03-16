@@ -1,9 +1,9 @@
 {
-    "$id": "https://opencatalogi.nl/kadasterNietNatuurlijkPersoon.schema.json",
+    "$id": "https://brk.commonground.nu/kadasterNietNatuurlijkPersoon.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.2",
     "title": "Kadaster Niet Natuurlijk Persoon",
-    "description": "Een bij het kadaster geregistreerde niet natuurlijke persoon, al dan niet ingeschreven in het handelsregister. Kadasternietnatuurlijkpersonen worden niet geactualiseerd.\nDe property beschikkingsbevoegdheid is bij een KadasterNietNatuurlijkPersoon nooit gevuld.\nWaardelijst in deze component :\n  [rechtsvorm](http://www.kadaster.nl/schemas/waardelijsten/Rechtsvorm/)\n",
+    "description": "Een bij het kadaster geregistreerde niet natuurlijke persoon, al dan niet ingeschreven in het handelsregister. Kadasternietnatuurlijkpersonen worden niet geactualiseerd.\nDe property beschikkingsbevoegdheid is bij een KadasterNietNatuurlijkPersoon nooit gevuld.\nWaardelijst in dit component :\n  [rechtsvorm](http://www.kadaster.nl/schemas/waardelijsten/Rechtsvorm/)",
     "type": "object",
     "properties": {
         "identificatie": {
@@ -21,11 +21,22 @@
         "indicatieNietToonbareDiakriet": {
             "type": "boolean"
         },
-        "beschikkingsbevoegdheid": {},
-        "woonadres": {},
-        "postadres": {},
+        "beschikkingsbevoegdheid": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [rechtsvorm](http://www.kadaster.nl/schemas/waardelijsten/Rechtsvorm/)"
+        },
+        "woonadres": {
+            "$ref": "https://brk.commonground.nu/adresUitgebreid.schema.json"
+        },
+        "postadres": {
+            "$ref": "https://brk.commonground.nu/postadres.schema.json",
+            "example": "OrderedMap { \"postbusnummer\": 1021, \"postcode\": \"1234AA\", \"woonplaats\": \"Nootdorp\", \"adresregel1\": \"Postbus 1021\", \"adresregel2\": \"1234AA Nootdorp\" }"
+        },
         "kadastraalOnroerendeZaakIdentificaties": {
-            "type": "string"
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         },
         "statutaireNaam": {
             "type": "string"
@@ -33,7 +44,10 @@
         "statutaireZetel": {
             "type": "string"
         },
-        "rechtsvorm": {},
+        "rechtsvorm": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [rechtsvorm](http://www.kadaster.nl/schemas/waardelijsten/Rechtsvorm/)"
+        },
         "kvkNummer": {
             "type": "string"
         },

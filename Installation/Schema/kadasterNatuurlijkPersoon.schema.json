@@ -1,9 +1,9 @@
 {
-    "$id": "https://opencatalogi.nl/kadasterNatuurlijkPersoon.schema.json",
+    "$id": "https://brk.commonground.nu/kadasterNatuurlijkPersoon.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.2",
     "title": "Kadaster Natuurlijk Persoon",
-    "description": "Een bij het kadaster geregistreerde natuurlijke persoon die niet in de basisregistratie personen (BRP) is ingeschreven. Kadasternatuurlijkpersonen worden niet geactualiseerd.\nWaardelijst in deze component :\n  [beschikkingsbevoegdheid](http://www.kadaster.nl/schemas/waardelijsten/Beschikkingsbevoegdheid/) en [landWaarnaarVertrokken](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)\n",
+    "description": "Een bij het kadaster geregistreerde natuurlijke persoon die niet in de basisregistratie personen (BRP) is ingeschreven. Kadasternatuurlijkpersonen worden niet geactualiseerd.\nWaardelijst in dit component :\n  [beschikkingsbevoegdheid](http://www.kadaster.nl/schemas/waardelijsten/Beschikkingsbevoegdheid/) en [landWaarnaarVertrokken](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)",
     "type": "object",
     "properties": {
         "identificatie": {
@@ -21,25 +21,56 @@
         "indicatieNietToonbareDiakriet": {
             "type": "boolean"
         },
-        "beschikkingsbevoegdheid": {},
-        "woonadres": {},
-        "postadres": {},
-        "kadastraalOnroerendeZaakIdentificaties": {
-            "type": "string"
+        "beschikkingsbevoegdheid": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [beschikkingsbevoegdheid](http://www.kadaster.nl/schemas/waardelijsten/Beschikkingsbevoegdheid/)"
         },
-        "landWaarnaarVertrokken": {},
+        "woonadres": {
+            "$ref": "https://brk.commonground.nu/adresUitgebreid.schema.json"
+        },
+        "postadres": {
+            "$ref": "https://brk.commonground.nu/postadres.schema.json",
+            "example": "OrderedMap { \"postbusnummer\": 1021, \"postcode\": \"1234AA\", \"woonplaats\": \"Nootdorp\", \"adresregel1\": \"Postbus 1021\", \"adresregel2\": \"1234AA Nootdorp\" }"
+        },
+        "kadastraalOnroerendeZaakIdentificaties": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "geheimhoudingPersoonsgegevens": {
+            "type": "boolean",
+            "title": "indicatieGeheim",
+            "deprecated": true,
+            "description": "Aanduiding die aangeeft dat gegevens van een persoon wel of niet verstrekt mogen worden."
+        },
+        "landWaarnaarVertrokken": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [landWaarnaarVertrokken](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)"
+        },
         "geslachtsaanduiding": {
             "type": "string",
-            "description": "Een aanduiding die aangeeft dat de ingeschrevene een man of een vrouw is, of dat het geslacht (nog) onbekend is:",
+            "description": "(GeslachtEnum) Een aanduiding die aangeeft dat de ingeschrevene een man of een vrouw is, of dat het geslacht (nog) onbekend is:",
             "enum": [
                 "man",
                 "vrouw",
                 "onbekend"
             ]
         },
-        "heeftPartnerschap": {},
-        "naam": {},
-        "geboorte": {},
-        "overlijden": {}
+        "heeftPartnerschap": {
+            "type": "array",
+            "items": {
+                "$ref": "https://brk.commonground.nu/heeftPartnerschap.schema.json"
+            }
+        },
+        "naam": {
+            "$ref": "https://brk.commonground.nu/naamPersoon.schema.json"
+        },
+        "geboorte": {
+            "$ref": "https://brk.commonground.nu/geboorte.schema.json"
+        },
+        "overlijden": {
+            "$ref": "https://brk.commonground.nu/overlijden.schema.json"
+        }
     }
 }

@@ -1,12 +1,15 @@
 {
-    "$id": "https://opencatalogi.nl/aantekeningTenaamstelling.schema.json",
+    "$id": "https://brk.commonground.nu/aantekeningTenaamstelling.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.2",
     "title": "Aantekening Tenaamstelling",
-    "description": "Waardelijst in deze component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)\n",
+    "description": "Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)",
     "type": "object",
     "properties": {
-        "aard": {},
+        "aard": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)"
+        },
         "omschrijving": {
             "type": "string"
         },
@@ -30,16 +33,22 @@
             "format": "date"
         },
         "stukIdentificaties": {
-            "type": "string",
-            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn."
+            "type": "array",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn.",
+            "items": {
+                "type": "string"
+            }
         },
         "isGebaseerdOpStukdeelIdentificatie": {
             "type": "string",
             "description": "De identificatie van het stukdeel (paragraaf in een akte met een rechtsfeit) waarop deze aantekening is gebaseerd."
         },
         "isVermeldInStukdeelIdentificaties": {
-            "type": "string",
-            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze aantekening is vermeld."
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze aantekening is vermeld.",
+            "items": {
+                "type": "string"
+            }
         },
         "begrenzing": {
             "deprecated": true

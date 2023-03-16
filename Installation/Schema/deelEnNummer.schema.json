@@ -1,9 +1,9 @@
 {
-    "$id": "https://opencatalogi.nl/deelEnNummer.schema.json",
+    "$id": "https://brk.commonground.nu/deelEnNummer.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.2",
     "title": "Deel en Nummer",
-    "description": "Deel en nummer identificeren een Ter Inschrijving Aangeboden stuk door gebruik te maken van vijf gegevenselementen.\nWaardelijst in deze component :\n  [reeks(http://www.kadaster.nl/schemas/waardelijsten/Reekscode/)\n  [registercode](http://www.kadaster.nl/schemas/waardelijsten/Registercode/)\n  [soortRegister](http://www.kadaster.nl/schemas/waardelijsten/SoortRegister/)\n",
+    "description": "Deel en nummer identificeren een Ter Inschrijving Aangeboden stuk door gebruik te maken van vijf gegevenselementen.\nWaardelijst in dit component :\n  [reeks(http://www.kadaster.nl/schemas/waardelijsten/Reekscode/)\n  [registercode](http://www.kadaster.nl/schemas/waardelijsten/Registercode/)\n  [soortRegister](http://www.kadaster.nl/schemas/waardelijsten/SoortRegister/)",
     "type": "object",
     "properties": {
         "deel": {
@@ -14,8 +14,17 @@
             "type": "string",
             "description": "Volgnummer van het stuk."
         },
-        "reeks": {},
-        "registercode": {},
-        "soortRegister": {}
+        "reeks": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [reeks(http://www.kadaster.nl/schemas/waardelijsten/Reekscode/)"
+        },
+        "registercode": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [registercode](http://www.kadaster.nl/schemas/waardelijsten/Registercode/)"
+        },
+        "soortRegister": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [soortRegister](http://www.kadaster.nl/schemas/waardelijsten/SoortRegister/)"
+        }
     }
 }

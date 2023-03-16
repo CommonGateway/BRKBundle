@@ -1,9 +1,9 @@
 {
-    "$id": "https://brk.commonground.nu/equivalentieVerklaarder.schema.json",
+    "$id": "https://brk.commonground.nu/naamPersoon.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.2",
-    "title": "Equivalentie Verklaarder",
-    "description": "De persoon (bijvoorbeeld de notaris) die heeft verklaard dat het stuk dat hij inschrijft in de openbare registers hetzelfde is als\nhet stuk dat hij zelf onder zich houdt ( equivalentieverklaring).",
+    "version": "0.1",
+    "title": "Naam Persoon",
+    "description": "Gegevens over de naam van de persoon",
     "type": "object",
     "properties": {
         "geslachtsnaam": {
@@ -19,9 +19,20 @@
             "title": "voorvoegselsgeslachtsnaam",
             "description": "Voorvoegselsgeslachtsnaam is het deel van de geslachtsnaam dat, gescheiden door een spatie, vooraf gaat aan de rest van de geslachtsnaam."
         },
-        "standplaats": {
+        "aanschrijfwijze": {
             "type": "string",
-            "description": "Adres of standplaats/plaats van vestiging van de ondertekenaar."
+            "example": "G.H I. In het Veld-van Velzen",
+            "description": "De aanschrijfwijze wordt gebruikt als eerste regel in de adressering op een envelop, of links bovenaan een brief, direct boven het adres."
+        },
+        "aanhef": {
+            "type": "string",
+            "example": "Geachte mevrouw In het Veld-van Velzen",
+            "description": "De aanhef wordt gebruikt bovenaan een brief."
+        },
+        "gebruikInLopendeTekst": {
+            "type": "string",
+            "example": "mevrouw In het Veld-van Velzen",
+            "description": "De gebruikInLopendeTekst wordt gebruikt om de persoon aan te duiden binnen een zin in een tekst."
         }
     }
 }

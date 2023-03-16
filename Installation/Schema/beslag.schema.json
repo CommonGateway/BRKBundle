@@ -1,9 +1,9 @@
 {
-    "$id": "https://opencatalogi.nl/beslag.schema.json",
+    "$id": "https://brk.commonground.nu/beslag.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.2",
     "title": "Beslag",
-    "description": "Tijdelijke maatregel opgelegd door een partij waardoor de zakelijk gerechtigde niets met de kadastraal onroerende zaak kan doen.\nWaardelijst in deze component :\n- [omschrijvingBetrokkenRecht](http://www.kadaster.nl/schemas/waardelijsten/BetrokkenRecht/) en [aard](http://www.kadaster.nl/schemas/waardelijsten/AardBeslag/)\n",
+    "description": "Tijdelijke maatregel opgelegd door een partij waardoor de zakelijk gerechtigde niets met de kadastraal onroerende zaak kan doen.\nWaardelijst in dit component :\n- [omschrijvingBetrokkenRecht](http://www.kadaster.nl/schemas/waardelijsten/BetrokkenRecht/) en [aard](http://www.kadaster.nl/schemas/waardelijsten/AardBeslag/)",
     "type": "object",
     "properties": {
         "identificatie": {
@@ -13,31 +13,58 @@
             "type": "string",
             "description": "Het domein waartoe de identificatie behoort."
         },
-        "aandeelInBetrokkenRecht": {},
+        "aandeelInBetrokkenRecht": {
+            "$ref": "https://brk.commonground.nu/typeBreuk.schema.json",
+            "example": "OrderedMap { \"noemer\": 2, \"teller\": 1 }"
+        },
         "gedeeltelijkeBezwaringOudObject": {
             "type": "boolean",
             "description": "Indicatie of het object waarop beslag is gelegd gedeeltelijk uit een inmiddels vervallen object bestaat."
         },
-        "omschrijvingBetrokkenRecht": {},
+        "omschrijvingBetrokkenRecht": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [omschrijvingBetrokkenRecht](http://www.kadaster.nl/schemas/waardelijsten/BetrokkenRecht/)"
+        },
         "toelichtingbewaarder": {
             "type": "string",
             "description": "Toelichtende tekst van de bewaarder. De bewaarder is iemand die bij het Kadaster werkt. Hij schrijft stukken in in de openbare registers en de basisregistratie Kadaster conform de Kadasterwet."
         },
-        "aard": {},
-        "aantekeningen": {},
-        "beslagleggers": {},
-        "bedragVordering": {},
+        "aard": {
+            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [aard](http://www.kadaster.nl/schemas/waardelijsten/AardBeslag/)"
+        },
+        "aantekeningen": {
+            "type": "array",
+            "items": {
+                "$ref": "https://brk.commonground.nu/aantekeningBasis.schema.json"
+            }
+        },
+        "beslagleggers": {
+            "type": "array",
+            "items": {
+                "$ref": "https://brk.commonground.nu/persoonBeperkt.schema.json"
+            }
+        },
+        "bedragVordering": {
+            "$ref": "https://brk.commonground.nu/bedrag.schema.json"
+        },
         "stukIdentificaties": {
-            "type": "string",
-            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn."
+            "type": "array",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn.",
+            "items": {
+                "type": "string"
+            }
         },
         "isGebaseerdOpStukdeelIdentificatie": {
             "type": "string",
             "description": "De identificatie van het stukdeel (paragraaf in een akte met een rechtsfeit) waarop dit beslag is gebaseerd."
         },
         "isVermeldInStukdeelIdentificaties": {
-            "type": "string",
-            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin dit beslag is vermeld."
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin dit beslag is vermeld.",
+            "items": {
+                "type": "string"
+            }
         }
     }
 }
