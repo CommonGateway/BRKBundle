@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/equivalentieVerklaarder.schema.json",
+    "$id": "https://brk.commonground.nu/schema/equivalentieVerklaarder.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Equivalentie Verklaarder",

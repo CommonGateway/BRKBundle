@@ -1,0 +1,27 @@
+{
+  "$id": "https://brk.commonground.nu/schemas/enum/typeGerechtigdeEnum.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "title": "Type Gerechtigde Enum",
+  "description": "Het type zakelijk recht dat deze gerechtigde heeft. Afgeleid van de aard zakelijk recht:\n\nbeklemrechthouder - 1 Beklemrechthouder\neigenaar - 2 Eigenaar\nerfpachter - 3 Erfpachter\ngebruik_bewoning - 4 Rechthebbende van Gebruik en bewoning\ngrondrente - 5 Grondrente gerechtigde\nopstalhouder - 7 Opstalhouder\nvaderlandsrecht - 9 Rechthebbende van Oud-vaderlandsrecht\nartikel5_3b_geheel - 10 Zakelijk recht als bedoeld in artikel 5, lid 3, onder b, van de Belemmeringenwet Privaatrecht\nstadsmeierrecht - 11 Rechthebbende van Stadsmeierrecht\nvruchtgebruiker - 12 Vruchtgebruiker\nerfpachter_opstalhouder - 13 Erfpachter en opstalhouder\nnutsvoorzieningen - 14 Opstalhouder nutsvoorzieningen\nbrondocument - 18 Raadpleeg brondocument\ntwee_belastingen - 20 Zakelijk Rechthebbende na twee of meer zakelijke belastingen\nbelasting_derde - 21 Zakelijk rechthebbende belasting derde of volgende\nbp_recht - 22 BP-gerechtigde\nnutsvoorzieningen_gedeelte - 23 Opstalhouder Nutsvoorzieningen op gedeelte van perceel\nartikel5_3b - 24 Zakelijk gerechtigde als bedoeld in artikel 5, lid 3, onder b, van de Belemmeringenwet Privaatrecht op gedeelte van perceel",
+  "enum": [
+    "beklemrechthouder",
+    "eigenaar",
+    "erfpachter",
+    "gebruik_bewoning",
+    "grondrente",
+    "opstalhouder",
+    "vaderlandsrecht",
+    "artikel5_3b_geheel",
+    "stadsmeierrecht",
+    "vruchtgebruiker",
+    "erfpachter_opstalhouder",
+    "nutsvoorzieningen",
+    "brondocument",
+    "twee_belastingen",
+    "belasting_derde",
+    "bp_recht",
+    "nutsvoorzieningen_gedeelte",
+    "artikel5_3b"
+  ],
+  "type": "string"
+}

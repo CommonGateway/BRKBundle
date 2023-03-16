@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/erfpachtCanon.schema.json",
+    "$id": "https://brk.commonground.nu/schema/erfpachtCanon.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Erfpacht Canon",
@@ -7,11 +7,11 @@
     "type": "object",
     "properties": {
         "soortErfpachtCanon": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n- [soortErfpachtCanon](http://www.kadaster.nl/schemas/waardelijsten/SoortErfpachtcanon/)"
         },
         "jaarlijksBedrag": {
-            "$ref": "https://brk.commonground.nu/bedrag.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/bedrag.schema.json"
         },
         "betrefMeerOnroerendeZaken": {
             "type": "boolean",

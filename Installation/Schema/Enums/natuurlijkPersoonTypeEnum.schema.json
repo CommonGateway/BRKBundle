@@ -1,0 +1,11 @@
+{
+  "$id": "https://brk.commonground.nu/schemas/enum/natuurlijkPersoonTypeEnum.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "title": "Natuurlijk Persoon Type Enum",
+  "description": "Een aanduiding die aangeeft of de persoon ingeschreven is in het BRP met een burgerservicenummer, dan wel vastgelegd is bij het Kadaster.",
+  "enum": [
+    "ingeschreven_natuurlijk_persoon",
+    "kadaster_natuurlijk_persoon"
+  ],
+  "type": "string"
+}

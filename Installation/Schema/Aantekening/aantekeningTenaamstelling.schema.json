@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/aantekeningTenaamstelling.schema.json",
+    "$id": "https://brk.commonground.nu/schema/aantekeningTenaamstelling.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Aantekening Tenaamstelling",
@@ -7,7 +7,7 @@
     "type": "object",
     "properties": {
         "aard": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)"
         },
         "omschrijving": {

@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/kadasterNietNatuurlijkPersoon.schema.json",
+    "$id": "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Kadaster Niet Natuurlijk Persoon",
@@ -22,14 +22,14 @@
             "type": "boolean"
         },
         "beschikkingsbevoegdheid": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n  [rechtsvorm](http://www.kadaster.nl/schemas/waardelijsten/Rechtsvorm/)"
         },
         "woonadres": {
-            "$ref": "https://brk.commonground.nu/adresUitgebreid.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/adresUitgebreid.schema.json"
         },
         "postadres": {
-            "$ref": "https://brk.commonground.nu/postadres.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/postadres.schema.json",
             "example": "OrderedMap { \"postbusnummer\": 1021, \"postcode\": \"1234AA\", \"woonplaats\": \"Nootdorp\", \"adresregel1\": \"Postbus 1021\", \"adresregel2\": \"1234AA Nootdorp\" }"
         },
         "kadastraalOnroerendeZaakIdentificaties": {
@@ -45,7 +45,7 @@
             "type": "string"
         },
         "rechtsvorm": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n  [rechtsvorm](http://www.kadaster.nl/schemas/waardelijsten/Rechtsvorm/)"
         },
         "kvkNummer": {

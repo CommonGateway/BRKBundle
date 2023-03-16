@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/persoonBeperkt.schema.json",
+    "$id": "https://brk.commonground.nu/schema/persoonBeperkt.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.1",
     "title": "Persoon Beperkt",

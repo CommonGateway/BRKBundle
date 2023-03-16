@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/typeOppervlak.schema.json",
+    "$id": "https://brk.commonground.nu/schema/typeOppervlak.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.1",
     "title": "Type Oppervlak",
@@ -7,7 +7,7 @@
     "description": "Oppervlakte\nWaardelijst in dit component :\n- [SoortGrootte](http://www.kadaster.nl/schemas/waardelijsten/SoortGrootte/)",
     "properties": {
         "soortGrootte": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Oppervlakte\nWaardelijst in dit component :\n- [SoortGrootte](http://www.kadaster.nl/schemas/waardelijsten/SoortGrootte/)"
         },
         "waarde": {

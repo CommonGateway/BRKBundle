@@ -1,0 +1,10 @@
+{
+  "$id": "https://brk.commonground.nu/schemas/enum/typeKadastraalOnroerendeZaakEnum.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "title": "Type Kadastraal Onroerende Zaak Enum",
+  "enum": [
+    "appartementsrecht",
+    "perceel"
+  ],
+  "type": "string"
+}

@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/waardelijst.schema.json",
+    "$id": "https://brk.commonground.nu/schema/waardelijst.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.1",
     "title": "Waardelijst",

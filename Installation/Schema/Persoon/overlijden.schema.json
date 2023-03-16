@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/overlijden.schema.json",
+    "$id": "https://brk.commonground.nu/schema/overlijden.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.1",
     "title": "Overlijden",
@@ -7,7 +7,7 @@
     "type": "object",
     "properties": {
         "datum": {
-            "$ref": "https://brk.commonground.nu/DatumOnvolledig.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json"
         }
     }
 }

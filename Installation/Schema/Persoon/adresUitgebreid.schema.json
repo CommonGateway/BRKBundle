@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/adresUitgebreid.schema.json",
+    "$id": "https://brk.commonground.nu/schema/adresUitgebreid.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Adres Uitgebereid",
@@ -59,7 +59,7 @@
             "description": "Het derde deel van een adres is optioneel een of meer geografische gebieden van het adres in het buitenland."
         },
         "land": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n  [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)"
         }
     }

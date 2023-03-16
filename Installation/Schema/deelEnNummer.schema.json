@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/deelEnNummer.schema.json",
+    "$id": "https://brk.commonground.nu/schema/deelEnNummer.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Deel en Nummer",
@@ -15,15 +15,15 @@
             "description": "Volgnummer van het stuk."
         },
         "reeks": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n- [reeks(http://www.kadaster.nl/schemas/waardelijsten/Reekscode/)"
         },
         "registercode": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n- [registercode](http://www.kadaster.nl/schemas/waardelijsten/Registercode/)"
         },
         "soortRegister": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n- [soortRegister](http://www.kadaster.nl/schemas/waardelijsten/SoortRegister/)"
         }
     }

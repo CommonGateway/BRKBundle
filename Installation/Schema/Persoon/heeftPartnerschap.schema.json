@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/heeftPartnerschap.schema.json",
+    "$id": "https://brk.commonground.nu/schema/heeftPartnerschap.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Heeft Partnerschap",
@@ -7,13 +7,13 @@
     "type": "object",
     "properties": {
         "datumOntbinding": {
-            "$ref": "https://brk.commonground.nu/datumOnvolledig.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json"
         },
         "datumSluiting": {
-            "$ref": "https://brk.commonground.nu/datumOnvolledig.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json"
         },
         "naam": {
-            "$ref": "https://brk.commonground.nu/naam.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/naam.schema.json"
         }
     }
 }

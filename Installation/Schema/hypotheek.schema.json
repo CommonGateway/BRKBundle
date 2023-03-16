@@ -1,5 +1,5 @@
 {
-    "$id": "https://brk.commonground.nu/hypotheek.schema.json",
+    "$id": "https://brk.commonground.nu/schema/hypotheek.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
     "version": "0.2",
     "title": "Hypotheek",
@@ -14,13 +14,13 @@
             "description": "Het domein waartoe de identificatie behoort."
         },
         "aandeelInBetrokkenRecht": {
-            "$ref": "https://brk.commonground.nu/typeBreuk.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/typeBreuk.schema.json"
         },
         "gedeeltelijkeBezwaringOudObject": {
             "type": "boolean"
         },
         "omschrijvingBetrokkenRecht": {
-            "$ref": "https://brk.commonground.nu/waardelijst.schema.json",
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
             "description": "Waardelijst in dit component :\n  [omschrijvingBetrokkenRecht](http://www.kadaster.nl/schemas/waardelijsten/BetrokkenRecht/)"
         },
         "toelichtingBewaarder": {
@@ -33,18 +33,18 @@
         "aantekeningen": {
             "type": "array",
             "items": {
-                "$ref": "https://brk.commonground.nu/aantekeningHypotheek.schema.json"
+                "$ref": "https://brk.commonground.nu/schema/aantekeningHypotheek.schema.json"
             }
         },
         "hypotheekhouder": {
             "type": "array",
             "description": "Een hypotheekhouder vestigt als geldverstrekker een recht van hypotheek als zekerheid voor de lening.",
             "items": {
-                "$ref": "https://brk.commonground.nu/persoonBeperkt.schema.json"
+                "$ref": "https://brk.commonground.nu/schema/persoonBeperkt.schema.json"
             }
         },
         "bedragZekerheidsstelling": {
-            "$ref": "https://brk.commonground.nu/bedrag.schema.json"
+            "$ref": "https://brk.commonground.nu/schema/bedrag.schema.json"
         },
         "stukIdentificaties": {
             "type": "array",
