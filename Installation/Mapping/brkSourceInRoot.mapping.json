@@ -1,0 +1,7 @@
+{
+  "title": "brkSourceInRoot",
+  "$id": "https://brk.commonground.nu/mapping/brkSourceInRoot.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.1",
+  "passTrough": false
+}
