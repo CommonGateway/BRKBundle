@@ -1,0 +1,26 @@
+{
+    "$id": "https://brk.commonground.nu/natuurlijkPersoonBeperkt.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Natuurlijk Persoon Beperkt",
+    "description": "Natuurlijk persoon. Kan een ingeschreven persoon (in de basisregistratie personen (BRP)) of Kadasterpersoon zijn.",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string",
+            "description": "Unieke identificatie voor de persoon. Voor een Kadasterpersoon is dit de identificatie zoals die door het Kadaster is vastgesteld. Voor een ingeschreven natuurlijk persoon is dit het burgerservicenummer. Voor een ingeschreven niet-natuurlijk persoon is dit het RSIN. Of de waarde in identificatie een burgerservicenummer, een RSIN of een kadasterpersoonidentificatie is kan worden afgeleid uit het type persoon."
+        },
+        "omschrijving": {
+            "type": "string",
+            "description": "Voor mensen leesbare, herkenbare en identificerende omschrijving van de persoon (met bijvoorbeeld de naam)."
+        },
+        "type": {
+            "type": "string",
+            "description": "(NatuurlijkPersoonTypeEnum) Een aanduiding die aangeeft of de persoon ingeschreven is in het BRP met een burgerservicenummer, dan wel vastgelegd is bij het Kadaster.",
+            "enum": [
+                "ingeschreven_natuurlijk_persoon",
+                "kadaster_natuurlijk_persoon"
+            ]
+        }
+    }
+}
