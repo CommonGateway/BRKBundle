@@ -1,3 +1,9 @@
 {
-    "installationService": "CommonGateway\\BRKBundle\\Service\\InstallationService"
+    "installationService": "CommonGateway\\BRKBundle\\Service\\InstallationService",
+    "todo": [
+        "[endpoints][schemas] in this installation.json file for the schemas we need endpoints for",
+        "source.schema.json files in Installation/Source folder?",
+        "Remove Installation/Data/example.json if we don't need it",
+        "Remove BRKHandler and BRKService if we don't need it"
+    ]
 }
