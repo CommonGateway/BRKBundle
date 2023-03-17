@@ -1,0 +1,63 @@
+{
+    "$id": "https://brk.commonground.nu/schema/tenaamstelling.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Tenaamstelling",
+    "type": "object",
+    "description": "Een registratie van (een aandeel in) een zakelijk recht dat een persoon heeft, dat rust op een kadastraal onroerende zaak.\n\nWaardelijst in dit component :\n  [burgerlijkeStaatTenTijdeVanVerkrijging](http://www.kadaster.nl/schemas/waardelijsten/BurgerlijkeStaat/) en [verkregenNamensSamenwerkingsverband](http://www.kadaster.nl/schemas/waardelijsten/Samenwerkingsverband/)",
+    "properties": {
+        "aandeel": {
+            "$ref": "https://brk.commonground.nu/schema/typeBreuk.schema.json",
+            "example": "OrderedMap { \"noemer\": 2, \"teller\": 1 }"
+        },
+        "burgerlijkeStaatTenTijdeVanVerkrijging": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [burgerlijkeStaatTenTijdeVanVerkrijging](http://www.kadaster.nl/schemas/waardelijsten/BurgerlijkeStaat/)"
+        },
+        "verkregenNamensSamenwerkingsverband": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [verkregenNamensSamenwerkingsverband](http://www.kadaster.nl/schemas/waardelijsten/Samenwerkingsverband/)"
+        },
+        "aantekeningen": {
+            "type": "array",
+            "description": "Een aantekening is een verwijzing naar een ter inschrijving aangeboden stuk. Een aantekening op een tenaamstelling van een zakelijk recht is meestal een beperking. Bijvoorbeeld de verkrijging van een aandeel in een zakelijk recht onder opschortende voorwaarde, een beperking van de handelingsbevoegdheid van de zakelijk gerechtigde, of een koopovereenkomst.",
+            "items": {
+                "$ref": "https://brk.commonground.nu/schema/aantekeningTenaamstelling.schema.json"
+            }
+        },
+        "gezamenlijkAandeel": {
+            "$ref": "https://brk.commonground.nu/schema/typeBreuk.schema.json",
+            "example": "OrderedMap { \"noemer\": 2, \"teller\": 1 }"
+        },
+        "betrokkenPartner": {
+            "$ref": "https://brk.commonground.nu/schema/natuurlijkPersoonBeperkt.schema.json"
+        },
+        "betrokkenSamenwerkingsverband": {
+            "$ref": "https://brk.commonground.nu/schema/nietNatuurlijkPersoonBeperkt.schema.json"
+        },
+        "betrokkenGorzenEnAanwassen": {
+            "$ref": "https://brk.commonground.nu/schema/nietNatuurlijkPersoonBeperkt.schema.json"
+        },
+        "isGebaseerdOpStukdeelIdentificaties": {
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragraaf in een akte met een rechtsfeit) waarop deze tenaamstelling is gebaseerd.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "isVermeldInStukdeelIdentificaties": {
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze tenaamstelling is vermeld.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "stukIdentificaties": {
+            "type": "array",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn.",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

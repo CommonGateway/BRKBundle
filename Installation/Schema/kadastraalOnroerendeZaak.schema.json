@@ -1,0 +1,160 @@
+{
+    "$id": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "KadastraalOnroerendeZaak",
+    "description": "Een kadastraal onroerende zaak is een perceel of een appartementsrecht. Een perceel is een stuk grond waarvan het Kadaster de grenzen heeft gemeten en dat bij het Kadaster een eigen nummer heeft. Een appartementsrecht is het recht dat iemand of een organisatie heeft om eigenaar te zijn van een deel van een gebouw of een stuk grond. In de praktijk wordt dit deel meestal een appartement genoemd.\n\nWaardelijst in dit component :\n  [aardCultuurBebouwd](http://www.kadaster.nl/schemas/waardelijsten/CultuurcodeBebouwd/) en [aardCultuurOnbebouwd](http://www.kadaster.nl/schemas/waardelijsten/CultuurcodeOnbebouwd/)",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string"
+        },
+        "domein": {
+            "type": "string",
+            "description": "Het domein waartoe de identificatie behoort."
+        },
+        "indicatieVervallen": {
+            "type": "boolean",
+            "description": "Vervallen objecten zijn opvraagbaar met de stand van zaken direct voordat het object vervallen is verklaard. Deze informatie is nodig om de filiatie-\"boom\" af te kunnen lopen en inzicht te krijgen in betrokken appartementsrechten en grondpercelen."
+        },
+        "begrenzingPerceel": {
+            "$ref": "https://brk.commonground.nu/schema/polygonGeoJSON.schema.json"
+        },
+        "perceelnummerRotatie": {
+            "type": "number",
+            "description": "Rotatie van het perceelnummer ten behoeve van visualisatie op de kaart. Perceelnummers worden bijvoorbeeld gekanteld om in een smal perceel te passen.",
+            "maximum": 999
+        },
+        "plaatscoordinaten": {
+            "$ref": "https://brk.commonground.nu/schema/pointGeoJSON.schema.json"
+        },
+        "koopsom": {
+            "$ref": "https://brk.commonground.nu/schema/typeKoopsom.schema.json"
+        },
+        "toelichtingBewaarder": {
+            "type": "string",
+            "description": "Toelichtende tekst bij een onroerende zaak van de bewaarder. De bewaarder is iemand die bij het Kadaster werkt. Hij schrijft stukken in in de openbare registers en de basisregistratie Kadaster conform de Kadasterwet."
+        },
+        "type": {
+            "type": "string",
+            "description": "TypeKadastraalOnroerendeZaakEnum",
+            "enum": [
+                "appartementsrecht",
+                "perceel"
+            ]
+        },
+        "aardCultuurBebouwd": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [aardCultuurBebouwd](http://www.kadaster.nl/schemas/waardelijsten/CultuurcodeBebouwd/)"
+        },
+        "aardCultuurOnbebouwd": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [aardCultuurOnbebouwd](http://www.kadaster.nl/schemas/waardelijsten/CultuurcodeOnbebouwd/)"
+        },
+        "kadastraleAanduiding": {
+            "type": "string"
+        },
+        "kadastraleGrootte": {
+            "$ref": "https://brk.commonground.nu/schema/typeOppervlak.schema.json"
+        },
+        "perceelnummerVerschuiving": {
+            "$ref": "https://brk.commonground.nu/schema/typePerceelnummerVerschuiving.schema.json"
+        },
+        "adressen": {
+            "type": "array",
+            "description": "Alle binnenlandse adressen gekoppeld aan deze kadastraal onroerende zaak.",
+            "items": {
+                "$ref": "https://brk.commonground.nu/schema/locatieKadastraalObject.schema.json"
+            }
+        },
+        "gesplitstZakelijkRecht": {
+            "type": "string",
+            "description": "(TypeGerechtigdeEnum) Het type zakelijk recht dat deze gerechtigde heeft. Afgeleid van de aard zakelijk recht:\n\nbeklemrechthouder - 1 Beklemrechthouder\neigenaar - 2 Eigenaar\nerfpachter - 3 Erfpachter\ngebruik_bewoning - 4 Rechthebbende van Gebruik en bewoning\ngrondrente - 5 Grondrente gerechtigde\nopstalhouder - 7 Opstalhouder\nvaderlandsrecht - 9 Rechthebbende van Oud-vaderlandsrecht\nartikel5_3b_geheel - 10 Zakelijk recht als bedoeld in artikel 5, lid 3, onder b, van de Belemmeringenwet Privaatrecht\nstadsmeierrecht - 11 Rechthebbende van Stadsmeierrecht\nvruchtgebruiker - 12 Vruchtgebruiker\nerfpachter_opstalhouder - 13 Erfpachter en opstalhouder\nnutsvoorzieningen - 14 Opstalhouder nutsvoorzieningen\nbrondocument - 18 Raadpleeg brondocument\ntwee_belastingen - 20 Zakelijk Rechthebbende na twee of meer zakelijke belastingen\nbelasting_derde - 21 Zakelijk rechthebbende belasting derde of volgende\nbp_recht - 22 BP-gerechtigde\nnutsvoorzieningen_gedeelte - 23 Opstalhouder Nutsvoorzieningen op gedeelte van perceel\nartikel5_3b - 24 Zakelijk gerechtigde als bedoeld in artikel 5, lid 3, onder b, van de Belemmeringenwet Privaatrecht op gedeelte van perceel",
+            "enum": [
+                "beklemrechthouder",
+                "eigenaar",
+                "erfpachter",
+                "gebruik_bewoning",
+                "grondrente",
+                "opstalhouder",
+                "vaderlandsrecht",
+                "artikel5_3b_geheel",
+                "stadsmeierrecht",
+                "vruchtgebruiker",
+                "erfpachter_opstalhouder",
+                "nutsvoorzieningen",
+                "brondocument",
+                "twee_belastingen",
+                "belasting_derde",
+                "bp_recht",
+                "nutsvoorzieningen_gedeelte",
+                "artikel5_3b"
+            ]
+        },
+        "zakelijkGerechtigdeIdentificaties": {
+            "type": "array",
+            "description": "Alle personen en rechtspersonen die een zakelijk recht hebben op deze kadastraal onroerende zaak.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "privaatrechtelijkeBeperkingIdentificaties": {
+            "type": "array",
+            "description": "Alle privaatrechtelijkebeperkingen die rusten op deze kadastraal onroerende zaak.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "hypotheekIdentificaties": {
+            "type": "array",
+            "description": "Alle hypotheken die rusten op deze kadastraal onroerende zaak.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "beslagIdentificaties": {
+            "type": "array",
+            "description": "Alle beslagen die rusten op deze kadastraal onroerende zaak.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "isOvergegaanIn": {
+            "$ref": "https://brk.commonground.nu/schema/filiatie.schema.json"
+        },
+        "isOntstaanUit": {
+            "$ref": "https://brk.commonground.nu/schema/filiatie.schema.json"
+        },
+        "bijbehorendeGrondpercelen": {
+            "type": "array",
+            "description": "De grondpercelen die bij deze Kadastraal Onroerende Zaak (appartementsrecht) hoort.",
+            "items": {
+                "$ref": "https://brk.commonground.nu/schema/perceelBasis.schema.json"
+            }
+        },
+        "bijbehorendeAppartementsrechten": {
+            "type": "array",
+            "description": "De actuele appartementsrechten die bij deze KadastraalOnroerende Zaak (grondperceel) horen.",
+            "items": {
+                "$ref": "https://brk.commonground.nu/schema/appartementsrechtBasis.schema.json"
+            }
+        },
+        "isVermeldInStukdeelIdentificaties": {
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze kadastraal onroerende zaak is vermeld.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "stukIdentificaties": {
+            "type": "array",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "indicatieSluimerend": {
+            "type": "boolean"
+        }
+    }
+}
