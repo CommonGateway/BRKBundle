@@ -1,0 +1,30 @@
+{
+    "$id": "https://brk.commonground.nu/schema/deelEnNummer.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Deel en Nummer",
+    "description": "Deel en nummer identificeren een Ter Inschrijving Aangeboden stuk door gebruik te maken van vijf gegevenselementen.\nWaardelijst in dit component :\n  [reeks(http://www.kadaster.nl/schemas/waardelijsten/Reekscode/)\n  [registercode](http://www.kadaster.nl/schemas/waardelijsten/Registercode/)\n  [soortRegister](http://www.kadaster.nl/schemas/waardelijsten/SoortRegister/)",
+    "type": "object",
+    "properties": {
+        "deel": {
+            "type": "string",
+            "description": "Identificatie van het stuk binnen zijn soort."
+        },
+        "nummer": {
+            "type": "string",
+            "description": "Volgnummer van het stuk."
+        },
+        "reeks": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [reeks(http://www.kadaster.nl/schemas/waardelijsten/Reekscode/)"
+        },
+        "registercode": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [registercode](http://www.kadaster.nl/schemas/waardelijsten/Registercode/)"
+        },
+        "soortRegister": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [soortRegister](http://www.kadaster.nl/schemas/waardelijsten/SoortRegister/)"
+        }
+    }
+}

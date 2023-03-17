@@ -1,0 +1,21 @@
+{
+    "$id": "https://brk.commonground.nu/schema/appartementsrechtFiliatie.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Appartementsrecht Filiatie",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string",
+            "description": "De identificatie van de Kadastraal Onroerende Zaak."
+        },
+        "type": {
+            "type": "string",
+            "enum": ["appartementsrecht", "perceel"],
+            "description": "TypeKadastraalOnroerendeZaakEnum"
+        },
+        "indicatieSluimerend": {
+            "type": "boolean"
+        }
+    }
+}

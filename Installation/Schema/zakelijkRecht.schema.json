@@ -1,0 +1,27 @@
+{
+    "$id": "https://brk.commonground.nu/schema/zakelijkRecht.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Zakelijk Recht",
+    "type": "object",
+    "properties": {
+        "stukIdentificaties": {
+            "type": "array",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "isGebaseerdOpStukdeelIdentificatie": {
+            "type": "string",
+            "description": "De identificatie van het stukdeel (paragraaf in een akte met een rechtsfeit) waarop deze aantekening is gebaseerd."
+        },
+        "isVermeldInStukdeelIdentificaties": {
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin deze aantekening is vermeld.",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

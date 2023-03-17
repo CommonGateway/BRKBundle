@@ -1,0 +1,18 @@
+{
+    "$id": "https://brk.commonground.nu/schema/filiatie.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Filiatie",
+    "type": "object",
+    "properties": {
+        "aard": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json"
+        },
+        "kadastraalOnroerendeZaken": {
+            "type": "array",
+            "items": {
+                "$ref": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaakFiliatie.schema.json"
+            }
+        }
+    }
+}

@@ -1,0 +1,70 @@
+{
+    "$id": "https://brk.commonground.nu/schema/beslag.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Beslag",
+    "description": "Tijdelijke maatregel opgelegd door een partij waardoor de zakelijk gerechtigde niets met de kadastraal onroerende zaak kan doen.\nWaardelijst in dit component :\n- [omschrijvingBetrokkenRecht](http://www.kadaster.nl/schemas/waardelijsten/BetrokkenRecht/) en [aard](http://www.kadaster.nl/schemas/waardelijsten/AardBeslag/)",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string"
+        },
+        "domein": {
+            "type": "string",
+            "description": "Het domein waartoe de identificatie behoort."
+        },
+        "aandeelInBetrokkenRecht": {
+            "$ref": "https://brk.commonground.nu/schema/typeBreuk.schema.json",
+            "example": "OrderedMap { \"noemer\": 2, \"teller\": 1 }"
+        },
+        "gedeeltelijkeBezwaringOudObject": {
+            "type": "boolean",
+            "description": "Indicatie of het object waarop beslag is gelegd gedeeltelijk uit een inmiddels vervallen object bestaat."
+        },
+        "omschrijvingBetrokkenRecht": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [omschrijvingBetrokkenRecht](http://www.kadaster.nl/schemas/waardelijsten/BetrokkenRecht/)"
+        },
+        "toelichtingbewaarder": {
+            "type": "string",
+            "description": "Toelichtende tekst van de bewaarder. De bewaarder is iemand die bij het Kadaster werkt. Hij schrijft stukken in in de openbare registers en de basisregistratie Kadaster conform de Kadasterwet."
+        },
+        "aard": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n- [aard](http://www.kadaster.nl/schemas/waardelijsten/AardBeslag/)"
+        },
+        "aantekeningen": {
+            "type": "array",
+            "items": {
+                "$ref": "https://brk.commonground.nu/schema/aantekeningBasis.schema.json"
+            }
+        },
+        "beslagleggers": {
+            "type": "array",
+            "items": {
+                "$ref": "https://brk.commonground.nu/schema/persoonBeperkt.schema.json"
+            }
+        },
+        "bedragVordering": {
+            "$ref": "https://brk.commonground.nu/schema/bedrag.schema.json"
+        },
+        "stukIdentificaties": {
+            "type": "array",
+            "description": "Identificatie van het stuk. Een stuk is een brondocument dat aanleiding geeft tot een wijziging van de gegevens in een basisregistratie. Dit kan een aangeboden stuk of een kadasterstuk zijn.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "isGebaseerdOpStukdeelIdentificatie": {
+            "type": "string",
+            "description": "De identificatie van het stukdeel (paragraaf in een akte met een rechtsfeit) waarop dit beslag is gebaseerd."
+        },
+        "isVermeldInStukdeelIdentificaties": {
+            "type": "array",
+            "description": "De identificaties van de stukdelen (paragrafen in een akte met een rechtsfeit) waarin dit beslag is vermeld.",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

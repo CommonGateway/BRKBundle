@@ -1,0 +1,12 @@
+{
+  "$id": "https://brk.commonground.nu/schemas/enum/geslachtEnum.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "title": "Geslacht Enum",
+  "description": "Een aanduiding die aangeeft dat de ingeschrevene een man of een vrouw is, of dat het geslacht (nog) onbekend is:\n\nman - Man\nvrouw - Vrouw\nonbekend - Onbekend",
+  "enum": [
+    "man",
+    "vrouw",
+    "onbekend"
+  ],
+  "type": "string"
+}

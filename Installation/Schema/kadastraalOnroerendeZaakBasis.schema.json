@@ -1,0 +1,12 @@
+{
+    "$id": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaakBasis.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Kadastraal Onroerende Zaak Basis",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string"
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "$id": "https://brk.commonground.nu/schema/bedrag.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Bedrag",
+    "description": "Hoeveelheid geld in cijfers in een bepaalde valuta.\nWaardelijst in dit component :\n  [Valuta](http://www.kadaster.nl/schemas/waardelijsten/Valuta/)\"",
+    "type": "object",
+    "properties": {
+        "som": {
+            "type": "number",
+            "format": "float",
+            "description": "Het bedrag. Dit is een waarde met max. 2 decimalen."
+        },
+        "valuta": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Hoeveelheid geld in cijfers in een bepaalde valuta.\nWaardelijst in dit component :\n  [Valuta](http://www.kadaster.nl/schemas/waardelijsten/Valuta/)\""
+        }
+    }
+}

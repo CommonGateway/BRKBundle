@@ -1,0 +1,19 @@
+{
+    "$id": "https://brk.commonground.nu/schema/heeftPartnerschap.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Heeft Partnerschap",
+    "description": "Partnerschap is een groep gegevens over de huwelijkse- of partnerschapstatus van een persoon.",
+    "type": "object",
+    "properties": {
+        "datumOntbinding": {
+            "$ref": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json"
+        },
+        "datumSluiting": {
+            "$ref": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json"
+        },
+        "naam": {
+            "$ref": "https://brk.commonground.nu/schema/naam.schema.json"
+        }
+    }
+}

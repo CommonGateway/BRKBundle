@@ -1,0 +1,21 @@
+{
+    "$id": "https://brk.commonground.nu/schema/aantekeningHypotheek.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Aantekening Hypotheek",
+    "description": "Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)",
+    "type": "object",
+    "properties": {
+        "aard": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)"
+        },
+        "omschrijving": {
+            "type": "string"
+        },
+        "betreftGedeelteVanPerceel": {
+            "type": "boolean",
+            "deprecated": false
+        }
+    }
+}

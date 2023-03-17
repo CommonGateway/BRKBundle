@@ -1,0 +1,42 @@
+{
+    "$id": "https://brk.commonground.nu/schema/adres.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Adres",
+    "description": "Eigenschappen van het adres die kunnen worden hergebruikt in andere API's waarin adresgegevens worden opgenomen.",
+    "type": "object",
+    "properties": {
+        "straat": {
+            "type": "string",
+            "title": "openbareruimte naam",
+            "example": "Laan van de landinrichtingscommissie Duiven-Westervoort",
+            "description": "Een naam die door de gemeente aan een openbare ruimte is gegeven."
+        },
+        "huisnummer": {
+            "type": "integer",
+            "example": 1,
+            "description": "Een nummer dat door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "huisletter": {
+            "type": "string",
+            "example": "A",
+            "description": "Een toevoeging aan een huisnummer in de vorm van een letter die door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "huisnummertoevoeging": {
+            "type": "string",
+            "example": "bis",
+            "description": "Een toevoeging aan een huisnummer of een combinatie van huisnummer en huisletter die door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "postcode": {
+            "type": "string",
+            "example": "6922KZ",
+            "description": "De door PostNL vastgestelde code die bij een bepaalde combinatie van een straatnaam en een huisnummer hoort."
+        },
+        "woonplaats": {
+            "type": "string",
+            "title": "woonplaats naam",
+            "example": "Duiven",
+            "description": "Een woonplaats is een gedeelte van het grondgebied van de gemeente met een naam."
+        }
+    }
+}

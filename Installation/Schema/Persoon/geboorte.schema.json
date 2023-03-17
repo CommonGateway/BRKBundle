@@ -1,0 +1,22 @@
+{
+    "$id": "https://brk.commonground.nu/schema/geboorte.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Geboorte",
+    "description": "Geboorte is een groep gegevens over de geboorte van een persoon.\nWaardelijst in dit component :\n  [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)",
+    "type": "object",
+    "properties": {
+        "plaats": {
+            "type": "string",
+            "title": "geboorteplaats",
+            "description": "Plaats of een plaatsbepaling waar de persoon is geboren."
+        },
+        "datum": {
+            "$ref": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json"
+        },
+        "land": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)"
+        }
+    }
+}

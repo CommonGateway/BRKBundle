@@ -1,0 +1,19 @@
+{
+    "$id": "https://brk.commonground.nu/schema/appartementsrechtBasis.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.2",
+    "title": "Appartementsrecht Basis",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string"
+        },
+        "volgnummer": {
+            "type": "integer"
+        },
+        "indicatieSluimerend": {
+            "type": "boolean",
+            "description": "Indicatie waarmee aangegeven wordt of een appartementsrecht sluimerend is of niet."
+        }
+    }
+}

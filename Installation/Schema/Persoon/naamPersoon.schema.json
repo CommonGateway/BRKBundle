@@ -1,0 +1,38 @@
+{
+    "$id": "https://brk.commonground.nu/schema/naamPersoon.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Naam Persoon",
+    "description": "Gegevens over de naam van de persoon",
+    "type": "object",
+    "properties": {
+        "geslachtsnaam": {
+            "type": "string",
+            "description": "De geslachtsnaam is de (achter)naam waarvan eventuele voorvoegsels en adellijke titel zijn afgesplitst."
+        },
+        "voornamen": {
+            "type": "string",
+            "description": "De voornamen zijn de verzameling namen die, gescheiden door spaties, aan de geslachtsnaam voorafgaat. Indien aanwezig, wordt het predikaat afgesplitst."
+        },
+        "voorvoegsel": {
+            "type": "string",
+            "title": "voorvoegselsgeslachtsnaam",
+            "description": "Voorvoegselsgeslachtsnaam is het deel van de geslachtsnaam dat, gescheiden door een spatie, vooraf gaat aan de rest van de geslachtsnaam."
+        },
+        "aanschrijfwijze": {
+            "type": "string",
+            "example": "G.H I. In het Veld-van Velzen",
+            "description": "De aanschrijfwijze wordt gebruikt als eerste regel in de adressering op een envelop, of links bovenaan een brief, direct boven het adres."
+        },
+        "aanhef": {
+            "type": "string",
+            "example": "Geachte mevrouw In het Veld-van Velzen",
+            "description": "De aanhef wordt gebruikt bovenaan een brief."
+        },
+        "gebruikInLopendeTekst": {
+            "type": "string",
+            "example": "mevrouw In het Veld-van Velzen",
+            "description": "De gebruikInLopendeTekst wordt gebruikt om de persoon aan te duiden binnen een zin in een tekst."
+        }
+    }
+}

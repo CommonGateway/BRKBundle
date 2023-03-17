@@ -1,0 +1,18 @@
+{
+    "$id": "https://brk.commonground.nu/schema/redenVerzoek.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Reden Verzoek",
+    "type": "object",
+    "description": "De reden om een stuk niet in te schrijven of om verbetering te vragen. Waardelijst in dit component :\n  [reden](http://www.kadaster.nl/schemas/waardelijsten/RedenVerzoek/)",
+    "properties": {
+        "redenOmschrijving": {
+            "type": "string",
+            "description": "De omschrijving van de reden voor een kadasterverzoek die afwijkt van de standaard redenen die kunnen worden opgegeven. Bij opgave van de reden is voor overig gekozen."
+        },
+        "reden": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [reden](http://www.kadaster.nl/schemas/waardelijsten/RedenVerzoek/)"
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "$id": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Datum Onvolledig",
+    "description": "Gegevens over de datums die mogelijk niet volledig zijn.",
+    "type": "object",
+    "properties": {
+        "dag": {
+            "type": "integer",
+            "maximum": 31,
+            "minimum": 1,
+            "example": 3,
+            "description": "Als de dag van de datum bekend is wordt dit element gevuld, ook als de volledige datum bekend is."
+        },
+        "datum": {
+            "type": "string",
+            "format": "date",
+            "example": "OrderedMap {}",
+            "description": "Als de volledige datum bekend is wordt de datum gevuld die in de date definitie past."
+        },
+        "jaar": {
+            "type": "integer",
+            "maximum": 9999,
+            "example": 1989,
+            "description": "Als het jaar van de datum bekend is wordt dit element gevuld, ook als de volledige datum bekend is."
+        },
+        "maand": {
+            "type": "integer",
+            "maximum": 12,
+            "minimum": 1,
+            "example": 5,
+            "description": "Als de maand van een datum bekend is wordt dit element gevuld, ook als de volledige datum bekend is."
+        }
+    }
+}

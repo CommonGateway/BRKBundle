@@ -1,0 +1,18 @@
+{
+    "$id": "https://brk.commonground.nu/schema/typePerceelnummerVerschuiving.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Type Perceelnummer Verschuiving",
+    "type": "object",
+    "description": "Verschuiving van het perceelnummer ten behoeve van visualisatie op een kaart. Dit voorkomt dat perceelnummers van kleine percelen elkaar overlappen.",
+    "properties": {
+        "deltax": {
+            "type": "number",
+            "description": "Verschuiving op de X as."
+        },
+        "deltay": {
+            "type": "number",
+            "description": "Verschuiving op de Y as."
+        }
+    }
+}

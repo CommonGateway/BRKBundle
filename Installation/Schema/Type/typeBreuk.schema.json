@@ -1,0 +1,24 @@
+{
+    "$id": "https://brk.commonground.nu/schema/typeBreuk.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Type Breuk",
+    "type": "object",
+    "description": "Een deling van twee gehele getallen.",
+    "example": "OrderedMap { \"noemer\": 2, \"teller\": 1 }",
+    "properties": {
+        "noemer": {
+            "type": "integer",
+            "title": "noemer",
+            "maximum": 99999999,
+            "minimum": 1,
+            "description": "De noemer van het deel."
+        },
+        "teller": {
+            "type": "integer",
+            "title": "teller",
+            "maximum": 99999999,
+            "description": "Het aantal delen. De teller is altijd lager dan de noemer."
+        }
+    }
+}

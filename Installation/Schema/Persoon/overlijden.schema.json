@@ -1,0 +1,13 @@
+{
+    "$id": "https://brk.commonground.nu/schema/overlijden.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Overlijden",
+    "description": "Overlijden is een groep gegevens over het overlijden van een persoon.",
+    "type": "object",
+    "properties": {
+        "datum": {
+            "$ref": "https://brk.commonground.nu/schema/datumOnvolledig.schema.json"
+        }
+    }
+}

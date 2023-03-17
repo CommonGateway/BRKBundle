@@ -1,0 +1,13 @@
+{
+  "$id": "https://brk.commonground.nu/schemas/enum/persoonTypeEnum.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "title": "Persoon Type Enum",
+  "description": "Een aanduiding die aangeeft of het een natuurlijk dan wel niet-natuurlijk persoon betreft en of de persoon ingeschreven is in het BRP of Handelsregister (KvK), dan wel vastgelegd is bij het Kadaster.",
+  "enum": [
+    "ingeschreven_natuurlijk_persoon",
+    "kadaster_natuurlijk_persoon",
+    "ingeschreven_niet_natuurlijk_persoon",
+    "kadaster_niet_natuurlijk_persoon"
+  ],
+  "type": "string"
+}
