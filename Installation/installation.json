@@ -1,5 +1,59 @@
 {
     "installationService": "CommonGateway\\BRKBundle\\Service\\InstallationService",
+    "endpoints": {
+        "schemas": [
+            {
+                "reference": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
+                "path": "kadastraalonroerendezaken",
+                "methods": ["GET"],
+                "subSchemaEndpoints": [
+                    {
+                        "reference": "https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json",
+                        "path": "zakelijkgerechtigden",
+                        "methods": ["GET"],
+                        "throws": ["brk.get.zakelijkgerechtigden"]
+                    },
+                    {
+                        "reference": "https://brk.commonground.nu/schema/beslag.schema.json",
+                        "path": "beslagen",
+                        "methods": ["GET"],
+                        "throws": ["brk.get.beslagen"]
+                    },
+                    {
+                        "reference": "https://brk.commonground.nu/schema/hypotheek.schema.json",
+                        "path": "hypotheken",
+                        "methods": ["GET"],
+                        "throws": ["brk.get.hypotheken"]
+                    }
+                ]
+            },
+            {
+                "reference": "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
+                "path": "publiekrechtelijkebeperkingen",
+                "methods": ["GET"]
+            },
+            {
+                "reference": "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
+                "path": "kadasternatuurlijkpersonen",
+                "methods": ["GET"]
+            },
+            {
+                "reference": "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
+                "path": "kadasternietnatuurlijkpersonen",
+                "methods": ["GET"]
+            },
+            {
+                "reference": "https://brk.commonground.nu/schema/stuk.schema.json",
+                "path": "stukken",
+                "methods": ["GET"]
+            },
+            {
+                "reference": "https://brk.commonground.nu/schema/stukdeel.schema.json",
+                "path": "stukdelen",
+                "methods": ["GET"]
+            }
+        ]
+    },
     "todo": [
         "[endpoints][schemas] in this installation.json file for the schemas we need endpoints for",
         "source.schema.json files in Installation/Source folder?",
