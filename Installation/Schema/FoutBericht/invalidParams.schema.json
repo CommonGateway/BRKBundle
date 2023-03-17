@@ -1,0 +1,31 @@
+{
+    "$id": "https://brk.commonground.nu/schema/invalidParams.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Invalid Params",
+    "type": "object",
+    "description": "Details over fouten in opgegeven parameters",
+    "properties": {
+        "type": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://www.vng.nl/realisatie/api/{major-versie}/validaties/integer"
+        },
+        "name": {
+            "type": "string",
+            "example": "verblijfplaats__huisnummer",
+            "description": "Naam van de parameter"
+        },
+        "code": {
+            "type": "string",
+            "minLength": 1,
+            "example": "integer",
+            "description": "Systeemcode die het type fout aangeeft"
+        },
+        "reason": {
+            "type": "string",
+            "example": "Waarde is geen geldige integer.",
+            "description": "Beschrijving van de fout op de parameterwaarde"
+        }
+    }
+}
