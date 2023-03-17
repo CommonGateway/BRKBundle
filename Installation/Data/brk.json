@@ -1,0 +1,162 @@
+{
+    "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json": [
+      {
+        "identificatie": "12345678901234",
+        "domein": ".KadastraalObject",
+        "indicatieVervallen": false,
+        "begrenzingPerceel": null,
+        "perceelnummerRotatie": 123,
+        "plaatscoordinaten": null,
+        "koopsom": null,
+        "toelichtingBewaarder": "Toelichtende tekst",
+        "type": "appartementsrecht",
+        "aardCultuurBebouwd": null,
+        "aardCultuurOnbebouwd": null,
+        "kadastraleAanduiding": "ABC00",
+        "kadastraleGrootte": null,
+        "perceelnummerVerschuiving": null,
+        "adressen": null,
+        "gesplitstZakelijkRecht": "eigenaar",
+        "zakelijkGerechtigdeIdentificaties": null,
+        "privaatrechtelijkeBeperkingIdentificaties": null,
+        "hypotheekIdentificaties": null,
+        "beslagIdentificaties": null,
+        "isOvergegaanIn": null,
+        "isOntstaanUit": null,
+        "bijbehorendeGrondpercelen": null,
+        "bijbehorendeAppartementsrechten": null,
+        "isVermeldInStukdeelIdentificaties": null,
+        "stukIdentificaties": null,
+        "indicatieSluimerend": false
+      }
+    ],
+    "https://brk.commonground.nu/schema/beslag.schema.json": [
+      {
+        "description": "Reden van beslag",
+        "identificatie": "12345678901234",
+        "domein": ".KadastraalObject",
+        "aandeelInBetrokkenRecht": null,
+        "gedeeltelijkeBezwaringOudObject": false,
+        "omschrijvingBetrokkenRecht": {
+            "code": "123",
+            "waarde": "ABC00"
+        },
+        "toelichtingbewaarder": "Toelichting van bewaarder",
+        "aard": {
+            "code": "123",
+            "waarde": "ABC00"
+        },
+        "aantekeningen": null,
+        "beslagleggers": null,
+        "bedragVordering": {
+            "description": "1000 eu",
+            "som": 1000,
+            "valuta": {
+                "code": "123",
+                "waarde": "ABC00"
+            }
+        },
+        "stukIdentificaties": null,
+        "isVermeldInStukdeelIdentificaties": null
+      }
+    ],
+    "https://brk.commonground.nu/schema/hypotheek.schema.json": [
+      {
+        "description": "Bij een hypotheek op de kadastraal onroerende zaak dient het eigendomsrecht van de hypotheekgever als onderpand voor een geldlening of krediet bij de hypotheekhouder (geldverstrekker).",
+        "identificatie": "12345678901234",
+        "domein": ".KadastraalObject",
+        "aandeelInBetrokkenRecht": null,
+        "gedeeltelijkeBezwaringOudObject": false,
+        "omschrijvingBetrokkenRecht": null,
+        "toelichtingBewaarder": "Toelichtende tekst van de bewaarder",
+        "betreftGedeelteVanPerceel": false,
+        "aantekeningen": null,
+        "hypohteekhouders": null,
+        "bedragZekerheidsstelling": {
+            "description": "1000 eu",
+            "som": 1000,
+            "valuta": {
+                "code": "123",
+                "waarde": "ABC00"
+            }
+        },
+        "stukIdentificaties": null,
+        "omschrijvingGekozenWoonplaats": "omschrijvingGekozenWoonplaats",
+        "isGebaseerdOpStukdeelIdentificatie": "isGebaseerdOpStukdeelIdentificatie"
+      }
+    ],
+    "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json": [
+      {
+        "identificatie": "12345678901234",
+        "domein": ".KadastraalObject",
+        "grondslag": null,
+        "datumInWerking": "01-01-1990",
+        "datumBeeindiging": "01-01-1995",
+        "bevoegdGezag": null,
+        "stukIdentificaties": null,
+        "isGebaseerdOpStukdeelIdentificatie": null,
+        "isVermeldInStukdeelIdentificaties": null
+      }
+    ],
+    "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json": [
+        {
+            "identificatie": "12345678901234",
+            "omschrijving": "Omschrijving van de person",
+            "domein": ".KadastraalObject",
+            "indicatieNietToonbareDiakriet": false,
+            "beschikkingsbevoegdheid": null,
+            "woonadres": null,
+            "postadres": null,
+            "kadastraalOnroerendeZaakIdentificaties": null,
+            "geheimhoudingPersoonsgegevens": true,
+            "landWaarnaarVertrokken": null,
+            "geslachtsaanduiding": "man",
+            "heeftPartnerschap": null,
+            "naam": null,
+            "geboorte": null,
+            "overlijden": null
+        }
+    ],
+    "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json": [
+        {
+            "identificatie": "12345678901234",
+            "omschrijving": "Omschrijving van de person",
+            "domein": ".KadastraalObject",
+            "indicatieNietToonbareDiakriet": false,
+            "beschikkingsbevoegdheid": null,
+            "woonadres": null,
+            "postadres": null,
+            "kadastraalOnroerendeZaakIdentificaties": null,
+            "statutaireNaam": "Een statutaireNaam",
+            "statutaireZetel": "Een statutaireZetel",
+            "rechtsvorm": null,
+            "kvkNummer": "12346789",
+            "rsin": "123456789"
+        }
+    ],
+    "https://brk.commonground.nu/schema/stuk.schema.json": [
+        {
+            "identificatie": "12345678901234",
+            "deelEnNummer": null,
+            "domein": ".KadastraalObject",
+            "toelichtingbewaarder": "Toelichting bewaarder",
+            "stukdeelIdentificaties": ["stukdeelIdentificaties"],
+            "bewaardersVerklaring": "bewaardersVerklaring",
+            "indicatieTekeningBijgevoegd": false,
+            "aard": null,
+            "status": null,
+            "equivalentieVerklaarder": null,
+            "kadasterverzoeken": null
+        }
+    ],
+    "https://brk.commonground.nu/schema/stukdeel.schema.json": [
+        {
+            "identificatie": "12345678901234",
+            "domein": ".KadastraalObject",
+            "aard": null,
+            "bedragTransactiesomLevering": null,
+            "omschrijvingKadastraleObjecten": null,
+            "omschrijvingTopografischeMutatie": false
+        }
+    ]
+}
