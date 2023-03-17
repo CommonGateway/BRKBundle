@@ -1,6 +1,27 @@
 {
     "installationService": "CommonGateway\\BRKBundle\\Service\\InstallationService",
     "endpoints": {
+        "multipleSchemas": [
+            {
+                "$id": "https://brk.commonground.nu/EntitiesEndpoint/brk.search.endpoint.json",
+                "version": "0.0.1",
+                "name": "Search",
+                "description": "Generic Search Endpoint",
+                "schemas": [
+                    "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
+                    "https://brk.commonground.nu/schema/beslag.schema.json",
+                    "https://brk.commonground.nu/schema/hypotheek.schema.json",
+                    "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
+                    "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
+                    "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
+                    "https://brk.commonground.nu/schema/stuk.schema.json",
+                    "https://brk.commonground.nu/schema/stukdeel.schema.json"
+                ],
+                "path": ["search"],
+                "pathRegex": "^(search)$",
+                "methods": ["GET"]
+            }
+        ],
         "schemas": [
             {
                 "reference": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
