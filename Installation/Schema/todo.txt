@@ -17,7 +17,4 @@ TODO: delete this file after adding these schema's in this folder: Installation/
 - Tenaamstelling
 - ZakelijkRecht
 - PubliekrechtelijkeBeperking
-- Stuk
-- Kadasterverzoek
-- RedenVerzoek
 - Stukdeel
