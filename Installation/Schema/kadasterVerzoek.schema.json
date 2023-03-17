@@ -4,7 +4,7 @@
     "version": "0.1",
     "title": "Kadaster Verzoek",
     "type": "object",
-    "description": "Een verzoek om verbetering van een aangeboden stuk, of om de aanbieder te wijzen op het niet inschrijven van het stuk. Waardelijst in deze component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)",
+    "description": "Een verzoek om verbetering van een aangeboden stuk, of om de aanbieder te wijzen op het niet inschrijven van het stuk. Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)",
     "properties": {
         "aard": {
             "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",

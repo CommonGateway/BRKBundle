@@ -1,0 +1,12 @@
+{
+    "$id": "https://brk.commonground.nu/schema/perceelBasis.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Perceel Basis",
+    "type": "object",
+    "properties": {
+        "identificatie": {
+            "type": "string"
+        }
+    }
+}

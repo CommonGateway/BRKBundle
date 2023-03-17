@@ -5,11 +5,8 @@ TODO: delete this file after adding these schema's in this folder: Installation/
 - BadRequestFoutBericht
 - Foutbericht
 - InvalidParams
-- KadastraalOnroerendeZaak
-- polygonGeoJSON
-- pointGeoJSON
-- LocatieKadastraalObject
-- PerceelFiliatie
-- PerceelBasis
+! - polygonGeoJSON
+! - pointGeoJSON
+! - LocatieKadastraalObject
 - KadastraalOnroerendeZaakBasis
 - PubliekrechtelijkeBeperking

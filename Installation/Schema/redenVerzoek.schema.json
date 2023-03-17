@@ -4,7 +4,7 @@
     "version": "0.1",
     "title": "Reden Verzoek",
     "type": "object",
-    "description": "De reden om een stuk niet in te schrijven of om verbetering te vragen. Waardelijst in deze component :\n  [reden](http://www.kadaster.nl/schemas/waardelijsten/RedenVerzoek/)",
+    "description": "De reden om een stuk niet in te schrijven of om verbetering te vragen. Waardelijst in dit component :\n  [reden](http://www.kadaster.nl/schemas/waardelijsten/RedenVerzoek/)",
     "properties": {
         "redenOmschrijving": {
             "type": "string",
