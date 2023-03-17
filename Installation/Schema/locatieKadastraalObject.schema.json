@@ -1,0 +1,73 @@
+{
+    "$id": "https://brk.commonground.nu/schema/locatieKadastraalObject.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Locatie Kadastraal Object",
+    "type": "object",
+    "description": "Waardelijsten in dit component :\n  [koppelingswijze](http://www.kadaster.nl/schemas/waardelijsten/Koppelingswijze) en [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)",
+    "properties": {
+        "straat": {
+            "type": "string",
+            "title": "openbareruimte naam",
+            "example": "Laan van de landinrichtingscommissie Duiven-Westervoort",
+            "description": "Een naam die door de gemeente aan een openbare ruimte is gegeven."
+        },
+        "huisnummer": {
+            "type": "integer",
+            "example": 1,
+            "description": "Een nummer dat door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "huisletter": {
+            "type": "string",
+            "example": "A",
+            "description": "Een toevoeging aan een huisnummer in de vorm van een letter die door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "huisnummertoevoeging": {
+            "type": "string",
+            "example": "bis",
+            "description": "Een toevoeging aan een huisnummer of een combinatie van huisnummer en huisletter die door de gemeente aan een adresseerbaar object is gegeven."
+        },
+        "postcode": {
+            "type": "string",
+            "example": "6922KZ",
+            "description": "De door PostNL vastgestelde code die bij een bepaalde combinatie van een straatnaam en een huisnummer hoort."
+        },
+        "woonplaats": {
+            "type": "string",
+            "title": "woonplaats naam",
+            "example": "Duiven",
+            "description": "Een woonplaats is een gedeelte van het grondgebied van de gemeente met een naam."
+        },
+        "nummeraanduidingIdentificatie": {
+            "type": "string",
+            "example": "1234207890123456",
+            "description": "Identificatie van het adres in het geval dit adres in BAG geregistreerd is."
+        },
+        "adresregel1": {
+            "type": "string",
+            "example": "Ln vd l D-Westervoort 1A-bis",
+            "description": "Het eerste deel van een adres is een combinatie van de straat en huisnummer."
+        },
+        "adresregel2": {
+            "type": "string",
+            "example": "6922KZ Duiven",
+            "description": "Het tweede deel van een adres is een combinatie van woonplaats eventueel in combinatie met de postcode."
+        },
+        "adresregel3": {
+            "type": "string",
+            "example": "Selangor",
+            "description": "Het derde deel van een adres is optioneel een of meer geografische gebieden van het adres in het buitenland."
+        },
+        "land": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [land](http://www.kadaster.nl/schemas/waardelijsten/BRPLand/)"
+        },
+        "koppelingswijze": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [koppelingswijze](http://www.kadaster.nl/schemas/waardelijsten/Koppelingswijze/)"
+        },
+        "adresseerbaarObjectIdentificatie": {
+            "type": "string"
+        }
+    }
+}
