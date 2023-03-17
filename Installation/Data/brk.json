@@ -17,16 +17,16 @@
         "perceelnummerVerschuiving": null,
         "adressen": null,
         "gesplitstZakelijkRecht": "eigenaar",
-        "zakelijkGerechtigdeIdentificaties": "string",
-        "privaatrechtelijkeBeperkingIdentificaties": "privaatrechtelijkebeperkingen",
-        "hypotheekIdentificaties": "hypotheekIdentificaties",
-        "beslagIdentificaties": "beslagIdentificaties",
+        "zakelijkGerechtigdeIdentificaties": null,
+        "privaatrechtelijkeBeperkingIdentificaties": null,
+        "hypotheekIdentificaties": null,
+        "beslagIdentificaties": null,
         "isOvergegaanIn": null,
         "isOntstaanUit": null,
-        "bijbehorendeGrondpercelen": "grondpercelen",
-        "bijbehorendeAppartementsrechten": "bijbehorendeAppartementsrechten",
-        "isVermeldInStukdeelIdentificaties": "isVermeldInStukdeelIdentificaties",
-        "stukIdentificaties": "stukIdentificaties",
+        "bijbehorendeGrondpercelen": null,
+        "bijbehorendeAppartementsrechten": null,
+        "isVermeldInStukdeelIdentificaties": null,
+        "stukIdentificaties": null,
         "indicatieSluimerend": false
       }
     ],
@@ -41,7 +41,7 @@
             "code": "123",
             "waarde": "ABC00"
         },
-        "toelichtingBewaarder": "Toelichting van bezwaarder",
+        "toelichtingbewaarder": "Toelichting van bewaarder",
         "aard": {
             "code": "123",
             "waarde": "ABC00"
@@ -56,8 +56,8 @@
                 "waarde": "ABC00"
             }
         },
-        "stukIdentificaties": "StukIdentificaties",
-        "isVermeldInStukdeelIdentificaties": "isVermeldInStukdeelIdentificaties"
+        "stukIdentificaties": null,
+        "isVermeldInStukdeelIdentificaties": null
       }
     ],
     "https://brk.commonground.nu/schema/hypotheek.schema.json": [
@@ -80,7 +80,7 @@
                 "waarde": "ABC00"
             }
         },
-        "stukIdentificaties": "stukIdentificaties",
+        "stukIdentificaties": null,
         "omschrijvingGekozenWoonplaats": "omschrijvingGekozenWoonplaats",
         "isGebaseerdOpStukdeelIdentificatie": "isGebaseerdOpStukdeelIdentificatie"
       }
