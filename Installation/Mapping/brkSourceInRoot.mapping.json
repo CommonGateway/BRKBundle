@@ -3,5 +3,11 @@
   "$id": "https://brk.commonground.nu/mapping/brkSourceInRoot.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
   "version": "0.0.1",
-  "passTrough": false
+  "passTrough": false,
+  "mapping": {
+    "https://brk.commonground.nu/schema/stuk.schema.json": "[{%for snapshot in Stand:stand.Snapshot:KadastraalObjectSnapshot %}{% if not loop.first %},{% endif %}{% if snapshot.Stuk:TerInschrijvingAangebodenStuk|default %} {{ map(\"https://brk.commonground.nu/mapping/brkStuk.mapping.json\", snapshot.Stuk:TerInschrijvingAangebodenStuk)|json_encode }}{%endif%}{%endfor%}]"
+  },
+  "cast": {
+    "SnapshotObjects": "jsonToArray"
+  }
 }
