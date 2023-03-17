@@ -1,0 +1,30 @@
+{
+    "$id": "https://brk.commonground.nu/schema/stukdeel.schema.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+    "version": "0.1",
+    "title": "Stukdeel",
+    "type": "object",
+    "description": "Een stukdeel is een paragraaf in een akte waarmee een recht gevestigd wordt. Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)",
+    "properties": {
+        "identificatie": {
+            "type": "string"
+        },
+        "domein": {
+            "type": "string",
+            "description": "Het domein waartoe de identificatie behoort."
+        },
+        "aard": {
+            "$ref": "https://brk.commonground.nu/schema/waardelijst.schema.json",
+            "description": "Waardelijst in dit component :\n  [aard](http://www.kadaster.nl/schemas/waardelijsten/AardAantekening/)"
+        },
+        "bedragTransactiesomLevering": {
+            "$ref": "https://brk.commonground.nu/schema/bedrag.schema.json"
+        },
+        "omschrijvingKadastraleObjecten": {
+            "type": "string"
+        },
+        "omschrijvingTopografischeMutatie": {
+            "type": "string"
+        }
+    }
+}
