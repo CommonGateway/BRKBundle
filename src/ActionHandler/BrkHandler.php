@@ -1,4 +1,10 @@
 <?php
+/**
+ * A BRK Handler to provide event driven business logic for the brk plugin.
+ *
+ * @author  Conduction.nl <info@conduction.nl>
+ * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 
 namespace CommonGateway\BRKBundle\ActionHandler;
 
@@ -6,11 +12,17 @@ use CommonGateway\BRKBundle\ActionHandler\CacheException;
 use CommonGateway\BRKBundle\ActionHandler\ComponentException;
 use CommonGateway\BRKBundle\ActionHandler\GatewayException;
 use CommonGateway\BRKBundle\ActionHandler\InvalidArgumentException;
-use CommonGateway\BRKBundle\src\Service\BrkService;
+use CommonGateway\BRKBundle\Service\BrkService;
 
 class BrkHandler
 {
 
+
+    /**
+     * The BRK service.
+     *
+     * @var BrkService
+     */
     private BrkService $brkService;
 
 
