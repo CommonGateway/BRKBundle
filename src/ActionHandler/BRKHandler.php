@@ -10,12 +10,16 @@ use CommonGateway\BRKBundle\src\Service\BRKService;
 
 class BRKHandler
 {
+
     private BRKService $BRKService;
+
 
     public function __construct(BRKService $BRKService)
     {
         $this->BRKService = $BRKService;
-    }
+
+    }//end __construct()
+
 
     /**
      *  This function returns the requered configuration as a [json-schema](https://json-schema.org/) array.
@@ -32,7 +36,9 @@ class BRKHandler
             'required'    => [],
             'properties'  => [],
         ];
-    }
+
+    }//end getConfiguration()
+
 
     /**
      * This function runs the service.
@@ -50,5 +56,8 @@ class BRKHandler
     public function run(array $data, array $configuration): array
     {
         return $this->BRKService->BRKHandler($data, $configuration);
-    }
-}
+
+    }//end run()
+
+
+}//end class
