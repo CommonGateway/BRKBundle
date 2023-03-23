@@ -15,8 +15,12 @@ class BrkService
     /**
      * Returns a welcoming string
      *
+     * @param array $data          The data to process.
+     * @param array $configuration The configuration to process the data with.
+     *
+     * @return array
+     *
      * @SuppressWarnings('unused') Required by Handler Interface.
-     * @return                     array
      */
     public function BrkHandler(array $data, array $configuration): array
     {
