@@ -11,17 +11,17 @@ use CommonGateway\BRKBundle\src\Service\BrkService;
 class BrkHandler
 {
 
-    private BrkService $BrkService;
+    private BrkService $brkService;
 
 
     /**
      * The class constructor
      *
-     * @param BrkService $BrkService The BRK service.
+     * @param BrkService $brkService The BRK service.
      */
-    public function __construct(BrkService $BrkService)
+    public function __construct(BrkService $brkService)
     {
-        $this->BrkService = $BrkService;
+        $this->brkService = $brkService;
 
     }//end __construct()
 
@@ -61,7 +61,7 @@ class BrkHandler
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->BrkService->BrkHandler($data, $configuration);
+        return $this->brkService->BrkHandler($data, $configuration);
 
     }//end run()
 
