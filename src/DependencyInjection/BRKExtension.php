@@ -1,6 +1,12 @@
 <?php
+/**
+ * Every symfony bundle need and extension to load services
+ *
+ * @author  Conduction.nl <info@conduction.nl>
+ * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 
-namespace CommonGateway\BRKBundle\src\DependencyInjection;
+namespace CommonGateway\BRKBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,9 +17,22 @@ class BRKExtension extends Extension
 {
 
 
+    /**
+     * The laod function is triggerd by symfony and loads the bundels services files.
+     *
+     * @param array            $configs   The configuration
+     * @param ContainerBuilder $container The container
+     *
+     * @return void
+     *
+     * @SuppressWarnings("unused") Required by symfony
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
+        $loader = new YamlFileLoader(
+            $container,
+            new FileLocator(__DIR__.'/../../Resources/config')
+        );
         $loader->load('services.yaml');
 
     }//end load()

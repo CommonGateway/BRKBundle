@@ -1,30 +1,36 @@
 <?php
 
-namespace CommonGateway\BRKBundle\src\ActionHandler;
+namespace CommonGateway\BRKBundle\ActionHandler;
 
 use CommonGateway\BRKBundle\ActionHandler\CacheException;
 use CommonGateway\BRKBundle\ActionHandler\ComponentException;
 use CommonGateway\BRKBundle\ActionHandler\GatewayException;
 use CommonGateway\BRKBundle\ActionHandler\InvalidArgumentException;
-use CommonGateway\BRKBundle\src\Service\BRKService;
+use CommonGateway\BRKBundle\src\Service\BrkService;
 
-class BRKHandler
+class BrkHandler
 {
 
-    private BRKService $BRKService;
+    private BrkService $BrkService;
 
 
-    public function __construct(BRKService $BRKService)
+    /**
+     * The class constructor
+     *
+     * @param BrkService $BrkService The BRK service.
+     */
+    public function __construct(BrkService $BrkService)
     {
-        $this->BRKService = $BRKService;
+        $this->BrkService = $BrkService;
 
     }//end __construct()
 
 
     /**
-     *  This function returns the requered configuration as a [json-schema](https://json-schema.org/) array.
+     * This function returns the requered configuration as a
+     * [json-schema](https://json-schema.org/) array.
      *
-     * @throws array a [json-schema](https://json-schema.org/) that this  action should comply to
+     * @return array a [json-schema](https://json-schema.org/) that this  action should comply to
      */
     public function getConfiguration(): array
     {
@@ -55,7 +61,7 @@ class BRKHandler
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->BRKService->BRKHandler($data, $configuration);
+        return $this->BrkService->BrkHandler($data, $configuration);
 
     }//end run()
 
