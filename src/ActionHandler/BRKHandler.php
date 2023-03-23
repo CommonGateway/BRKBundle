@@ -1,8 +1,12 @@
 <?php
 
-namespace CommonGateway\BRKBundle\ActionHandler;
+namespace CommonGateway\BRKBundle\src\ActionHandler;
 
-use CommonGateway\BRKBundle\Service\BRKService;
+use CommonGateway\BRKBundle\ActionHandler\CacheException;
+use CommonGateway\BRKBundle\ActionHandler\ComponentException;
+use CommonGateway\BRKBundle\ActionHandler\GatewayException;
+use CommonGateway\BRKBundle\ActionHandler\InvalidArgumentException;
+use CommonGateway\BRKBundle\src\Service\BRKService;
 
 class BRKHandler
 {

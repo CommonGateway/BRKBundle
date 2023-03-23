@@ -10,10 +10,10 @@ services:
     CommonGateway\BRKBundle\:
         resource: '../../'
         exclude:
-            - '../../DependencyInjection/'
-            - '../../Entity/'
-            - '../../Resources/'
-            - '../../BRKExtension.php'
+            - '../../src/DependencyInjection/'
+            - '../../src/Entity/'
+            - '../../src/Resources/'
+            - '../../src/BRKExtension.php'
             
     # this config only applies to the services created by this file
     _instanceof:

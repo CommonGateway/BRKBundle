@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CommonGateway\\BRKBundle\\": ""
+            "CommonGateway\\BRKBundle\\": "src/"
         }
     },
     "scripts": {

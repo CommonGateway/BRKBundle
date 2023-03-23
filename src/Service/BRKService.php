@@ -2,7 +2,7 @@
 
 // src/Service/BRKService.php
 
-namespace CommonGateway\BRKBundle\Service;
+namespace CommonGateway\BRKBundle\src\Service;
 
 class BRKService
 {

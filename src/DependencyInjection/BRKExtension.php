@@ -1,6 +1,6 @@
 <?php
 
-namespace CommonGateway\BRKBundle\DependencyInjection;
+namespace CommonGateway\BRKBundle\src\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,7 +11,7 @@ class BRKExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
         $loader->load('services.yaml');
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 // src/Service/InstallationService.php
-namespace CommonGateway\BRKBundle\Service;
+namespace CommonGateway\BRKBundle\src\Service;
 
 use App\Entity\DashboardCard;
 use App\Entity\Endpoint;
