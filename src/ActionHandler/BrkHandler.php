@@ -72,7 +72,7 @@ class BrkHandler
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->brkService->BrkHandler($data, $configuration);
+        return $this->brkService->brkHandler($data, $configuration);
 
     }//end run()
 

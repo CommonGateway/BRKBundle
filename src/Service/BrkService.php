@@ -20,13 +20,13 @@ class BrkService
      *
      * @return array
      *
-     * @SuppressWarnings('unused') Required by Handler Interface.
+     * @SuppressWarnings("unused") Required by Handler Interface.
      */
-    public function BrkHandler(array $data, array $configuration): array
+    public function brkHandler(array $data, array $configuration): array
     {
         return ['response' => 'Hello. Your BRKBundle works'];
 
-    }//end BrkHandler()
+    }//end brkHandler()
 
 
 }//end class
