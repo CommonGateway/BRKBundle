@@ -16,13 +16,13 @@ class BrkService
      * Returns a welcoming string
      *
      * @SuppressWarnings('unused') Required by Handler Interface.
-     * @return array
+     * @return                     array
      */
     public function BrkHandler(array $data, array $configuration): array
     {
         return ['response' => 'Hello. Your BRKBundle works'];
 
-    }//end BRKHandler()
+    }//end BrkHandler()
 
 
 }//end class
