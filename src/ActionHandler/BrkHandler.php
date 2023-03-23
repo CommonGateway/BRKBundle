@@ -17,7 +17,6 @@ use CommonGateway\BRKBundle\Service\BrkService;
 class BrkHandler
 {
 
-
     /**
      * The BRK service.
      *
