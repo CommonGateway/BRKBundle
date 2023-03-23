@@ -27,8 +27,8 @@
         }
     },
     "scripts": {
-        "post-package-install": "bin/console common-gateway/brk-bundle",
-        "post-package-update": "bin/console common-gateway/brk-bundle",
-        "post-package-uninstall": "bin/console common-gateway/brk-bundle"
+        "post-package-install": "bin/console commongateway:initialize",
+        "post-package-update": "bin/console commongateway:initialize",
+        "post-package-uninstall": "bin/console commongateway:initialize"
     }
 }
