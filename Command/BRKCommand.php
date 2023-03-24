@@ -11,7 +11,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Command to execute the RatingService.
+ * @Author Wilco Louwerse <wilco@conduction.nl>
+ *
+ * @license EUPL <https://github.com/ConductionNL/contactcatalogus/blob/master/LICENSE.md>
+ *
+ * @category Command
  */
 class BRKCommand extends Command
 {
@@ -19,7 +23,7 @@ class BRKCommand extends Command
     /**
      * @var string
      */
-    protected static $defaultName = 'brk:command'; // todo: Better command name
+    protected static $defaultName = 'brk:command'; // Todo: Better command name
 
     /**
      * @var BRKService
@@ -68,7 +72,8 @@ class BRKCommand extends Command
         }
     
         try {
-            $result = $this->brkService->BRKHandler([], []); // Todo: add $filename in here somewhere (query or header?)
+            // Todo: do we want to use query for this?
+            $result = $this->brkService->BRKHandler(['query' => ['filename' => $filename]], []);
         } catch (Exception $exception) {
             $style->error('Command failed: '.$exception->getMessage());
             

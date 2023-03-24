@@ -77,6 +77,7 @@ class BRKService
         $this->data = $data;
         $this->configuration = $configuration;
         
+        // Todo: do we want to use query for this?
         if (isset($this->data['query']['filename']) === false) {
             // Todo: error / user feedback
             return $this->data;
