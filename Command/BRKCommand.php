@@ -23,7 +23,7 @@ class BRKCommand extends Command
     /**
      * @var string
      */
-    protected static $defaultName = 'brk:command'; // Todo: Better command name
+    protected static $defaultName = 'brk:fileSystem:read'; // Todo: Better command name
 
     /**
      * @var BRKService
@@ -45,8 +45,8 @@ class BRKCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('This command triggers BRK BRKService')
-            ->setHelp('This command allows you to convert xml files from the BRK fileSystem to ObjectEntities (or update existing ObjectEntities)')
+            ->setDescription('This command triggers BRKService, converting xml file data to ObjectEntities.')
+            ->setHelp('This command allows you to convert xml files from the BRK fileSystem to ObjectEntities (or update existing ObjectEntities). This command requires a filename.')
             ->addOption('filename', 'f', InputOption::VALUE_REQUIRED, 'Rate a single component by id');
     }//end configure()
 
@@ -65,21 +65,25 @@ class BRKCommand extends Command
         // Handle the command options
         $filename = $input->getOption('filename', false);
 
-        $style->info('Execute BRK Command');
+        $style->info('Execute BRK fileSystem read Command');
 
         if (empty($filename)) {
+            $style->error('Please use the option --filename or -f to specify a filename.');
             return Command::FAILURE;
         }
     
         try {
             // Todo: do we want to use query for this?
             $result = $this->brkService->BRKHandler(['query' => ['filename' => $filename]], []);
+            
+            $style->block("Created (or updated) ObjectEntities for ".count($result)." references.");
         } catch (Exception $exception) {
             $style->error('Command failed: '.$exception->getMessage());
             
             return Command::FAILURE;
         }
-
+    
+        $style->succes('Command was successful');
         return Command::SUCCESS;
     }//end execute()
 }//end class

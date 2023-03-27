@@ -79,7 +79,7 @@ class BRKService
         
         // Todo: do we want to use query for this?
         if (isset($this->data['query']['filename']) === false) {
-            // Todo: error / user feedback
+            $this->brkpluginLogger->error("Could not find a filename in the data['query'] array for BRKHandler.");
             return $this->data;
         }
         $endpoint = $this->data['query']['filename'];
@@ -93,22 +93,20 @@ class BRKService
                     "identificatie" => "123456789012310",
                     "domein" => ".KadastraalObject",
                     "perceelnummerRotatie" => 123,
-                    "toelichtingBewaarder" => "tes123"
+                    "toelichtingBewaarder" => "test123"
                 ],
                 [
                     "identificatie" => "123456789012349",
                     "domein" => ".KadastraalObject",
                     "perceelnummerRotatie" => 321,
-                    "toelichtingBewaarder" => "tes321"
+                    "toelichtingBewaarder" => "test321"
                 ]
             ],
             "https://brk.commonground.nu/schema/hypotheek.schema.json" => [
                 [
                     "identificatie" => "123456789012311",
                     "domein" => ".KadastraalObject",
-                    "description" => "Bij een hypotheek op de kadastraal onroerende zaak dient het eigendomsrecht van de hypotheekgever als onderpand voor een geldlening of krediet bij de hypotheekhouder (geldverstrekker).",
                     "bedragZekerheidsstelling" => [
-                        "description" => "1001 eu",
                         "som" => 1001,
                         "valuta" => [
                             "code" => "311",
@@ -121,7 +119,11 @@ class BRKService
         
         // Todo: what if we only have 1 object and not a list of references with each a list of objects? Or a list of objects for 1 reference?
         // Todo: ^in this case, use handleRefObjects() or handleRefObject() instead
-        return $this->handleDataSet($fileDataSet);
+        $objects = $this->handleDataSet($fileDataSet);
+        
+        $this->entityManager->flush();
+        
+        return $objects;
     }//end BRKHandler()
     
     /**
