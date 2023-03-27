@@ -81,14 +81,14 @@ class GdsHandler
                     'type'        => 'string',
                     'description' => 'The contract number to request data for',
                     'example'     => '0000000002',
-                    'required'    => true
+                    'required'    => true,
                 ],
                 'articleNumber'       => [
                     'type'        => 'string',
                     'description' => 'The article number to request data for',
                     'example'     => '3',
-                    'required'    => true
-                ]
+                    'required'    => true,
+                ],
 
             ],
         ];

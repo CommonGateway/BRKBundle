@@ -34,8 +34,7 @@ class GdsService
         CallService $callService,
         GatewayResourceService $grService,
         FileSystemHandleService $fshService
-    )
-    {
+    ) {
         $this->callService = $callService;
 
     }//end __construct()
@@ -175,7 +174,7 @@ class GdsService
      */
     public function gdsDataHandler(array $data, array $configuration): array
     {
-        $source = $this->grService->getSource($configuration['gdsSource']);
+        $source     = $this->grService->getSource($configuration['gdsSource']);
         $lastSynced = new DateTime($configuration['lastSynchronization']);
 
         $location = $configuration['endpoint'];
