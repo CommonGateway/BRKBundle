@@ -1,5 +1,4 @@
 {
-    "installationService": "CommonGateway\\BRKBundle\\Service\\InstallationService",
     "endpoints": {
         "multipleSchemas": [
             {
