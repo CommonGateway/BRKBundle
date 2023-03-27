@@ -34,17 +34,17 @@ class GdsService
     /**
      * Creates the content for a soap message to the GDS download service.
      *
-     * @param DateTime $lastSynced The date and time the data has last been synced.
-     * @param bool     $test       Whether or not the call is a test call.
+     * @param DateTime $lastSynced    The date and time the data has last been synced.
+     * @param array    $configuration Whether or not the call is a test call.
      *
      * @return array The resulting request message.
      */
-    private function createRequestMessage(DateTime $lastSynced, bool $test): array
+    private function createRequestMessage(DateTime $lastSynced, array $configuration): array
     {
         $now            = new \DateTime();
         $notYetReported = 'true';
 
-        if ($test === true) {
+        if ($configuration['test'] === true) {
             $notYetReported = 'false';
         }
 
@@ -58,8 +58,8 @@ class GdsService
                     "v20:verzoek" => [
                         "v201:AfgifteSelectieCriteria" => [
                             'v201:BestandKenmerken'     => [
-                                "v201:contractnummer" => '0000000002',
-                                'v201:artikelnummer'  => '3',
+                                "v201:contractnummer" => "{$configuration['contractNumber']}",
+                                'v201:artikelnummer'  => "{$configuration['articleNumber']}",
                             ],
                             "v202:Periode"              => [
                                 "v202:DatumTijdVanaf"  => $lastSynced->format('Y-m-d\TH:i:s.v\Z'),
@@ -79,6 +79,13 @@ class GdsService
     }//end createRequestMessage()
 
 
+    /**
+     * Determines if an array is associative.
+     *
+     * @param array $array The array to check.
+     *
+     * @return bool Whether the array is associative.
+     */
     private function isAssociative(array $array): bool
     {
         if ($array === []) {
@@ -96,7 +103,7 @@ class GdsService
      */
     private function getDataUrls(array $result): array
     {
-        $urls     = [];
+        $locations     = [];
         $baseUrls = $result['soapenv:Body']['v20:BestandenlijstOpvragenResponse']['v20:antwoord']['v202:BaseURLSet']['v203:BaseURL'];
 
         foreach ($baseUrls as $baseUrl) {
@@ -108,38 +115,69 @@ class GdsService
         $files = $result['soapenv:Body']['v20:BestandenlijstOpvragenResponse']['v20:antwoord']['v204:BestandenLijst']['v204:Afgifte'];
         if ($this->isAssociative($files)) {
             $fileUrl = $files['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
-            $urls[]  = "{$baseUrl['#']}/$fileUrl";
+            $locations[]  = "{$baseUrl['#']}/$fileUrl";
 
-            return $urls;
+            return $locations;
         }
 
         foreach ($files as $file) {
             $fileUrl = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
-            $urls[]  = "{$baseUrl['#']}/$fileUrl";
+            $mime    = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:content']['@contentType'];
+            $locations[]  = [
+                'url'  => "{$baseUrl['#']}/$fileUrl",
+                'mime' => "$mime"
+            ];
         }
 
-        return $urls;
+        return $locations;
 
     }//end getDataUrls()
 
+    public function fetchData (array $locations, array $configuration): array
+    {
+        $source = $this->gcrService->getSource($configuration['downloadSource']);
+        $data   = [];
+
+        foreach ($locations as $location) {
+            if($location['mime'] !== 'application/zip') {
+                continue;
+            }
+
+            if (str_contains($location['url'], $source->getLocation())) {
+                $endpoint               = substr($location['url'], strlen($source->getLocation()));
+                $file                   = $this->callService->call($source, $endpoint, 'GET');
+                $data[$location['url']] = $this->fshService->decode($file, 'zip');
+            }
+        }
+
+        return $data;
+    }
+
 
     /**
-     * @param  Source   $source
-     * @param  string   $location
-     * @param  DateTime $lastSynced
-     * @param  bool     $test
-     * @return array
+     * Calls the GDS source with configured data
+     *
+     * @param  array $data          The data for the action.
+     * @param  array $configuration The configuration of the action.
+     * @return array The data downloaded from the GDS service.
      */
-    public function getData(Source $source, string $location, DateTime $lastSynced, bool $test=false): array
+    public function gdsDataHandler (array $data, array $configuration): array
     {
-        $message = $this->createRequestMessage($lastSynced, $test);
+        $source = $this->gcrService->getSource($configuration['gdsSource']);
+        $lastSynced = new DateTime($configuration['lastSynchronization']);
+
+        $location = $configuration['endpoint'];
+        $message  = $this->createRequestMessage($lastSynced, $configuration);
 
         $xmlEncoder = new XmlEncoder(['xml_root_node_name' => 'soapenv:Envelope']);
         $body       = $xmlEncoder->encode($message, 'xml');
         $response   = $this->callService->call($source, $location, 'POST', ['body' => $body]);
         $result     = $this->callService->decodeResponse($source, $response);
 
-        return $this->getDataUrls($result);
+        $locations = $this->getDataUrls($result);
+        $data      = array_merge_recursive($data, $this->fetchData($locations, $configuration));
+
+        return $data;
 
     }//end getData()
 
