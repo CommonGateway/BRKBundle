@@ -103,8 +103,8 @@ class GdsService
      */
     private function getDataUrls(array $result): array
     {
-        $locations     = [];
-        $baseUrls = $result['soapenv:Body']['v20:BestandenlijstOpvragenResponse']['v20:antwoord']['v202:BaseURLSet']['v203:BaseURL'];
+        $locations = [];
+        $baseUrls  = $result['soapenv:Body']['v20:BestandenlijstOpvragenResponse']['v20:antwoord']['v202:BaseURLSet']['v203:BaseURL'];
 
         foreach ($baseUrls as $baseUrl) {
             if ($baseUrl['@type'] === 'certificaat') {
@@ -114,18 +114,18 @@ class GdsService
 
         $files = $result['soapenv:Body']['v20:BestandenlijstOpvragenResponse']['v20:antwoord']['v204:BestandenLijst']['v204:Afgifte'];
         if ($this->isAssociative($files)) {
-            $fileUrl = $files['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
-            $locations[]  = "{$baseUrl['#']}/$fileUrl";
+            $fileUrl     = $files['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
+            $locations[] = "{$baseUrl['#']}/$fileUrl";
 
             return $locations;
         }
 
         foreach ($files as $file) {
-            $fileUrl = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
-            $mime    = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:content']['@contentType'];
-            $locations[]  = [
+            $fileUrl     = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
+            $mime        = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:content']['@contentType'];
+            $locations[] = [
                 'url'  => "{$baseUrl['#']}/$fileUrl",
-                'mime' => "$mime"
+                'mime' => "$mime",
             ];
         }
 
@@ -133,13 +133,14 @@ class GdsService
 
     }//end getDataUrls()
 
-    public function fetchData (array $locations, array $configuration): array
+
+    public function fetchData(array $locations, array $configuration): array
     {
         $source = $this->gcrService->getSource($configuration['downloadSource']);
         $data   = [];
 
         foreach ($locations as $location) {
-            if($location['mime'] !== 'application/zip') {
+            if ($location['mime'] !== 'application/zip') {
                 continue;
             }
 
@@ -151,7 +152,8 @@ class GdsService
         }
 
         return $data;
-    }
+
+    }//end fetchData()
 
 
     /**
@@ -161,9 +163,9 @@ class GdsService
      * @param  array $configuration The configuration of the action.
      * @return array The data downloaded from the GDS service.
      */
-    public function gdsDataHandler (array $data, array $configuration): array
+    public function gdsDataHandler(array $data, array $configuration): array
     {
-        $source = $this->gcrService->getSource($configuration['gdsSource']);
+        $source     = $this->gcrService->getSource($configuration['gdsSource']);
         $lastSynced = new DateTime($configuration['lastSynchronization']);
 
         $location = $configuration['endpoint'];
@@ -179,7 +181,7 @@ class GdsService
 
         return $data;
 
-    }//end getData()
+    }//end gdsDataHandler()
 
 
 }//end class
