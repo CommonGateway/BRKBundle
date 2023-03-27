@@ -14,8 +14,9 @@ use CommonGateway\BRKBundle\ActionHandler\GatewayException;
 use CommonGateway\BRKBundle\ActionHandler\InvalidArgumentException;
 use CommonGateway\BRKBundle\Service\BrkService;
 use CommonGateway\BRKBundle\Service\GdsService;
+use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 
-class GdsHandler
+class GdsHandler implements ActionHandlerInterface
 {
 
     /**
