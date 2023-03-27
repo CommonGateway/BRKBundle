@@ -102,7 +102,7 @@ class BRKService
         $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
         $fileDataSet = $this->fileSystemService->call($this->configuration['source'], $endpoint);
         
-        // Todo: temporary:
+        // Todo: Remove this when mapping is done and works correctly.
         $fileDataSet = [
             "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json" => [
                 [
@@ -133,8 +133,8 @@ class BRKService
             ]
         ];
         
-        // Todo: what if we only have 1 object and not a list of references with each a list of objects? Or a list of objects for 1 reference?
-        // Todo: ^in this case, use handleRefObjects() or handleRefObject() instead
+        // Todo: what if we only have 1 object and not a list of references with each a list of objects? Or just a list of objects for 1 reference?
+        // Todo: ^in this case, we should use handleRefObjects() or handleRefObject() instead of handleDataSet()
         $objects = $this->handleDataSet($fileDataSet);
         
         $this->entityManager->flush();
