@@ -52,7 +52,11 @@ class GdsService
             "soapenv:Body"   => [
                 "v20:BestandenlijstOpvragenRequest" => [
                     "v20:verzoek" => [
-                        "v201:AfgifteSelectieCriteria" => [
+                        "v201:AfgifteSelectieCriteria"  => [
+                            'v201:BestandKenmerken' => [
+                                "v201:contractnummer" => '0000000002',
+                                'v201:artikelnummer'  => '3',
+                            ],
                             "v202:Periode"              => [
                                 "v202:DatumTijdVanaf"  => $lastSynced->format('Y-m-d\TH:i:s.v\Z'),
                                 "v202:DatumTijdTotmet" => $now->format('Y-m-d\TH:i:s.v\Z'),
@@ -69,6 +73,14 @@ class GdsService
         ];
 
     }//end createRequestMessage()
+
+    private function isAssociative(array $array): bool
+    {
+        if($array === []) {
+            return false;
+        }
+        return array_keys($array) !== range(0, count($array) -1);
+    }
 
 
     /**
@@ -87,9 +99,16 @@ class GdsService
         }
 
         $files = $result['soapenv:Body']['v20:BestandenlijstOpvragenResponse']['v20:antwoord']['v204:BestandenLijst']['v204:Afgifte'];
+        if($this->isAssociative($files)) {
+            $fileUrl = $files['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
+            $urls[]  = "{$baseUrl['#']}/$fileUrl";
+
+            return $urls;
+        }
+
         foreach ($files as $file) {
-            $fileUrl = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl'];
-            $urls    = "$baseUrl/$fileUrl";
+            $fileUrl = $file['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
+            $urls[]  = "{$baseUrl['#']}/$fileUrl";
         }
 
         return $urls;
@@ -109,9 +128,9 @@ class GdsService
         $message = $this->createRequestMessage($lastSynced, $test);
 
         $xmlEncoder = new XmlEncoder(['xml_root_node_name' => 'soapenv:Envelope']);
-        $body = $xmlEncoder->encode($xmlEncoder, ['format' => 'xml']);
+        $body = $xmlEncoder->encode($message, 'xml');
         $response = $this->callService->call($source, $location, 'POST', ['body' => $body]);
-        $result = $this->callService->decodeResponse($response, $source);
+        $result = $this->callService->decodeResponse($source, $response);
 
         return $this->getDataUrls($result);
     }
