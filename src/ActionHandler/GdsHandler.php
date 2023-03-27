@@ -34,7 +34,7 @@ class GdsHandler implements ActionHandlerInterface
      */
     public function __construct(GdsService $gdsService)
     {
-        $this->brkService = $gdsService;
+        $this->gdsService = $gdsService;
 
     }//end __construct()
 
@@ -88,6 +88,12 @@ class GdsHandler implements ActionHandlerInterface
                     'type'        => 'string',
                     'description' => 'The article number to request data for',
                     'example'     => '3',
+                    'required'    => true,
+                ],
+                'test'       => [
+                    'type'        => 'boolean',
+                    'description' => 'Whether the call is in test mode',
+                    'example'     => true,
                     'required'    => true,
                 ],
 

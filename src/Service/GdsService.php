@@ -35,6 +35,8 @@ class GdsService
         GatewayResourceService $grService,
         FileSystemHandleService $fshService
     ) {
+        $this->grService = $grService;
+        $this->fshService = $fshService;
         $this->callService = $callService;
 
     }//end __construct()
@@ -124,7 +126,11 @@ class GdsService
         $files = $result['soapenv:Body']['v20:BestandenlijstOpvragenResponse']['v20:antwoord']['v204:BestandenLijst']['v204:Afgifte'];
         if ($this->isAssociative($files)) {
             $fileUrl     = $files['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:transport']['ns:location']['ns:senderUrl']['#'];
-            $locations[] = "{$baseUrl['#']}/$fileUrl";
+            $mime        = $files['ns:digikoppeling-external-datareferences']['ns:data-reference']['ns:content']['@contentType'];
+            $locations[] = [
+                'url'  => "{$baseUrl['#']}/$fileUrl",
+                'mime' => "$mime",
+            ];
 
             return $locations;
         }
@@ -145,10 +151,11 @@ class GdsService
 
     public function fetchData(array $locations, array $configuration): array
     {
-        $source = $this->grService->getSource($configuration['downloadSource']);
+        $source = $this->grService->getSource($configuration['downloadSource'], 'common-gateway/brk-bundle');
         $data   = [];
 
         foreach ($locations as $location) {
+
             if ($location['mime'] !== 'application/zip') {
                 continue;
             }
@@ -174,7 +181,7 @@ class GdsService
      */
     public function gdsDataHandler(array $data, array $configuration): array
     {
-        $source     = $this->grService->getSource($configuration['gdsSource']);
+        $source     = $this->grService->getSource($configuration['gdsSource'], 'common-gateway/brk-bundle');
         $lastSynced = new DateTime($configuration['lastSynchronization']);
 
         $location = $configuration['endpoint'];
