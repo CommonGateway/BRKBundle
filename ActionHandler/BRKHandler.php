@@ -9,12 +9,13 @@
 
 namespace CommonGateway\BRKBundle\ActionHandler;
 
+use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 use CommonGateway\BRKBundle\Service\BRKService;
 
 /**
  * Convert xml file from the BRK fileSystem to ObjectEntities.
  */
-class BRKHandler
+class BRKHandler implements ActionHandlerInterface
 {
     /**
      * @var BRKService The BRKService.
@@ -44,7 +45,7 @@ class BRKHandler
             'required'    => [],
             'properties'  => [],
         ];
-    }
+    }//end getConfiguration()
 
     /**
      * This function runs the service.
@@ -57,5 +58,5 @@ class BRKHandler
     public function run(array $data, array $configuration): array
     {
         return $this->BRKService->BRKHandler($data, $configuration);
-    }
+    }//end run()
 }
