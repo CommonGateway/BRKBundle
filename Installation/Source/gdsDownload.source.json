@@ -1,5 +1,5 @@
 {
-    "title": "BRK Filesystem",
+    "title": "GDS Download Source",
     "$id": "https://brk.commonground.nu/source/gdsDownload.source.json",
     "$schema": "https://docs.commongateway.nl/schemas/Gateway.schema.json",
     "version": "0.0.1",

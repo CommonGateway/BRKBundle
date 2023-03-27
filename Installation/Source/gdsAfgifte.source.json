@@ -1,5 +1,5 @@
 {
-    "title": "BRK Filesystem",
+    "title": "GDS Afgifte source",
     "$id": "https://brk.commonground.nu/source/gdsAfgifte.source.json",
     "$schema": "https://docs.commongateway.nl/schemas/Gateway.schema.json",
     "version": "0.0.1",
