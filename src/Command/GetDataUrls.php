@@ -20,25 +20,33 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class GetDataUrls extends Command
 {
+
     protected static $defaultName = 'brk:get:urls';
+
     private $gdsService;
+
     private EntityManagerInterface $entityManager;
+
 
     public function __construct(GdsService $gdsService, EntityManagerInterface $entityManager)
     {
         $this->gdsService    = $gdsService;
         $this->entityManager = $entityManager;
         parent::__construct();
-    }
+
+    }//end __construct()
+
 
     protected function configure(): void
     {
         $this
             ->setDescription('This command retrieves data urls from a GDS source')
-            ->addArgument('source', InputArgument::REQUIRED,'The source to request')
-            ->addArgument('location', InputArgument::REQUIRED,'The location on the source to request')
+            ->addArgument('source', InputArgument::REQUIRED, 'The source to request')
+            ->addArgument('location', InputArgument::REQUIRED, 'The location on the source to request')
             ->setHelp('This command allows you to run further installation an configuration actions afther installing a plugin');
-    }
+
+    }//end configure()
+
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -46,5 +54,8 @@ class GetDataUrls extends Command
 
         $date = new DateTime('21-02-2023 00:00:00');
         $this->gdsService->getData($source, $input->getArgument('location'), $date, true);
-    }
-}
+
+    }//end execute()
+
+
+}//end class
