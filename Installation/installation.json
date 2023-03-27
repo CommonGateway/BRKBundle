@@ -22,6 +22,15 @@
                 "methods": ["GET"]
             }
         ],
+        "actions": {
+            "handlers": [
+                {
+                    "reference": "https://brk.commonground.nu/actions/gdsAction.action.json",
+                    "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\GdsHandler",
+                    "listens": "brk.default.listens"
+                }
+            ]
+        },
         "schemas": [
             {
                 "reference": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",

@@ -1,0 +1,10 @@
+{
+    "title": "BRK Filesystem",
+    "$id": "https://brk.commonground.nu/source/gdsDownload.source.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Gateway.schema.json",
+    "version": "0.0.1",
+    "location": "https://service10.kadaster.nl",
+    "auth": "username-password",
+    "username": "!ChangeMe!",
+    "password": "!ChangeMe!"
+}

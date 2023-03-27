@@ -14,6 +14,8 @@ namespace CommonGateway\BRKBundle\Service;
 
 use App\Entity\Gateway as Source;
 use CommonGateway\CoreBundle\Service\CallService;
+use CommonGateway\CoreBundle\Service\FileSystemHandleService;
+use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use DateTime;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
@@ -23,8 +25,16 @@ class GdsService
 
     private CallService $callService;
 
+    private GatewayResourceService $grService;
 
-    public function __construct(CallService $callService)
+    private FileSystemHandleService $fshService;
+
+
+    public function __construct(
+        CallService $callService,
+        GatewayResourceService $grService,
+        FileSystemHandleService $fshService
+    )
     {
         $this->callService = $callService;
 
@@ -136,7 +146,7 @@ class GdsService
 
     public function fetchData(array $locations, array $configuration): array
     {
-        $source = $this->gcrService->getSource($configuration['downloadSource']);
+        $source = $this->grService->getSource($configuration['downloadSource']);
         $data   = [];
 
         foreach ($locations as $location) {
@@ -165,7 +175,7 @@ class GdsService
      */
     public function gdsDataHandler(array $data, array $configuration): array
     {
-        $source     = $this->gcrService->getSource($configuration['gdsSource']);
+        $source = $this->grService->getSource($configuration['gdsSource']);
         $lastSynced = new DateTime($configuration['lastSynchronization']);
 
         $location = $configuration['endpoint'];
