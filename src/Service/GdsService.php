@@ -23,9 +23,13 @@ class GdsService
 
     private CallService $callService;
 
-    public function __construct(CallService $callService) {
+
+    public function __construct(CallService $callService)
+    {
         $this->callService = $callService;
-    }
+
+    }//end __construct()
+
 
     /**
      * Creates the content for a soap message to the GDS download service.
@@ -84,7 +88,7 @@ class GdsService
 
 
     /**
-     * @param array $result
+     * @param  array $result
      * @return array
      */
     private function getDataUrls(array $result): array
@@ -117,13 +121,13 @@ class GdsService
 
 
     /**
-     * @param Source $source
-     * @param string $location
-     * @param DateTime $lastSynced
-     * @param bool $test
+     * @param  Source   $source
+     * @param  string   $location
+     * @param  DateTime $lastSynced
+     * @param  bool     $test
      * @return array
      */
-    public function getData(Source $source, string $location, DateTime $lastSynced, bool $test = false): array
+    public function getData(Source $source, string $location, DateTime $lastSynced, bool $test=false): array
     {
         $message = $this->createRequestMessage($lastSynced, $test);
 
@@ -133,7 +137,8 @@ class GdsService
         $result = $this->callService->decodeResponse($source, $response);
 
         return $this->getDataUrls($result);
-    }
+
+    }//end getData()
 
 
-}
+}//end class
