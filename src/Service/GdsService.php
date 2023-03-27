@@ -35,8 +35,8 @@ class GdsService
         GatewayResourceService $grService,
         FileSystemHandleService $fshService
     ) {
-        $this->grService = $grService;
-        $this->fshService = $fshService;
+        $this->grService   = $grService;
+        $this->fshService  = $fshService;
         $this->callService = $callService;
 
     }//end __construct()
@@ -155,7 +155,6 @@ class GdsService
         $data   = [];
 
         foreach ($locations as $location) {
-
             if ($location['mime'] !== 'application/zip') {
                 continue;
             }

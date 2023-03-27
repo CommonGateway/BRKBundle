@@ -90,7 +90,7 @@ class GdsHandler implements ActionHandlerInterface
                     'example'     => '3',
                     'required'    => true,
                 ],
-                'test'       => [
+                'test'                => [
                     'type'        => 'boolean',
                     'description' => 'Whether the call is in test mode',
                     'example'     => true,
