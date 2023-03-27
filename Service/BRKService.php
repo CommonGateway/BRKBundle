@@ -11,7 +11,7 @@ namespace CommonGateway\BRKBundle\Service;
 
 use App\Entity\Entity;
 use App\Entity\ObjectEntity;
-use CommonGateway\CoreBundle\Service\FileSystemHandlerService;
+use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -39,9 +39,9 @@ class BRKService
     private LoggerInterface $brkpluginLogger;
     
     /**
-     * @var FileSystemHandlerService
+     * @var FileSystemHandleService
      */
-    private FileSystemHandlerService $fileSystemService;
+    private FileSystemHandleService $fileSystemService;
     
     /**
      * @var GatewayResourceService
@@ -56,7 +56,7 @@ class BRKService
     public function __construct(
         EntityManagerInterface $entityManager,
         LoggerInterface $brkpluginLogger,
-        FileSystemHandlerService $fileSystemService,
+        FileSystemHandleService $fileSystemService,
         GatewayResourceService $resourceService
     ) {
         $this->entityManager = $entityManager;
