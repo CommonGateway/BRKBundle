@@ -7,10 +7,10 @@
  * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 
-namespace CommonGateway\BRKBundle\ActionHandler;
+namespace CommonGateway\BRKBundle\src\ActionHandler;
 
+use CommonGateway\BRKBundle\src\Service\BRKService;
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
-use CommonGateway\BRKBundle\Service\BRKService;
 
 /**
  * Convert xml file from the BRK fileSystem to ObjectEntities.
