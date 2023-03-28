@@ -98,6 +98,7 @@ class BrkService
         $this->configuration = $configuration;
 
         // Todo: do we want to use query for this?
+        // Todo: here in case we create an Endpoint for this instead of a Command.
         if (isset($this->data['query']['filename']) === false) {
             $this->brkpluginLogger->error("Could not find a filename in the data['query'] array for BrkHandler.");
             return $this->data;
