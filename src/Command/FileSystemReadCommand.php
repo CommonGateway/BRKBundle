@@ -26,21 +26,26 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class FileSystemReadCommand extends Command
 {
-    // the name of the command (the part after "bin/console")
 
     /**
+     * the name of the command (the part after "bin/console").
+     *
      * @var string
      */
     protected static $defaultName = 'brk:fileSystem:read';
 
     /**
+     * The brk service.
+     *
      * @var BrkService
      */
     private BrkService $brkService;
 
 
     /**
-     * @param BrkService $brkService The brk service
+     * The constructor of this Command Class.
+     *
+     * @param BrkService $brkService The brk service.
      */
     public function __construct(BrkService $brkService)
     {

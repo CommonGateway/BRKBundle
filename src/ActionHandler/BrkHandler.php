@@ -19,7 +19,9 @@ class BrkHandler implements ActionHandlerInterface
 {
 
     /**
-     * @var BrkService The BrkService.
+     * The brk service
+     *
+     * @var BrkService
      */
     private BrkService $brkService;
 
@@ -27,7 +29,7 @@ class BrkHandler implements ActionHandlerInterface
     /**
      * The class constructor
      *
-     * @param BrkService $brkService The BrkService.
+     * @param BrkService $brkService The brk service
      */
     public function __construct(BrkService $brkService)
     {
