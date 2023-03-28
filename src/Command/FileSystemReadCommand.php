@@ -74,7 +74,7 @@ class FileSystemReadCommand extends Command
      *
      * @throws Exception
      *
-     * @return int 1 for SUCCESS & 0 for FAILURE
+     * @return int 0 for SUCCESS & 1 for FAILURE
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
