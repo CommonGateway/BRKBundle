@@ -18,7 +18,7 @@ use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class BRKService
+class BrkService
 {
     /**
      * @var array
@@ -95,7 +95,7 @@ class BRKService
         
         // Todo: do we want to use query for this?
         if (isset($this->data['query']['filename']) === false) {
-            $this->brkpluginLogger->error("Could not find a filename in the data['query'] array for BRKHandler.");
+            $this->brkpluginLogger->error("Could not find a filename in the data['query'] array for BrkHandler.");
             return $this->data;
         }
         $endpoint = $this->data['query']['filename'];
@@ -140,7 +140,7 @@ class BRKService
         $this->entityManager->flush();
         
         return $objects;
-    }//end BRKHandler()
+    }//end BrkHandler()
     
     /**
      * Handles a php array containing a list of (Schema/Entity) references, each reference containing an array with objects.

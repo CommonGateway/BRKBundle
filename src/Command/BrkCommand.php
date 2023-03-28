@@ -2,7 +2,7 @@
 
 namespace CommonGateway\BRKBundle\src\Command;
 
-use CommonGateway\BRKBundle\src\Service\BRKService;
+use CommonGateway\BRKBundle\src\Service\BrkService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @category Command
  */
-class BRKCommand extends Command
+class BrkCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     /**
@@ -26,14 +26,14 @@ class BRKCommand extends Command
     protected static $defaultName = 'brk:fileSystem:read'; // Todo: Better command name
 
     /**
-     * @var BRKService
+     * @var BrkService
      */
-    private BRKService  $brkService;
+    private BrkService  $brkService;
 
     /**
-     * @param BRKService $brkService The rating service
+     * @param BrkService $brkService The rating service
      */
-    public function __construct(BRKService $brkService)
+    public function __construct(BrkService $brkService)
     {
         $this->brkService = $brkService;
         parent::__construct();
@@ -45,7 +45,7 @@ class BRKCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('This command triggers BRKService, converting xml file data to ObjectEntities.')
+            ->setDescription('This command triggers BrkService, converting xml file data to ObjectEntities.')
             ->setHelp('This command allows you to convert xml files from the BRK fileSystem to ObjectEntities (or update existing ObjectEntities). This command requires a filename.')
             ->addOption('filename', 'f', InputOption::VALUE_REQUIRED, 'Rate a single component by id');
     }//end configure()

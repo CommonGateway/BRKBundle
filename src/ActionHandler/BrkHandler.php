@@ -9,23 +9,23 @@
 
 namespace CommonGateway\BRKBundle\src\ActionHandler;
 
-use CommonGateway\BRKBundle\src\Service\BRKService;
+use CommonGateway\BRKBundle\src\Service\BrkService;
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 
 /**
  * Convert xml file from the BRK fileSystem to ObjectEntities.
  */
-class BRKHandler implements ActionHandlerInterface
+class BrkHandler implements ActionHandlerInterface
 {
     /**
-     * @var BRKService The BRKService.
+     * @var BrkService The BrkService.
      */
-    private BRKService $BRKService;
+    private BrkService $BRKService;
     
     /**
-     * @param BRKService $BRKService The BRKService.
+     * @param BrkService $BRKService The BrkService.
      */
-    public function __construct(BRKService $BRKService)
+    public function __construct(BrkService $BRKService)
     {
         $this->BRKService = $BRKService;
     }//end __construct()
@@ -38,9 +38,9 @@ class BRKHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'         => 'https://brk.commonground.nu/ActionHandler/BRKHandler.ActionHandler.json',
+            '$id'         => 'https://brk.commonground.nu/ActionHandler/BrkHandler.ActionHandler.json',
             '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
-            'title'       => 'BRKHandler',
+            'title'       => 'BrkHandler',
             'description' => 'This handler converts a xml file from the BRK fileSystem to ObjectEntities or updates existing ObjectEntities',
             'required'    => [],
             'properties'  => [],
