@@ -7,9 +7,9 @@
  * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 
-namespace CommonGateway\BRKBundle\src\ActionHandler;
+namespace CommonGateway\BRKBundle\ActionHandler;
 
-use CommonGateway\BRKBundle\src\Service\BrkService;
+use CommonGateway\BRKBundle\Service\BrkService;
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 
 /**

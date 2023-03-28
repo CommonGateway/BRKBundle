@@ -7,7 +7,7 @@
  * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 
-namespace CommonGateway\BRKBundle\src\Service;
+namespace CommonGateway\BRKBundle\Service;
 
 use App\Entity\Entity;
 use App\Entity\ObjectEntity;
