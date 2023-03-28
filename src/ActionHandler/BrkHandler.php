@@ -20,14 +20,14 @@ class BrkHandler implements ActionHandlerInterface
     /**
      * @var BrkService The BrkService.
      */
-    private BrkService $BRKService;
+    private BrkService $brkService;
     
     /**
-     * @param BrkService $BRKService The BrkService.
+     * @param BrkService $brkService The BrkService.
      */
-    public function __construct(BrkService $BRKService)
+    public function __construct(BrkService $brkService)
     {
-        $this->BRKService = $BRKService;
+        $this->brkService = $brkService;
     }//end __construct()
     
     /**
@@ -57,6 +57,6 @@ class BrkHandler implements ActionHandlerInterface
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->BRKService->BRKHandler($data, $configuration);
+        return $this->brkService->BrkHandler($data, $configuration);
     }//end run()
 }

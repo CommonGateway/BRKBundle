@@ -4,7 +4,7 @@
         "handlers": [
             {
                 "reference": "https://brk.commonground.nu/action/brk.BRKAction.action.json",
-                "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\BRKHandler",
+                "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\BrkHandler",
                 "listens": ["brk.file.system.trigger"]
             }
         ]

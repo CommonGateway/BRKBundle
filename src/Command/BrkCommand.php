@@ -74,7 +74,7 @@ class BrkCommand extends Command
     
         try {
             // Todo: do we want to use query for this?
-            $result = $this->brkService->BRKHandler(['query' => ['filename' => $filename]], []);
+            $result = $this->brkService->BrkHandler(['query' => ['filename' => $filename]], []);
     
             $style->block("Created (or updated) ObjectEntities for ".count($result)." references.");
             $style->block(implode(", ", array_keys($result)));
