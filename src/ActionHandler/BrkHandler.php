@@ -1,24 +1,25 @@
 <?php
 /**
- * A BRK Handler to provide event driven business logic for the brk plugin.
+ * The BRK handler
+ * This handler is used to convert xml files from the BRK fileSystem to ObjectEntities.
  *
- * @author  Conduction.nl <info@conduction.nl>
+ * @author  Wilco Louwerse <wilco@conduction.nl>, Nova Bank <nova@conduction.nl>
  * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
  */
 
 namespace CommonGateway\BRKBundle\ActionHandler;
 
-use CommonGateway\BRKBundle\ActionHandler\CacheException;
-use CommonGateway\BRKBundle\ActionHandler\ComponentException;
-use CommonGateway\BRKBundle\ActionHandler\GatewayException;
-use CommonGateway\BRKBundle\ActionHandler\InvalidArgumentException;
 use CommonGateway\BRKBundle\Service\BrkService;
+use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 
-class BrkHandler
+/**
+ * Convert xml file from the BRK fileSystem to ObjectEntities.
+ */
+class BrkHandler implements ActionHandlerInterface
 {
 
     /**
-     * The BRK service.
+     * The brk service
      *
      * @var BrkService
      */
@@ -28,7 +29,7 @@ class BrkHandler
     /**
      * The class constructor
      *
-     * @param BrkService $brkService The BRK service.
+     * @param BrkService $brkService The brk service
      */
     public function __construct(BrkService $brkService)
     {
@@ -38,18 +39,17 @@ class BrkHandler
 
 
     /**
-     * This function returns the requered configuration as a
-     * [json-schema](https://json-schema.org/) array.
+     *  This function returns the required configuration as a [json-schema](https://json-schema.org/) array.
      *
      * @return array a [json-schema](https://json-schema.org/) that this  action should comply to
      */
     public function getConfiguration(): array
     {
         return [
-            '$id'         => 'https://example.com/ActionHandler/BRKHandler.ActionHandler.json',
+            '$id'         => 'https://brk.commonground.nu/ActionHandler/BrkHandler.ActionHandler.json',
             '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
-            'title'       => 'BRK Action',
-            'description' => 'This handler returns a welcoming string',
+            'title'       => 'Brk ActionHandler',
+            'description' => 'This handler converts a xml file from the BRK fileSystem to ObjectEntities or updates existing ObjectEntities',
             'required'    => [],
             'properties'  => [],
         ];
@@ -62,11 +62,6 @@ class BrkHandler
      *
      * @param array $data          The data from the call
      * @param array $configuration The configuration of the action
-     *
-     * @throws GatewayException
-     * @throws CacheException
-     * @throws InvalidArgumentException
-     * @throws ComponentException
      *
      * @return array
      */
