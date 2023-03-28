@@ -20,15 +20,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class BrkCommand extends Command
 {
     // the name of the command (the part after "bin/console")
+
     /**
      * @var string
      */
-    protected static $defaultName = 'brk:fileSystem:read'; // Todo: Better command name
+    protected static $defaultName = 'brk:fileSystem:read';
+    // Todo: Better command name
 
     /**
      * @var BrkService
      */
-    private BrkService  $brkService;
+    private BrkService $brkService;
+
 
     /**
      * @param BrkService $brkService The rating service
@@ -37,7 +40,9 @@ class BrkCommand extends Command
     {
         $this->brkService = $brkService;
         parent::__construct();
+
     }//end __construct()
+
 
     /**
      * @return void
@@ -48,7 +53,9 @@ class BrkCommand extends Command
             ->setDescription('This command triggers BrkService, converting xml file data to ObjectEntities.')
             ->setHelp('This command allows you to convert xml files from the BRK fileSystem to ObjectEntities (or update existing ObjectEntities). This command requires a filename.')
             ->addOption('filename', 'f', InputOption::VALUE_REQUIRED, 'Rate a single component by id');
+
     }//end configure()
+
 
     /**
      * @param InputInterface  $input  The input
@@ -71,20 +78,23 @@ class BrkCommand extends Command
             $style->error('Please use the option --filename or -f to specify a filename.');
             return Command::FAILURE;
         }
-    
+
         try {
             // Todo: do we want to use query for this?
             $result = $this->brkService->brkHandler(['query' => ['filename' => $filename]], []);
-    
+
             $style->block("Created (or updated) ObjectEntities for ".count($result)." references.");
             $style->block(implode(", ", array_keys($result)));
         } catch (Exception $exception) {
             $style->error('Command failed: '.$exception->getMessage());
-            
+
             return Command::FAILURE;
         }
-    
+
         $style->success('Command was successful');
         return Command::SUCCESS;
+
     }//end execute()
+
+
 }//end class

@@ -17,19 +17,23 @@ use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
  */
 class BrkHandler implements ActionHandlerInterface
 {
+
     /**
      * @var BrkService The BrkService.
      */
     private BrkService $brkService;
-    
+
+
     /**
      * @param BrkService $brkService The BrkService.
      */
     public function __construct(BrkService $brkService)
     {
         $this->brkService = $brkService;
+
     }//end __construct()
-    
+
+
     /**
      *  This function returns the required configuration as a [json-schema](https://json-schema.org/) array.
      *
@@ -45,7 +49,9 @@ class BrkHandler implements ActionHandlerInterface
             'required'    => [],
             'properties'  => [],
         ];
+
     }//end getConfiguration()
+
 
     /**
      * This function runs the service.
@@ -58,5 +64,8 @@ class BrkHandler implements ActionHandlerInterface
     public function run(array $data, array $configuration): array
     {
         return $this->brkService->brkHandler($data, $configuration);
+
     }//end run()
-}
+
+
+}//end class
