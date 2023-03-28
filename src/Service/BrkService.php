@@ -22,46 +22,47 @@ class BrkService
 {
 
     /**
-     * @var array
+     * @var array The configuration of the action.
      */
     private array $configuration;
 
     /**
-     * @var array
+     * @var array The data from the call.
      */
     private array $data;
 
     /**
-     * @var EntityManagerInterface
+     * @var EntityManagerInterface The Entity Manager.
      */
     private EntityManagerInterface $entityManager;
 
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface The BRK plugin version of the logger interface.
      */
     private LoggerInterface $brkpluginLogger;
 
     /**
-     * @var FileSystemHandleService
+     * @var FileSystemHandleService The fileSystem Service.
      */
     private FileSystemHandleService $fileSystemService;
 
     /**
-     * @var GatewayResourceService
+     * @var GatewayResourceService The Gateway Resource Service.
      */
     private GatewayResourceService $resourceService;
 
     /**
-     * @var SynchronizationService
+     * @var SynchronizationService The Synchronization Service.
      */
     private SynchronizationService $syncService;
 
 
     /**
-     * @param EntityManagerInterface $entityManager   The Entity Manager.
-     * @param LoggerInterface        $brkpluginLogger The BRK plugin version of the logger interface.
-     * @param GatewayResourceService $resourceService The Gateway Resource Service.
-     * @param SynchronizationService $syncService     The Synchronization Service.
+     * @param EntityManagerInterface  $entityManager     The Entity Manager.
+     * @param LoggerInterface         $brkpluginLogger   The BRK plugin version of the logger interface.
+     * @param FileSystemHandleService $fileSystemService The fileSystem Service.
+     * @param GatewayResourceService  $resourceService   The Gateway Resource Service.
+     * @param SynchronizationService  $syncService       The Synchronization Service.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -212,7 +213,8 @@ class BrkService
         if (isset($refObject['identificatie']) === false) {
             $this->brkpluginLogger->error("Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.", ["data" => $refObject]);
             return [
-                "Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.", "data" => $refObject
+                "message" => "Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.",
+                "data" => $refObject
             ];
         }
 

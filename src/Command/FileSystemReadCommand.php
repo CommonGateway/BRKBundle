@@ -1,4 +1,11 @@
 <?php
+/**
+ * The BRK fileSystem read Command
+ * This command allows you to convert xml files from the BRK fileSystem to ObjectEntities (or update existing ones).
+ *
+ * @author  Wilco Louwerse <wilco@conduction.nl>
+ * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+ */
 
 namespace CommonGateway\BRKBundle\Command;
 
@@ -17,7 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @category Command
  */
-class BrkCommand extends Command
+class FileSystemReadCommand extends Command
 {
     // the name of the command (the part after "bin/console")
 
@@ -33,7 +40,7 @@ class BrkCommand extends Command
 
 
     /**
-     * @param BrkService $brkService The rating service
+     * @param BrkService $brkService The brk service
      */
     public function __construct(BrkService $brkService)
     {
@@ -51,7 +58,7 @@ class BrkCommand extends Command
         $this
             ->setDescription('This command triggers BrkService, converting xml file data to ObjectEntities.')
             ->setHelp('This command allows you to convert xml files from the BRK fileSystem to ObjectEntities (or update existing ObjectEntities). This command requires a filename.')
-            ->addOption('filename', 'f', InputOption::VALUE_REQUIRED, 'Rate a single component by id');
+            ->addOption('filename', 'f', InputOption::VALUE_REQUIRED, 'The filename of the file we are going to read.');
 
     }//end configure()
 
@@ -73,7 +80,7 @@ class BrkCommand extends Command
 
         $style->info('Execute BRK fileSystem read Command');
 
-        if (empty($filename)) {
+        if (empty($filename) === true) {
             $style->error('Please use the option --filename or -f to specify a filename.');
             return Command::FAILURE;
         }
