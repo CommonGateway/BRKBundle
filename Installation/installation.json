@@ -1,10 +1,10 @@
 {
-    "installationService": "CommonGateway\\BRKBundle\\Service\\InstallationService",
+    "installationService": "CommonGateway\\BRKBundle\\src\\Service\\InstallationService",
     "actions": {
         "handlers": [
             {
                 "reference": "https://brk.commonground.nu/action/brk.BRKAction.action.json",
-                "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\BrkHandler",
+                "actionHandler": "CommonGateway\\BRKBundle\\src\\ActionHandler\\BrkHandler",
                 "listens": ["brk.file.system.trigger"]
             }
         ]
