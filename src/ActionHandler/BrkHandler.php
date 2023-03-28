@@ -25,6 +25,8 @@ class BrkHandler implements ActionHandlerInterface
 
 
     /**
+     * The class constructor
+     *
      * @param BrkService $brkService The BrkService.
      */
     public function __construct(BrkService $brkService)
@@ -44,7 +46,7 @@ class BrkHandler implements ActionHandlerInterface
         return [
             '$id'         => 'https://brk.commonground.nu/ActionHandler/BrkHandler.ActionHandler.json',
             '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
-            'title'       => 'BrkHandler',
+            'title'       => 'Brk ActionHandler',
             'description' => 'This handler converts a xml file from the BRK fileSystem to ObjectEntities or updates existing ObjectEntities',
             'required'    => [],
             'properties'  => [],

@@ -90,15 +90,14 @@ class BrkService
      * @param array $data          The data from the call
      * @param array $configuration The configuration of the action
      *
-     * @return array A handler must ALWAYS return an array.
+     * @return array An array of all the ObjectEntities (->toArray) created/updated
      */
     public function brkHandler(array $data, array $configuration): array
     {
         $this->data          = $data;
         $this->configuration = $configuration;
 
-        // Todo: do we want to use query for this?
-        // Todo: here in case we create an Endpoint for this instead of a Command.
+        // Todo: do we want to use query for this? Here in case we create an Endpoint for this instead of a Command.
         if (isset($this->data['query']['filename']) === false) {
             $this->brkpluginLogger->error("Could not find a filename in the data['query'] array for BrkHandler.");
             return $this->data;
@@ -157,7 +156,7 @@ class BrkService
      *
      * @param array $data The data used to create ObjectEntities with. This array should contain references with each an array of objects.
      *
-     * @return array An array of all the ObjectEntities (->toArray) created.
+     * @return array An array of all the ObjectEntities (->toArray) created/updated.
      */
     private function handleDataSet(array $data): array
     {
@@ -184,7 +183,7 @@ class BrkService
      * @param Entity $schema     A Schema to create ObjectEntities for.
      * @param array  $refObjects The data used to create ObjectEntities with. This array should be an array of objects.
      *
-     * @return array An array of all the ObjectEntities (->toArray) created.
+     * @return array An array of all the ObjectEntities (->toArray) created/updated.
      */
     private function handleRefObjects(Entity $schema, array $refObjects): array
     {

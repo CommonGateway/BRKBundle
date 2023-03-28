@@ -79,8 +79,7 @@ class BrkCommand extends Command
         }
 
         try {
-            // Todo: do we want to use query for this?
-            // Todo: here in case we create an Endpoint for this instead of a Command.
+            // Todo: do we want to use query for this? Here in case we create an Endpoint for this instead of a Command.
             $result = $this->brkService->brkHandler(['query' => ['filename' => $filename]], []);
 
             $style->block("Created (or updated) ObjectEntities for ".count($result)." references.");
