@@ -214,7 +214,7 @@ class BrkService
             $this->brkpluginLogger->error("Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.", ["data" => $refObject]);
             return [
                 "message" => "Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.",
-                "data" => $refObject
+                "data"    => $refObject,
             ];
         }
 
