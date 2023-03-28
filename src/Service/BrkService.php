@@ -88,7 +88,7 @@ class BrkService
      *
      * @return array A handler must ALWAYS return an array.
      */
-    public function BrkHandler(array $data, array $configuration): array
+    public function brkHandler(array $data, array $configuration): array
     {
         $this->data = $data;
         $this->configuration = $configuration;
