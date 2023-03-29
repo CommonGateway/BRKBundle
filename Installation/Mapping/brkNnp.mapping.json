@@ -1,0 +1,16 @@
+{
+  "title": "brkNnp",
+  "$id": "https://brk.commonground.nu/mapping/brkNnp.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.1",
+  "passTrough": true,
+  "mapping": {
+    "identificatie": "identificatie.#",
+    "domein": "identificate.@domein",
+    "kvkNummer": "betreft.Rechtspersoon.kvkNummer",
+    "rsin": "betreft.Rechtspersoon.rsin"
+  },
+  "cast": {
+    "indicatieNietToonbareDiakriet": "bool"
+  }
+}

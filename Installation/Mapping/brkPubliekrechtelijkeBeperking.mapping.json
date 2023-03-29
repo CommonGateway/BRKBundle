@@ -1,0 +1,23 @@
+{
+  "title": "BRK Map PubliekrechtelijkeBeperking",
+  "$id": "https://brk.commonground.nu/mapping/brkPubliekrechtelijkeBeperking.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.6",
+  "passTrough": false,
+  "description": "This rule maps PubliekrechtelijkeBeperking and BevoegdGezag to the desired output format.",
+  "mapping": {
+    "identificatie": "identificatie.#",
+    "domein": "identificatie.@domein",
+    "grondslag": "grondslag",
+    "datumInWerking": "datumInWerking",
+    "datumBeeindiging": "datumBeeindiging",
+    "bevoegdGezag.identificatie": "BevoegdGezag.is.PubliekrechtelijkeBeperkingRef.NietNatuurlijkPersoonRef.#",
+    "bevoegdGezag.omschrijving": "",
+    "bevoegdGezag.type": "BevoegdGezag.is.PubliekrechtelijkeBeperkingRef.NietNatuurlijkPersoonRef.@domein",
+    "stukIdentificaties": "[\"{{ attribute(isGebaseerdOp.StukdeelRef, '#') }}\"]"
+  },
+  "cast": {
+    "datumBeeindiging": "keyCantBeValue",
+    "stukIdentificaties": "jsonToArray"
+  }
+}

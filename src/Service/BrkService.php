@@ -15,6 +15,7 @@ use App\Entity\Synchronization;
 use App\Service\SynchronizationService;
 use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
+use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -56,6 +57,11 @@ class BrkService
      */
     private SynchronizationService $syncService;
 
+    /**
+     * @var MappingService The mapping service.
+     */
+    private MappingService $mappingService;
+
 
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
@@ -63,23 +69,137 @@ class BrkService
      * @param FileSystemHandleService $fileSystemService The fileSystem Service.
      * @param GatewayResourceService  $resourceService   The Gateway Resource Service.
      * @param SynchronizationService  $syncService       The Synchronization Service.
+     * @param MappingService          $mappingService    The mapping service.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         LoggerInterface $brkpluginLogger,
         FileSystemHandleService $fileSystemService,
         GatewayResourceService $resourceService,
-        SynchronizationService $syncService
+        SynchronizationService $syncService,
+        MappingService $mappingService
     ) {
         $this->entityManager     = $entityManager;
         $this->brkpluginLogger   = $brkpluginLogger;
         $this->fileSystemService = $fileSystemService;
         $this->resourceService   = $resourceService;
         $this->syncService       = $syncService;
+        $this->mappingService    = $mappingService;
         $this->configuration     = [];
         $this->data              = [];
 
     }//end __construct()
+
+
+    /**
+     * Maps BRK object arrays to the desired resources.
+     *
+     * @param array $objects The objects to map.
+     *
+     * @return array
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function mapBrkObjects(array $objects): array
+    {
+        $nnpMapping              = $this->resourceService
+            ->getMapping("https://brk.commonground.nu/mapping/brkNnp.mapping.json", 'common-gateway/brk-bundle');
+        $npMapping               = $this->resourceService
+            ->getMapping("https://brk.commonground.nu/mapping/brkNp.mapping.json", 'common-gateway/brk-bundle');
+        $npSchema                = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
+            'common-gateway/brk-bundle'
+        );
+        $nnpSchema               = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
+            'common-gateway/brk-bundle'
+        );
+        $publiekBeperkingMapping = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkPubliekrechtelijkeBeperking.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $publiekBeperkingSchema  = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
+            'common-gateway/brk-bundle'
+        );
+
+        $perceelMapping           = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $appartementsRechtMapping = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $schema                   = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
+            'common-gateway/brk-bundle'
+        );
+
+        $onroerendeZaken     = [];
+        $personen            = [];
+        $publiekeBeperkingen = [];
+
+        $i = 0;
+        foreach ($objects as $object) {
+            if (isset($object['Perceel']) === true) {
+                $perceel        = $object['Perceel'];
+                $onroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
+            }
+
+            if (isset($object['Appartementsrecht']) === true) {
+                $perceel        = $object['Appartementsrecht'];
+                $onroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
+            }
+
+            $onroerendeZaken[] = $this->handleRefObject($schema, $onroerendeZaak);
+
+            if (isset($object['NietNatuurlijkPersoon']) === true) {
+                $persoon = $object['NietNatuurlijkPersoon'];
+                if ($this->isAssociative($persoon) === true) {
+                    $persoon    = $this->mappingService->mapping($nnpMapping, $persoon);
+                    $personen[] = $this->handleRefObject($nnpSchema, $persoon);
+                } else {
+                    foreach ($persoon as $pers) {
+                        $pers       = $this->mappingService->mapping($nnpMapping, $pers);
+                        $personen[] = $this->handleRefObject($nnpSchema, $pers);
+                    }
+                }
+            }
+
+            if (isset($object['NatuurlijkPersoon']) === true) {
+                $persoon = $object['NatuurlijkPersoon'];
+                if ($this->isAssociative($persoon) === true) {
+                    $persoon    = $this->mappingService->mapping($npMapping, $persoon);
+                    $personen[] = $this->handleRefObject($npSchema, $persoon);
+                } else {
+                    foreach ($persoon as $pers) {
+                        $pers       = $this->mappingService->mapping($npMapping, $pers);
+                        $personen[] = $this->handleRefObject($npSchema, $pers);
+                    }
+                }
+            }
+
+            if (isset($object['PubliekrechtelijkeBeperking']) === true) {
+                $beperking = $object['PubliekrechtelijkeBeperking'];
+                if ($this->isAssociative($beperking) === true) {
+                    $beperking             = $this->mappingService->mapping($publiekBeperkingMapping, $beperking);
+                    $publiekeBeperkingen[] = $this->handleRefObject($publiekBeperkingSchema, $beperking);
+                } else {
+                    foreach ($beperking as $bep) {
+                        $bep                   = $this->mappingService->mapping($publiekBeperkingMapping, $bep);
+                        $publiekeBeperkingen[] = $this->handleRefObject($publiekBeperkingSchema, $bep);
+                    }
+                }
+            }
+
+            $this->entityManager->flush();
+            $i++;
+        }//end foreach
+
+        return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen);
+
+    }//end mapBrkObjects()
 
 
     /**
@@ -108,42 +228,9 @@ class BrkService
         $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
         $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
-        // Todo: Remove this when mapping is done and works correctly.
-        $fileDataSet = [
-            "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json" => [
-                [
-                    "identificatie"        => "123456789012310",
-                    "domein"               => ".KadastraalObject",
-                    "perceelnummerRotatie" => 123,
-                    "toelichtingBewaarder" => "test123",
-                ],
-                [
-                    "identificatie"        => "123456789012349",
-                    "domein"               => ".KadastraalObject",
-                    "perceelnummerRotatie" => 321,
-                    "toelichtingBewaarder" => "test321",
-                ],
-            ],
-            "https://brk.commonground.nu/schema/hypotheek.schema.json"                => [
-                [
-                    "identificatie"            => "123456789012311",
-                    "domein"                   => ".KadastraalObject",
-                    "bedragZekerheidsstelling" => [
-                        "som"    => 1001,
-                        "valuta" => [
-                            "code"   => "311",
-                            "waarde" => "ABC00",
-                        ],
-                    ],
-                ],
-            ],
-        ];
+        $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
-        // Todo: what if we only have 1 object and not a list of references with each a list of objects? Or just a list of objects for 1 reference?
-        // Todo: ^in this case, we should use handleRefObjects() or handleRefObject() instead of handleDataSet()
-        $objects = $this->handleDataSet($fileDataSet);
-
-        $this->entityManager->flush();
+        $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
 
         return $objects;
 
@@ -151,11 +238,60 @@ class BrkService
 
 
     /**
+     * Determines if an array is associative.
+     *
+     * @param array $array The array to check.
+     *
+     * @return bool Whether the array is associative.
+     */
+    private function isAssociative(array $array): bool
+    {
+        if ($array === []) {
+            return false;
+        }
+
+        return array_keys($array) !== range(0, (count($array) - 1));
+
+    }//end isAssociative()
+
+
+    /**
+     * Recursively remove namespaces from array keys.
+     *
+     * @param array $data The array to flatten.
+     *
+     * @return array The flattened array.
+     */
+    public function clearXmlNamespace(array $data): array
+    {
+        $newArray = [];
+
+        foreach ($data as $key => $value) {
+            if (is_array($value) === true) {
+                $originalValue = $value;
+                $value         = $this->clearXmlNamespace($value);
+
+                if ($this->isAssociative($originalValue) === false) {
+                    $value = array_values($value);
+                }
+            }//end if
+
+            $explodedKey       = explode(':', $key);
+            $newKey            = end($explodedKey);
+            $newArray[$newKey] = $value;
+        }//end foreach
+
+        return $newArray;
+
+    }//end clearXmlNamespace()
+
+
+    /**
      * Handles a php array containing a list of (Schema/Entity) references, each reference containing an array with objects.
-     * Each 'object' is an array of fields used to create/update an object with for the corresponding (Schema/Entity) reference.
+     * Each 'object' is an array of fields used to create/update an object with for the corresponding (Schema) reference.
      * This function will create/update an ObjectEntity of the given reference type for each 'object' array.
      *
-     * @param array $data The data used to create ObjectEntities with. This array should contain references with each an array of objects.
+     * @param array $data The data used to create ObjectEntities with.
      *
      * @return array An array of all the ObjectEntities (->toArray) created/updated.
      */
@@ -178,7 +314,7 @@ class BrkService
 
 
     /**
-     * Handles an array of objects, each 'object' is an array of fields used to create/update an object with for the given Schema.
+     * Handles an array of objects, each 'object' is an array of fields to create/update an object with for the given Schema.
      * This function will create/update an ObjectEntity of the given Schema for each 'object' in the $refObjects array.
      *
      * @param Entity $schema     A Schema to create ObjectEntities for.
@@ -200,29 +336,39 @@ class BrkService
 
 
     /**
-     * Handles a single object, the given $refObject array is an array of fields used to create/update an object with for the given Schema.
+     * Handles a single object, the given array is an array of fields to create/update an object for the given Schema.
      * This function will create/update a single ObjectEntity of the given Schema.
      *
      * @param Entity $schema    A Schema to create/update an ObjectEntity for.
-     * @param array  $refObject The data used to create/update an ObjectEntity with. This array should contain the fields for this ObjectEntity.
+     * @param array  $refObject The data used to create/update an ObjectEntity with.
      *
      * @return array A single ObjectEntity (->toArray).
      */
-    private function handleRefObject(Entity $schema, array $refObject): array
+    private function handleRefObject(Entity $schema, array $refObject): ObjectEntity
     {
         if (isset($refObject['identificatie']) === false) {
-            $this->brkpluginLogger->error("Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.", ["data" => $refObject]);
+            $this->brkpluginLogger
+                ->error(
+                    "Could not create a {$schema->getName()} 
+                    object because data array does not contain a field 'identificatie'.",
+                    ["data" => $refObject]
+                );
             return [
-                "message" => "Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.",
+                "message" => "Could not create a {$schema->getName()} 
+                object because data array does not contain a field 'identificatie'.",
                 "data"    => $refObject,
             ];
         }
 
-        $synchronization = $this->syncService->findSyncBySource($this->configuration['source'], $schema, $refObject['identificatie']);
+        $synchronization = $this->syncService->findSyncBySource(
+            $this->configuration['source'],
+            $schema,
+            $refObject['identificatie']
+        );
 
         $synchronization = $this->syncService->synchronize($synchronization, $refObject);
 
-        return $synchronization->getObject()->toArray();
+        return $synchronization->getObject();
 
     }//end handleRefObject()
 
