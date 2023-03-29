@@ -90,6 +90,7 @@ class BrkService
 
     }//end __construct()
 
+
     /**
      * Maps BRK object arrays to the desired resources.
      *
@@ -121,7 +122,6 @@ class BrkService
             "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
             'common-gateway/brk-bundle'
         );
-
 
         $perceelMapping           = $this->resourceService->getMapping(
             "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
@@ -198,8 +198,8 @@ class BrkService
         }//end foreach
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen);
-    }//end mapBrkObjects()
 
+    }//end mapBrkObjects()
 
 
     /**
@@ -224,9 +224,9 @@ class BrkService
             return $this->data;
         }
 
-        $endpoint                              = $this->data['query']['filename'];
-        $this->configuration['source']         = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
-        $fileDataSet                           = $this->fileSystemService->call($this->configuration['source'], $endpoint);
+        $endpoint                      = $this->data['query']['filename'];
+        $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+        $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
