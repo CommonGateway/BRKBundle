@@ -15,6 +15,7 @@ use App\Entity\Synchronization;
 use App\Service\SynchronizationService;
 use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
+use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -56,6 +57,11 @@ class BrkService
      */
     private SynchronizationService $syncService;
 
+    /**
+     * @var MappingService The mapping service.
+     */
+    private MappingService $mappingService;
+
 
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
@@ -63,23 +69,57 @@ class BrkService
      * @param FileSystemHandleService $fileSystemService The fileSystem Service.
      * @param GatewayResourceService  $resourceService   The Gateway Resource Service.
      * @param SynchronizationService  $syncService       The Synchronization Service.
+     * @param MappingService          $mappingService    The mapping service.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         LoggerInterface $brkpluginLogger,
         FileSystemHandleService $fileSystemService,
         GatewayResourceService $resourceService,
-        SynchronizationService $syncService
+        SynchronizationService $syncService,
+        MappingService $mappingService
     ) {
         $this->entityManager     = $entityManager;
         $this->brkpluginLogger   = $brkpluginLogger;
         $this->fileSystemService = $fileSystemService;
         $this->resourceService   = $resourceService;
         $this->syncService       = $syncService;
+        $this->mappingService    = $mappingService;
         $this->configuration     = [];
         $this->data              = [];
 
     }//end __construct()
+
+    /**
+     * @param array $objects
+     * @return array
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function mapKadastraalOnroerendeZaken(array $objects): array
+    {
+
+        $perceelMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkPerceel.mapping.json",'common-gateway/brk-bundle');
+        $appartementsRechtMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",'common-gateway/brk-bundle');
+        $schema = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
+
+        foreach($objects as $object) {
+            if(isset($object['Perceel']) === true) {
+                $perceel = $object['Perceel'];
+                $kadastraalOnroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
+            }
+            if(isset($object['Appartementsrecht']) === true) {
+                $perceel = $object['Appartementsrecht'];
+                $kadastraalOnroerendeZaak = $this->mappingService->mapping($appartementsRechtMapping, $perceel);
+            }
+            $kadastraalOnroerendeZaken[] = $this->handleRefObject($schema, $kadastraalOnroerendeZaak);
+            var_Dump(count($kadastraalOnroerendeZaken));
+            $this->entityManager->flush();
+        }
+
+        return $kadastraalOnroerendeZaken;
+    }
+
 
 
     /**
@@ -104,51 +144,23 @@ class BrkService
             return $this->data;
         }
 
-        $endpoint                      = $this->data['query']['filename'];
-        $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
-        $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
+        $endpoint                              = $this->data['query']['filename'];
+        $this->configuration['source']         = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+        $fileDataSet                           = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
-        // Todo: Remove this when mapping is done and works correctly.
-        $fileDataSet = [
-            "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json" => [
-                [
-                    "identificatie"        => "123456789012310",
-                    "domein"               => ".KadastraalObject",
-                    "perceelnummerRotatie" => 123,
-                    "toelichtingBewaarder" => "test123",
-                ],
-                [
-                    "identificatie"        => "123456789012349",
-                    "domein"               => ".KadastraalObject",
-                    "perceelnummerRotatie" => 321,
-                    "toelichtingBewaarder" => "test321",
-                ],
-            ],
-            "https://brk.commonground.nu/schema/hypotheek.schema.json"                => [
-                [
-                    "identificatie"            => "123456789012311",
-                    "domein"                   => ".KadastraalObject",
-                    "bedragZekerheidsstelling" => [
-                        "som"    => 1001,
-                        "valuta" => [
-                            "code"   => "311",
-                            "waarde" => "ABC00",
-                        ],
-                    ],
-                ],
-            ],
-        ];
+        $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
-        // Todo: what if we only have 1 object and not a list of references with each a list of objects? Or just a list of objects for 1 reference?
-        // Todo: ^in this case, we should use handleRefObjects() or handleRefObject() instead of handleDataSet()
-        $objects = $this->handleDataSet($fileDataSet);
+        $percelen = $this->mapKadastraalOnroerendeZaken($fileDataSet['stand']['KadastraalObjectSnapshot']);
 
-        $this->entityManager->flush();
+        $data["https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json"] = $percelen;
+
+        $objects = $this->handleDataSet($data);
 
         return $objects;
 
     }//end brkHandler()
-    
+
+
     /**
      * Determines if an array is associative.
      *
@@ -166,6 +178,7 @@ class BrkService
 
     }//end isAssociative()
 
+
     /**
      * Recursively remove namespaces from array keys.
      *
@@ -180,19 +193,20 @@ class BrkService
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $originalValue = $value;
-                $value = $this->clearXmlNamespace($value);
+                $value         = $this->clearXmlNamespace($value);
 
-                if($this->isAssociative($originalValue)) {
+                if ($this->isAssociative($originalValue) === false) {
                     $value = array_values($value);
                 }
             }//end if
 
-            $explodedKey = explode(':', $key);
-            $newKey = end($explodedKey);
+            $explodedKey       = explode(':', $key);
+            $newKey            = end($explodedKey);
             $newArray[$newKey] = $value;
         }//end foreach
 
         return $newArray;
+
     }//end clearXmlNamespace()
 
 
@@ -254,7 +268,7 @@ class BrkService
      *
      * @return array A single ObjectEntity (->toArray).
      */
-    private function handleRefObject(Entity $schema, array $refObject): array
+    private function handleRefObject(Entity $schema, array $refObject): ObjectEntity
     {
         if (isset($refObject['identificatie']) === false) {
             $this->brkpluginLogger->error("Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.", ["data" => $refObject]);
@@ -268,7 +282,7 @@ class BrkService
 
         $synchronization = $this->syncService->synchronize($synchronization, $refObject);
 
-        return $synchronization->getObject()->toArray();
+        return $synchronization->getObject();
 
     }//end handleRefObject()
 
