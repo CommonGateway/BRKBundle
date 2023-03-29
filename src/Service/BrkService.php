@@ -148,7 +148,8 @@ class BrkService
         return $objects;
 
     }//end brkHandler()
-    
+
+
     /**
      * Determines if an array is associative.
      *
@@ -166,6 +167,7 @@ class BrkService
 
     }//end isAssociative()
 
+
     /**
      * Recursively remove namespaces from array keys.
      *
@@ -180,19 +182,20 @@ class BrkService
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $originalValue = $value;
-                $value = $this->clearXmlNamespace($value);
+                $value         = $this->clearXmlNamespace($value);
 
-                if($this->isAssociative($originalValue)) {
+                if ($this->isAssociative($originalValue)) {
                     $value = array_values($value);
                 }
             }//end if
 
-            $explodedKey = explode(':', $key);
-            $newKey = end($explodedKey);
+            $explodedKey       = explode(':', $key);
+            $newKey            = end($explodedKey);
             $newArray[$newKey] = $value;
         }//end foreach
 
         return $newArray;
+
     }//end clearXmlNamespace()
 
 
