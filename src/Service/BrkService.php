@@ -108,22 +108,23 @@ class BrkService
         $arMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json", 'common-gateway/brk-bundle');
         $schema                   = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
 
+        $onroerendeZaken = [];
         foreach ($objects as $object) {
             if (isset($object['Perceel']) === true) {
                 $perceel                  = $object['Perceel'];
-                $kadastraalOnroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
+                $onroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
             }
 
             if (isset($object['Appartementsrecht']) === true) {
                 $perceel                  = $object['Appartementsrecht'];
-                $kadastraalOnroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
+                $onroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
             }
 
-            $kadastraalOnroerendeZaken[] = $this->handleRefObject($schema, $kadastraalOnroerendeZaak);
+            $onroerendeZaken[] = $this->handleRefObject($schema, $onroerendeZaak);
             $this->entityManager->flush();
         }
 
-        return $kadastraalOnroerendeZaken;
+        return $onroerendeZaken;
 
     }//end mapKadastraalOnroerendeZaken()
 
