@@ -104,9 +104,9 @@ class BrkService
     public function mapKadastraalOnroerendeZaken(array $objects): array
     {
 
-        $perceelMapping           = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkPerceel.mapping.json", 'common-gateway/brk-bundle');
-        $arMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json", 'common-gateway/brk-bundle');
-        $schema                   = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
+        $perceelMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkPerceel.mapping.json", 'common-gateway/brk-bundle');
+        $arMapping      = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json", 'common-gateway/brk-bundle');
+        $schema         = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
 
         $onroerendeZaken = [];
         foreach ($objects as $object) {
