@@ -90,43 +90,116 @@ class BrkService
 
     }//end __construct()
 
-
     /**
-     * Maps Percelen and AppartementsRechten to kadastraalOnroerendeZaak.
+     * Maps BRK object arrays to the desired resources.
      *
-     * @param array $objects The object array to map.
+     * @param array $objects The objects to map.
      *
-     * @return array The resulting objects.
-     *
+     * @return array
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\SyntaxError
      */
-    public function mapKadastraalOnroerendeZaken(array $objects): array
+    public function mapBrkObjects(array $objects): array
     {
+        $nnpMapping              = $this->resourceService
+            ->getMapping("https://brk.commonground.nu/mapping/brkNnp.mapping.json", 'common-gateway/brk-bundle');
+        $npMapping               = $this->resourceService
+            ->getMapping("https://brk.commonground.nu/mapping/brkNp.mapping.json", 'common-gateway/brk-bundle');
+        $npSchema                = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
+            'common-gateway/brk-bundle'
+        );
+        $nnpSchema               = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
+            'common-gateway/brk-bundle'
+        );
+        $publiekBeperkingMapping = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkPubliekrechtelijkeBeperking.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $publiekBeperkingSchema  = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
+            'common-gateway/brk-bundle'
+        );
 
-        $perceelMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkPerceel.mapping.json", 'common-gateway/brk-bundle');
-        $arMapping      = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json", 'common-gateway/brk-bundle');
-        $schema         = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
 
-        $onroerendeZaken = [];
+        $perceelMapping           = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $appartementsRechtMapping = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $schema                   = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
+            'common-gateway/brk-bundle'
+        );
+
+        $onroerendeZaken     = [];
+        $personen            = [];
+        $publiekeBeperkingen = [];
+
+        $i = 0;
         foreach ($objects as $object) {
             if (isset($object['Perceel']) === true) {
-                $perceel                  = $object['Perceel'];
+                $perceel        = $object['Perceel'];
                 $onroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
             }
 
             if (isset($object['Appartementsrecht']) === true) {
-                $perceel                  = $object['Appartementsrecht'];
-                $onroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
+                $perceel        = $object['Appartementsrecht'];
+                $onroerendeZaak = $this->mappingService->mapping($appartementsRechtMapping, $perceel);
             }
 
             $onroerendeZaken[] = $this->handleRefObject($schema, $onroerendeZaak);
+
+            if (isset($object['NietNatuurlijkPersoon']) === true) {
+                $persoon = $object['NietNatuurlijkPersoon'];
+                if ($this->isAssociative($persoon) === true) {
+                    $persoon    = $this->mappingService->mapping($nnpMapping, $persoon);
+                    $personen[] = $this->handleRefObject($nnpSchema, $persoon);
+                } else {
+                    foreach ($persoon as $pers) {
+                        $pers       = $this->mappingService->mapping($nnpMapping, $pers);
+                        $personen[] = $this->handleRefObject($nnpSchema, $pers);
+                    }
+                }
+            }
+
+            if (isset($object['NatuurlijkPersoon']) === true) {
+                $persoon = $object['NatuurlijkPersoon'];
+                if ($this->isAssociative($persoon) === true) {
+                    $persoon    = $this->mappingService->mapping($npMapping, $persoon);
+                    $personen[] = $this->handleRefObject($npSchema, $persoon);
+                } else {
+                    foreach ($persoon as $pers) {
+                        $pers       = $this->mappingService->mapping($npMapping, $pers);
+                        $personen[] = $this->handleRefObject($npSchema, $pers);
+                    }
+                }
+            }
+
+            if (isset($object['PubliekrechtelijkeBeperking']) === true) {
+                $beperking = $object['PubliekrechtelijkeBeperking'];
+                if ($this->isAssociative($beperking) === true) {
+                    $beperking             = $this->mappingService->mapping($publiekBeperkingMapping, $beperking);
+                    $publiekeBeperkingen[] = $this->handleRefObject($publiekBeperkingSchema, $beperking);
+                } else {
+                    foreach ($beperking as $bep) {
+                        $bep                   = $this->mappingService->mapping($publiekBeperkingMapping, $bep);
+                        $publiekeBeperkingen[] = $this->handleRefObject($publiekBeperkingSchema, $bep);
+                    }
+                }
+            }
+
             $this->entityManager->flush();
-        }
+            $i++;
+        }//end foreach
 
-        return $onroerendeZaken;
+        return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen);
+    }//end mapBrkObjects()
 
-    }//end mapKadastraalOnroerendeZaken()
 
 
     /**
@@ -151,17 +224,13 @@ class BrkService
             return $this->data;
         }
 
-        $endpoint                      = $this->data['query']['filename'];
-        $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
-        $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
+        $endpoint                              = $this->data['query']['filename'];
+        $this->configuration['source']         = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+        $fileDataSet                           = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
-        $percelen = $this->mapKadastraalOnroerendeZaken($fileDataSet['stand']['KadastraalObjectSnapshot']);
-
-        $data["https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json"] = $percelen;
-
-        $objects = $this->handleDataSet($data);
+        $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
 
         return $objects;
 
