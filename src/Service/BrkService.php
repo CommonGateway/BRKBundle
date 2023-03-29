@@ -92,8 +92,12 @@ class BrkService
 
 
     /**
-     * @param  array $objects
-     * @return array
+     * Maps Percelen and AppartementsRechten to kadastraalOnroerendeZaak.
+     *
+     * @param array $objects The object array to map.
+     *
+     * @return array The resulting objects.
+     *
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\SyntaxError
      */
@@ -101,7 +105,7 @@ class BrkService
     {
 
         $perceelMapping           = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkPerceel.mapping.json", 'common-gateway/brk-bundle');
-        $appartementsRechtMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json", 'common-gateway/brk-bundle');
+        $arMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json", 'common-gateway/brk-bundle');
         $schema                   = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
 
         foreach ($objects as $object) {
@@ -112,11 +116,10 @@ class BrkService
 
             if (isset($object['Appartementsrecht']) === true) {
                 $perceel                  = $object['Appartementsrecht'];
-                $kadastraalOnroerendeZaak = $this->mappingService->mapping($appartementsRechtMapping, $perceel);
+                $kadastraalOnroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
             }
 
             $kadastraalOnroerendeZaken[] = $this->handleRefObject($schema, $kadastraalOnroerendeZaak);
-            var_Dump(count($kadastraalOnroerendeZaken));
             $this->entityManager->flush();
         }
 
@@ -194,7 +197,7 @@ class BrkService
         $newArray = [];
 
         foreach ($data as $key => $value) {
-            if (is_array($value)) {
+            if (is_array($value) === true) {
                 $originalValue = $value;
                 $value         = $this->clearXmlNamespace($value);
 
@@ -215,10 +218,10 @@ class BrkService
 
     /**
      * Handles a php array containing a list of (Schema/Entity) references, each reference containing an array with objects.
-     * Each 'object' is an array of fields used to create/update an object with for the corresponding (Schema/Entity) reference.
+     * Each 'object' is an array of fields used to create/update an object with for the corresponding (Schema) reference.
      * This function will create/update an ObjectEntity of the given reference type for each 'object' array.
      *
-     * @param array $data The data used to create ObjectEntities with. This array should contain references with each an array of objects.
+     * @param array $data The data used to create ObjectEntities with.
      *
      * @return array An array of all the ObjectEntities (->toArray) created/updated.
      */
@@ -241,7 +244,7 @@ class BrkService
 
 
     /**
-     * Handles an array of objects, each 'object' is an array of fields used to create/update an object with for the given Schema.
+     * Handles an array of objects, each 'object' is an array of fields to create/update an object with for the given Schema.
      * This function will create/update an ObjectEntity of the given Schema for each 'object' in the $refObjects array.
      *
      * @param Entity $schema     A Schema to create ObjectEntities for.
@@ -263,25 +266,35 @@ class BrkService
 
 
     /**
-     * Handles a single object, the given $refObject array is an array of fields used to create/update an object with for the given Schema.
+     * Handles a single object, the given array is an array of fields to create/update an object for the given Schema.
      * This function will create/update a single ObjectEntity of the given Schema.
      *
      * @param Entity $schema    A Schema to create/update an ObjectEntity for.
-     * @param array  $refObject The data used to create/update an ObjectEntity with. This array should contain the fields for this ObjectEntity.
+     * @param array  $refObject The data used to create/update an ObjectEntity with.
      *
      * @return array A single ObjectEntity (->toArray).
      */
     private function handleRefObject(Entity $schema, array $refObject): ObjectEntity
     {
         if (isset($refObject['identificatie']) === false) {
-            $this->brkpluginLogger->error("Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.", ["data" => $refObject]);
+            $this->brkpluginLogger
+                ->error(
+                    "Could not create a {$schema->getName()} 
+                    object because data array does not contain a field 'identificatie'.",
+                    ["data" => $refObject]
+                );
             return [
-                "message" => "Could not create a {$schema->getName()} object because data array does not contain a field 'identificatie'.",
+                "message" => "Could not create a {$schema->getName()} 
+                object because data array does not contain a field 'identificatie'.",
                 "data"    => $refObject,
             ];
         }
 
-        $synchronization = $this->syncService->findSyncBySource($this->configuration['source'], $schema, $refObject['identificatie']);
+        $synchronization = $this->syncService->findSyncBySource(
+            $this->configuration['source'],
+            $schema,
+            $refObject['identificatie']
+        );
 
         $synchronization = $this->syncService->synchronize($synchronization, $refObject);
 
