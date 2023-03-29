@@ -148,6 +148,52 @@ class BrkService
         return $objects;
 
     }//end brkHandler()
+    
+    /**
+     * Determines if an array is associative.
+     *
+     * @param array $array The array to check.
+     *
+     * @return bool Whether the array is associative.
+     */
+    private function isAssociative(array $array): bool
+    {
+        if ($array === []) {
+            return false;
+        }
+
+        return array_keys($array) !== range(0, (count($array) - 1));
+
+    }//end isAssociative()
+
+    /**
+     * Recursively remove namespaces from array keys.
+     *
+     * @param array $data The array to flatten.
+     *
+     * @return array The flattened array.
+     */
+    public function clearXmlNamespace(array $data): array
+    {
+        $newArray = [];
+
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $originalValue = $value;
+                $value = $this->clearXmlNamespace($value);
+
+                if($this->isAssociative($originalValue)) {
+                    $value = array_values($value);
+                }
+            }//end if
+
+            $explodedKey = explode(':', $key);
+            $newKey = end($explodedKey);
+            $newArray[$newKey] = $value;
+        }//end foreach
+
+        return $newArray;
+    }//end clearXmlNamespace()
 
 
     /**
