@@ -149,7 +149,7 @@ class BrkService
 
             if (isset($object['Appartementsrecht']) === true) {
                 $perceel        = $object['Appartementsrecht'];
-                $onroerendeZaak = $this->mappingService->mapping($appartementsRechtMapping, $perceel);
+                $onroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
             }
 
             $onroerendeZaken[] = $this->handleRefObject($schema, $onroerendeZaak);
