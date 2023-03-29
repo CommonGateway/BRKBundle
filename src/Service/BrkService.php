@@ -90,8 +90,9 @@ class BrkService
 
     }//end __construct()
 
+
     /**
-     * @param array $objects
+     * @param  array $objects
      * @return array
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\SyntaxError
@@ -99,27 +100,29 @@ class BrkService
     public function mapKadastraalOnroerendeZaken(array $objects): array
     {
 
-        $perceelMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkPerceel.mapping.json",'common-gateway/brk-bundle');
-        $appartementsRechtMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",'common-gateway/brk-bundle');
-        $schema = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
+        $perceelMapping           = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkPerceel.mapping.json", 'common-gateway/brk-bundle');
+        $appartementsRechtMapping = $this->resourceService->getMapping("https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json", 'common-gateway/brk-bundle');
+        $schema                   = $this->resourceService->getSchema("https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json", 'common-gateway/brk-bundle');
 
-        foreach($objects as $object) {
-            if(isset($object['Perceel']) === true) {
-                $perceel = $object['Perceel'];
+        foreach ($objects as $object) {
+            if (isset($object['Perceel']) === true) {
+                $perceel                  = $object['Perceel'];
                 $kadastraalOnroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
             }
-            if(isset($object['Appartementsrecht']) === true) {
-                $perceel = $object['Appartementsrecht'];
+
+            if (isset($object['Appartementsrecht']) === true) {
+                $perceel                  = $object['Appartementsrecht'];
                 $kadastraalOnroerendeZaak = $this->mappingService->mapping($appartementsRechtMapping, $perceel);
             }
+
             $kadastraalOnroerendeZaken[] = $this->handleRefObject($schema, $kadastraalOnroerendeZaak);
             var_Dump(count($kadastraalOnroerendeZaken));
             $this->entityManager->flush();
         }
 
         return $kadastraalOnroerendeZaken;
-    }
 
+    }//end mapKadastraalOnroerendeZaken()
 
 
     /**
@@ -144,9 +147,9 @@ class BrkService
             return $this->data;
         }
 
-        $endpoint                              = $this->data['query']['filename'];
-        $this->configuration['source']         = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
-        $fileDataSet                           = $this->fileSystemService->call($this->configuration['source'], $endpoint);
+        $endpoint                      = $this->data['query']['filename'];
+        $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+        $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
