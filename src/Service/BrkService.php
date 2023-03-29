@@ -111,12 +111,12 @@ class BrkService
         $onroerendeZaken = [];
         foreach ($objects as $object) {
             if (isset($object['Perceel']) === true) {
-                $perceel                  = $object['Perceel'];
+                $perceel        = $object['Perceel'];
                 $onroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
             }
 
             if (isset($object['Appartementsrecht']) === true) {
-                $perceel                  = $object['Appartementsrecht'];
+                $perceel        = $object['Appartementsrecht'];
                 $onroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
             }
 
