@@ -90,6 +90,7 @@ class BrkService
 
     }//end __construct()
 
+
     /**
      * Map a single instance of one mapping.
      *
@@ -101,7 +102,9 @@ class BrkService
     public function mapSingle(Mapping $mapping, array $object): array
     {
         return $this->mappingService->mapping($mapping, $object);
-    }//end handleSingle()
+
+    }//end mapSingle()
+
 
     /**
      * Map multiple instances of one mapping.
@@ -120,7 +123,9 @@ class BrkService
         }
 
         return $results;
-    }//end handleMultiple()
+
+    }//end mapMultiple()
+
 
     /**
      * Find the children in an array that have the parent in the property 'parent'.
@@ -140,7 +145,9 @@ class BrkService
         }
 
         return $childrenOfParent;
+
     }//end getChildren()
+
 
     /**
      * Connects parents and children that have an inversed relationship in the source.
@@ -152,7 +159,7 @@ class BrkService
      *
      * @return array The array of parents with children connected.
      */
-    public function connectInversed(array $parents, array $children, string $property, bool $singular = true): array
+    public function connectInversed(array $parents, array $children, string $property, bool $singular=true): array
     {
         foreach ($parents as $key => $parent) {
             if (isset($parent['identificatie']) === true) {
@@ -167,7 +174,9 @@ class BrkService
         }
 
         return $parents;
+
     }//end connectInversed()
+
 
     /**
      * Maps zakelijk gerechtigden within an snapshot.
@@ -230,7 +239,9 @@ class BrkService
         }
 
         return $objects;
+
     }//end mapZakelijkGerechtigden()
+
 
     /**
      * Maps onroerende zaken within a snapshot.
@@ -277,6 +288,7 @@ class BrkService
         }
 
         return $objects;
+
     }//end mapOnroerendeZaken()
 
 
@@ -327,7 +339,9 @@ class BrkService
         }
 
         return $objects;
+
     }//end mapPersonen()
+
 
     /**
      * Maps publiekrechtelijke beperkingen for a snapshot.
@@ -364,6 +378,7 @@ class BrkService
         }
 
         return $objects;
+
     }//end mapPubliekrechtelijkeBeperkingen()
 
 
@@ -394,8 +409,8 @@ class BrkService
         }//end foreach
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen);
-    }//end mapBrkObjects()
 
+    }//end mapBrkObjects()
 
 
     /**
@@ -420,9 +435,9 @@ class BrkService
             return $this->data;
         }
 
-        $endpoint                              = $this->data['query']['filename'];
-        $this->configuration['source']         = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
-        $fileDataSet                           = $this->fileSystemService->call($this->configuration['source'], $endpoint);
+        $endpoint                      = $this->data['query']['filename'];
+        $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+        $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
