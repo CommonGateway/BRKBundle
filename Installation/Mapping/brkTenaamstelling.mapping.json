@@ -2,7 +2,7 @@
   "title": "brkTenaamstelling",
   "$id": "https://brk.commonground.nu/mapping/brkTenaamstelling.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "passTrough": false,
   "mapping": {
     "aandeel": "aandeel",
@@ -15,7 +15,7 @@
     "betrokkenSamenwerkingsverband.type": "kadaster_niet_natuurlijk_persoon",
     "betrokkenGorzenEnAanwassen.identificatie": "betrokkenGorzenEnAanwassen.NietNatuurlijkPersoonRef.#",
     "betrokkenGorzenEnAanwassen.type": "kadaster_niet_natuurlijk_persoon",
-    "isGebaseerdOpStukdeelIdentificaties": "[{% if isGebaseerdOp.StukdeelRef %}{%if 0 in isGebaseerdOp.StukdeelRef %}{% for stukdeelref in isGebaseerdOp.StukdeelRef %}{{ stukdeelref.# }}{% endfor %}{% else %}{% endif %}{% endif %}]",
+    "isGebaseerdOpStukdeelIdentificaties": "[{% if isGebaseerdOp.StukdeelRef %}{%if 0 in isGebaseerdOp.StukdeelRef %}{% for stukdeelref in isGebaseerdOp.StukdeelRef %}{{ attribute(stukdeelref, '#')|json_encode }}{% endfor %}{% else %}{{ attribute(isGebaseerdOp.StukdeelRef, '#')|json_encode }}{% endif %}{% endif %}]",
     "parent": "van.ZakelijkRechtRef.#",
     "identificatie": "identificatie.#"
   },

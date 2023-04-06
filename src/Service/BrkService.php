@@ -10,6 +10,7 @@
 namespace CommonGateway\BRKBundle\Service;
 
 use App\Entity\Entity;
+use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use App\Service\SynchronizationService;
@@ -209,22 +210,22 @@ class BrkService
         $zakelijkGerechtigden = [];
         $aantekeningen        = [];
 
-        if (isset($snapshot['ZakelijkRecht']) === true && $this->isAssociative($snapshot['ZakelijkRecht']) === true) {
+        if (isset($snapshot['ZakelijkRecht']) === true && $this->isAssociative($snapshot['ZakelijkRecht']) === false) {
             $zakelijkGerechtigden = $this->mapMultiple($zgMapping, $snapshot['ZakelijkRecht']);
         } else if (isset($snapshot['ZakelijkRecht']) === true) {
-            $zakelijkGerechtigden = [$this->mapSingle($zgMapping, $snapshot)];
+            $zakelijkGerechtigden = [$this->mapSingle($zgMapping, $snapshot['ZakelijkRecht'])];
         }
 
-        if (isset($snapshot['Tenaamstelling']) === true && $this->isAssociative($snapshot['Tenaamstelling']) === true) {
+        if (isset($snapshot['Tenaamstelling']) === true && $this->isAssociative($snapshot['Tenaamstelling']) === false) {
             $tenaamstellingen = $this->mapMultiple($tenaamstellingMapping, $snapshot['Tenaamstelling']);
         } else if (isset($snapshot['Tenaamstelling']) === true) {
-            $tenaamstellingen = [$this->mapSingle($snapshot['Tenaamstelling'], $snapshot)];
+            $tenaamstellingen = [$this->mapSingle($snapshot['Tenaamstelling'], $snapshot['Tenaamstelling'])];
         }
 
-        if (isset($snapshot['Aantekening']) === true && $this->isAssociative($snapshot['Aantekening']) === true) {
+        if (isset($snapshot['Aantekening']) === true && $this->isAssociative($snapshot['Aantekening']) === false) {
             $aantekeningen = $this->mapMultiple($aantekeningMapping, $snapshot['Aantekening']);
         } else if (isset($snapshot['Aantekening']) === true) {
-            $aantekeningen = [$this->mapSingle($snapshot['Aantekening'], $snapshot)];
+            $aantekeningen = [$this->mapSingle($snapshot['Aantekening'], $snapshot['Tenaamstelling'])];
         }
 
         $tenaamstellingen     = $this
@@ -362,7 +363,9 @@ class BrkService
         );
 
         $objects = [];
-        if (isset($snapshot['PubliekrechtelijkeBeperking']) === true && $this->isAssociative($snapshot['PubliekrechtelijkeBeperking']) === true) {
+        if (isset($snapshot['PubliekrechtelijkeBeperking']) === true
+            && $this->isAssociative($snapshot['PubliekrechtelijkeBeperking']) === true
+        ) {
             $objects[] = $this->handleRefObject(
                 $publiekBeperkingSchema,
                 $this->mapSingle($publiekBeperkingMapping, $snapshot['PubliekrechtelijkeBeperking'])
@@ -407,8 +410,7 @@ class BrkService
 
             $this->entityManager->flush();
         }//end foreach
-
-        return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen);
+        return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
 
     }//end mapBrkObjects()
 
@@ -560,12 +562,12 @@ class BrkService
         if (isset($refObject['identificatie']) === false) {
             $this->brkpluginLogger
                 ->error(
-                    "Could not create a {$schema->getName()} 
+                    "Could not create a {$schema->getName()}
                     object because data array does not contain a field 'identificatie'.",
                     ["data" => $refObject]
                 );
             return [
-                "message" => "Could not create a {$schema->getName()} 
+                "message" => "Could not create a {$schema->getName()}
                 object because data array does not contain a field 'identificatie'.",
                 "data"    => $refObject,
             ];
