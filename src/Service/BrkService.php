@@ -91,6 +91,283 @@ class BrkService
     }//end __construct()
 
     /**
+     * Map a single instance of one mapping.
+     *
+     * @param Mapping $mapping The mapping to use for the mapping.
+     * @param array   $object  The object to map.
+     *
+     * @return array The mapped object.
+     */
+    public function mapSingle(Mapping $mapping, array $object): array
+    {
+        return $this->mappingService->mapping($mapping, $object);
+    }//end handleSingle()
+
+    /**
+     * Map multiple instances of one mapping.
+     *
+     * @param Mapping $mapping The mapping to use for the mapping
+     * @param array   $objects The objects to map.
+     *
+     * @return array The mapped objects.
+     */
+    public function mapMultiple(Mapping $mapping, array $objects): array
+    {
+        $results = [];
+
+        foreach ($objects as $object) {
+            $results[] = $this->mapSingle($mapping, $object);
+        }
+
+        return $results;
+    }//end handleMultiple()
+
+    /**
+     * Find the children in an array that have the parent in the property 'parent'.
+     *
+     * @param array  $children The child objects.
+     * @param string $parent   The identifier of the parents to find children for.
+     *
+     * @return array The children for the given parent.
+     */
+    public function getChildren(array $children, string $parent): array
+    {
+        $childrenOfParent = [];
+        foreach ($children as $child) {
+            if ($child['parent'] === $parent) {
+                $childrenOfParent[] = $child;
+            }
+        }
+
+        return $childrenOfParent;
+    }//end getChildren()
+
+    /**
+     * Connects parents and children that have an inversed relationship in the source.
+     *
+     * @param array  $parents  The parents to connect the children to.
+     * @param array  $children The children to connect to the parents.
+     * @param string $property The property to connect the children into.
+     * @param bool   $singular If the property is singular or plural, resulting in 1 or n results being connected.
+     *
+     * @return array The array of parents with children connected.
+     */
+    public function connectInversed(array $parents, array $children, string $property, bool $singular = true): array
+    {
+        foreach ($parents as $key => $parent) {
+            if (isset($parent['identificatie']) === true) {
+                $childrenOfParent = $this->getChildren($children, $parent['identificatie']);
+                if ($singular === true) {
+                    $parents[$key][$property] = $childrenOfParent[0];
+                    continue;
+                }
+
+                $parents[$key][$property] = $childrenOfParent;
+            }
+        }
+
+        return $parents;
+    }//end connectInversed()
+
+    /**
+     * Maps zakelijk gerechtigden within an snapshot.
+     *
+     * @param array $snapshot The snapshot to map zakelijk gerechtigden for.
+     *
+     * @return array The mapped zakelijk gerechtigden.
+     */
+    public function mapZakelijkGerechtigden(array $snapshot): array
+    {
+
+        $zgMapping             = $this->resourceService->getMapping(
+            'https://brk.commonground.nu/mapping/brkZakelijkRechtToZakelijkGerechtigde.mapping.json',
+            'common-gateway/brk-bundle'
+        );
+        $tenaamstellingMapping = $this->resourceService->getMapping(
+            'https://brk.commonground.nu/mapping/brkTenaamstelling.mapping.json',
+            'common-gateway/brk-bundle'
+        );
+        $aantekeningMapping    = $this->resourceService->getMapping(
+            'https://brk.commonground.nu/mapping/brkAantekening.mapping.json',
+            'common-gateway/brk-bundle'
+        );
+        $zgSchema              = $this->resourceService->getSchema(
+            'https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json',
+            'common-gateway/brk-bundle'
+        );
+
+        $tenaamstellingen     = [];
+        $zakelijkGerechtigden = [];
+        $aantekeningen        = [];
+
+        if (isset($snapshot['ZakelijkRecht']) === true && $this->isAssociative($snapshot['ZakelijkRecht']) === true) {
+            $zakelijkGerechtigden = $this->mapMultiple($zgMapping, $snapshot['ZakelijkRecht']);
+        } else if (isset($snapshot['ZakelijkRecht']) === true) {
+            $zakelijkGerechtigden = [$this->mapSingle($zgMapping, $snapshot)];
+        }
+
+        if (isset($snapshot['Tenaamstelling']) === true && $this->isAssociative($snapshot['Tenaamstelling']) === true) {
+            $tenaamstellingen = $this->mapMultiple($tenaamstellingMapping, $snapshot['Tenaamstelling']);
+        } else if (isset($snapshot['Tenaamstelling']) === true) {
+            $tenaamstellingen = [$this->mapSingle($snapshot['Tenaamstelling'], $snapshot)];
+        }
+
+        if (isset($snapshot['Aantekening']) === true && $this->isAssociative($snapshot['Aantekening']) === true) {
+            $aantekeningen = $this->mapMultiple($aantekeningMapping, $snapshot['Aantekening']);
+        } else if (isset($snapshot['Aantekening']) === true) {
+            $aantekeningen = [$this->mapSingle($snapshot['Aantekening'], $snapshot)];
+        }
+
+        $tenaamstellingen     = $this
+            ->connectInversed($tenaamstellingen, $aantekeningen, 'aantekeningen', false);
+        $zakelijkGerechtigden = $this
+            ->connectInversed($zakelijkGerechtigden, $tenaamstellingen, 'tenaamstelling');
+
+        $objects = [];
+
+        foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
+            $objects[] = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+        }
+
+        return $objects;
+    }//end mapZakelijkGerechtigden()
+
+    /**
+     * Maps onroerende zaken within a snapshot.
+     *
+     * @param array $snapshot The snapshot to map onroerende zaken for.
+     *
+     * @return array The resulting onroerende zaken.
+     */
+    public function mapOnroerendeZaken(array $snapshot): array
+    {
+        $perceelMapping = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $arMapping      = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $ozSchema       = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
+            'common-gateway/brk-bundle'
+        );
+
+        $onroerendeZaken = [];
+
+        if (isset($snapshot['Perceel']) === true && $this->isAssociative($snapshot['Perceel']) === true) {
+            $onroerendeZaken = array_merge($this->mapMultiple($perceelMapping, $snapshot['Perceel']), $onroerendeZaken);
+        } else if (isset($snapshot['Perceel']) === true) {
+            $onroerendeZaken[] = $this->mapSingle($perceelMapping, $snapshot['Perceel']);
+        }
+
+        if (isset($snapshot['Appartementsrecht']) === true
+            && $this->isAssociative($snapshot['Appartementsrecht']) === true
+        ) {
+            $onroerendeZaken = array_merge($this->mapMultiple($arMapping, $snapshot['Appartementsrecht']), $onroerendeZaken);
+        } else if (isset($snapshot['Appartementsrecht']) === true) {
+            $onroerendeZaken[] = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
+        }
+
+        $objects = [];
+
+        foreach ($onroerendeZaken as $onroerendeZaak) {
+            $objects[] = $this->handleRefObject($ozSchema, $onroerendeZaak);
+        }
+
+        return $objects;
+    }//end mapOnroerendeZaken()
+
+
+    /**
+     * Maps personen from BRK snapshot.
+     *
+     * @param array $snapshot The snapshot to map personen for.
+     *
+     * @return array The resulting personen.
+     */
+    public function mapPersonen(array $snapshot): array
+    {
+        $nnpMapping = $this->resourceService
+            ->getMapping("https://brk.commonground.nu/mapping/brkNnp.mapping.json", 'common-gateway/brk-bundle');
+        $npMapping  = $this->resourceService
+            ->getMapping("https://brk.commonground.nu/mapping/brkNp.mapping.json", 'common-gateway/brk-bundle');
+        $npSchema   = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
+            'common-gateway/brk-bundle'
+        );
+        $nnpSchema  = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
+            'common-gateway/brk-bundle'
+        );
+
+        $objects = [];
+        if (isset($snapshot['NietNatuurlijkPersoon']) === true
+            && $this->isAssociative($snapshot['NietNatuurlijkPersoon']) === true
+        ) {
+            $objects[] = $this
+                ->handleRefObject($nnpSchema, $this->mapSingle($nnpMapping, $snapshot['NietNatuurlijkPersoon']));
+        } else if (isset($snapshot['NietNatuurlijkPersoon']) === true) {
+            $objects = array_merge(
+                $this->handleRefObjects($nnpSchema, $this->mapMultiple($nnpMapping, $snapshot['NietNatuurlijkPersoon'])),
+                $objects
+            );
+        }
+
+        if (isset($snapshot['NatuurlijkPersoon']) === true
+            && $this->isAssociative($snapshot['NatuurlijkPersoon']) === true
+        ) {
+            $objects[] = $this->handleRefObject($npSchema, $this->mapSingle($npMapping, $snapshot['NatuurlijkPersoon']));
+        } else if (isset($snapshot['NatuurlijkPersoon']) === true) {
+            $objects = array_merge(
+                $this->handleRefObjects($npMapping, $this->mapMultiple($npMapping, $snapshot['NatuurlijkPersoon'])),
+                $objects
+            );
+        }
+
+        return $objects;
+    }//end mapPersonen()
+
+    /**
+     * Maps publiekrechtelijke beperkingen for a snapshot.
+     *
+     * @param array $snapshot The snapshot to map publiekrechtelijke beperkingen for.
+     *
+     * @return array
+     */
+    public function mapPubliekrechtelijkeBeperkingen(array $snapshot): array
+    {
+        $publiekBeperkingMapping = $this->resourceService->getMapping(
+            "https://brk.commonground.nu/mapping/brkPubliekrechtelijkeBeperking.mapping.json",
+            'common-gateway/brk-bundle'
+        );
+        $publiekBeperkingSchema  = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
+            'common-gateway/brk-bundle'
+        );
+
+        $objects = [];
+        if (isset($snapshot['PubliekrechtelijkeBeperking']) === true && $this->isAssociative($snapshot['PubliekrechtelijkeBeperking']) === true) {
+            $objects[] = $this->handleRefObject(
+                $publiekBeperkingSchema,
+                $this->mapSingle($publiekBeperkingMapping, $snapshot['PubliekrechtelijkeBeperking'])
+            );
+        } else if (isset($snapshot['PubliekrechtelijkeBeperking']) === true) {
+            $objects = array_merge(
+                $this->handleRefObjects(
+                    $publiekBeperkingSchema,
+                    $this->mapMultiple($publiekBeperkingMapping, $snapshot['PubliekrechtelijkeBeperking'])
+                ),
+                $objects
+            );
+        }
+
+        return $objects;
+    }//end mapPubliekrechtelijkeBeperkingen()
+
+
+    /**
      * Maps BRK object arrays to the desired resources.
      *
      * @param array $objects The objects to map.
@@ -101,100 +378,19 @@ class BrkService
      */
     public function mapBrkObjects(array $objects): array
     {
-        $nnpMapping              = $this->resourceService
-            ->getMapping("https://brk.commonground.nu/mapping/brkNnp.mapping.json", 'common-gateway/brk-bundle');
-        $npMapping               = $this->resourceService
-            ->getMapping("https://brk.commonground.nu/mapping/brkNp.mapping.json", 'common-gateway/brk-bundle');
-        $npSchema                = $this->resourceService->getSchema(
-            "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
-            'common-gateway/brk-bundle'
-        );
-        $nnpSchema               = $this->resourceService->getSchema(
-            "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
-            'common-gateway/brk-bundle'
-        );
-        $publiekBeperkingMapping = $this->resourceService->getMapping(
-            "https://brk.commonground.nu/mapping/brkPubliekrechtelijkeBeperking.mapping.json",
-            'common-gateway/brk-bundle'
-        );
-        $publiekBeperkingSchema  = $this->resourceService->getSchema(
-            "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
-            'common-gateway/brk-bundle'
-        );
 
+        $onroerendeZaken      = [];
+        $personen             = [];
+        $publiekeBeperkingen  = [];
+        $zakelijkGerechtigden = [];
 
-        $perceelMapping           = $this->resourceService->getMapping(
-            "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
-            'common-gateway/brk-bundle'
-        );
-        $appartementsRechtMapping = $this->resourceService->getMapping(
-            "https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",
-            'common-gateway/brk-bundle'
-        );
-        $schema                   = $this->resourceService->getSchema(
-            "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
-            'common-gateway/brk-bundle'
-        );
-
-        $onroerendeZaken     = [];
-        $personen            = [];
-        $publiekeBeperkingen = [];
-
-        $i = 0;
         foreach ($objects as $object) {
-            if (isset($object['Perceel']) === true) {
-                $perceel        = $object['Perceel'];
-                $onroerendeZaak = $this->mappingService->mapping($perceelMapping, $perceel);
-            }
-
-            if (isset($object['Appartementsrecht']) === true) {
-                $perceel        = $object['Appartementsrecht'];
-                $onroerendeZaak = $this->mappingService->mapping($arMapping, $perceel);
-            }
-
-            $onroerendeZaken[] = $this->handleRefObject($schema, $onroerendeZaak);
-
-            if (isset($object['NietNatuurlijkPersoon']) === true) {
-                $persoon = $object['NietNatuurlijkPersoon'];
-                if ($this->isAssociative($persoon) === true) {
-                    $persoon    = $this->mappingService->mapping($nnpMapping, $persoon);
-                    $personen[] = $this->handleRefObject($nnpSchema, $persoon);
-                } else {
-                    foreach ($persoon as $pers) {
-                        $pers       = $this->mappingService->mapping($nnpMapping, $pers);
-                        $personen[] = $this->handleRefObject($nnpSchema, $pers);
-                    }
-                }
-            }
-
-            if (isset($object['NatuurlijkPersoon']) === true) {
-                $persoon = $object['NatuurlijkPersoon'];
-                if ($this->isAssociative($persoon) === true) {
-                    $persoon    = $this->mappingService->mapping($npMapping, $persoon);
-                    $personen[] = $this->handleRefObject($npSchema, $persoon);
-                } else {
-                    foreach ($persoon as $pers) {
-                        $pers       = $this->mappingService->mapping($npMapping, $pers);
-                        $personen[] = $this->handleRefObject($npSchema, $pers);
-                    }
-                }
-            }
-
-            if (isset($object['PubliekrechtelijkeBeperking']) === true) {
-                $beperking = $object['PubliekrechtelijkeBeperking'];
-                if ($this->isAssociative($beperking) === true) {
-                    $beperking             = $this->mappingService->mapping($publiekBeperkingMapping, $beperking);
-                    $publiekeBeperkingen[] = $this->handleRefObject($publiekBeperkingSchema, $beperking);
-                } else {
-                    foreach ($beperking as $bep) {
-                        $bep                   = $this->mappingService->mapping($publiekBeperkingMapping, $bep);
-                        $publiekeBeperkingen[] = $this->handleRefObject($publiekBeperkingSchema, $bep);
-                    }
-                }
-            }
+            $onroerendeZaken      = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
+            $personen             = array_merge($this->mapPersonen($object), $personen);
+            $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden);
+            $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
 
             $this->entityManager->flush();
-            $i++;
         }//end foreach
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen);
