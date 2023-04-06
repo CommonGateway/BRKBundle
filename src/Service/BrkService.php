@@ -410,6 +410,7 @@ class BrkService
 
             $this->entityManager->flush();
         }//end foreach
+
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
 
     }//end mapBrkObjects()
