@@ -234,7 +234,7 @@ class BrkService
             ->connectInversed($zakelijkGerechtigden, $tenaamstellingen, 'tenaamstelling');
 
         foreach ($zakelijkGerechtigden as $key => $value) {
-            if (isset($value['tenaamstelling']['tenNameVan'])) {
+            if (isset($value['tenaamstelling']['tenNameVan']) === true) {
                 $value['persoon'] = $value['tenaamstelling']['tenNameVan'];
                 unset($value['tenaamstelling']['tenNameVan']);
                 $zakelijkGerechtigden[$key] = $value;
@@ -397,6 +397,8 @@ class BrkService
      * Maps BRK object arrays to the desired resources.
      *
      * @param array $objects The objects to map.
+     * @param int   $start   The start of the array to map.
+     * @param int   $length  The maximum number of elements to map.
      *
      * @return array
      * @throws \Twig\Error\LoaderError
