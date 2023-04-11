@@ -261,7 +261,7 @@ class BrkService
      */
     public function mapOnroerendeZaken(array $snapshot): array
     {
-        $perceelMapping = $this->resourceService->getMapping(
+        $perceelMapping  = $this->resourceService->getMapping(
             "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
             'common-gateway/brk-bundle'
         );
