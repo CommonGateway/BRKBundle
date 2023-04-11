@@ -233,8 +233,8 @@ class BrkService
         $zakelijkGerechtigden = $this
             ->connectInversed($zakelijkGerechtigden, $tenaamstellingen, 'tenaamstelling');
 
-        foreach($zakelijkGerechtigden as $key => $value) {
-            if(isset($value['tenaamstelling']['tenNameVan'])) {
+        foreach ($zakelijkGerechtigden as $key => $value) {
+            if (isset($value['tenaamstelling']['tenNameVan'])) {
                 $value['persoon'] = $value['tenaamstelling']['tenNameVan'];
                 unset($value['tenaamstelling']['tenNameVan']);
                 $zakelijkGerechtigden[$key] = $value;
@@ -402,9 +402,9 @@ class BrkService
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\SyntaxError
      */
-    public function mapBrkObjects(array $objects, int $start = 0, int $length = 10000): array
+    public function mapBrkObjects(array $objects, int $start=0, int $length=10000): array
     {
-        if($start > 0) {
+        if ($start > 0) {
             $objects = array_slice($start, $start, $length);
         }
 
@@ -459,9 +459,10 @@ class BrkService
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
-        if(isset($data['start']) === true && isset($data['length']) === true) {
+        if (isset($data['start']) === true && isset($data['length']) === true) {
             return $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot'], $data['start'], $data['length']);
         }
+
         return $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
 
     }//end brkHandler()
