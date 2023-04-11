@@ -2,7 +2,7 @@
   "title": "brkTenaamstelling",
   "$id": "https://brk.commonground.nu/mapping/brkTenaamstelling.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "passTrough": false,
   "mapping": {
     "aandeel": "aandeel",
@@ -15,11 +15,13 @@
     "betrokkenSamenwerkingsverband.type": "kadaster_niet_natuurlijk_persoon",
     "betrokkenGorzenEnAanwassen.identificatie": "betrokkenGorzenEnAanwassen.NietNatuurlijkPersoonRef.#",
     "betrokkenGorzenEnAanwassen.type": "kadaster_niet_natuurlijk_persoon",
-    "isGebaseerdOpStukdeelIdentificaties": "[{% if isGebaseerdOp.StukdeelRef %}{%if 0 in isGebaseerdOp.StukdeelRef %}{% for stukdeelref in isGebaseerdOp.StukdeelRef %}{{ attribute(stukdeelref, '#')|json_encode }}{% endfor %}{% else %}{{ attribute(isGebaseerdOp.StukdeelRef, '#')|json_encode }}{% endif %}{% endif %}]",
+    "isGebaseerdOpStukdeelIdentificaties": "[{% if isGebaseerdOp.StukdeelRef is defined and isGebaseerdOp.StukdeelRef is not null %}{%if 0 in isGebaseerdOp.StukdeelRef|keys %}{% for stukdeelref in isGebaseerdOp.StukdeelRef %}{{ attribute(stukdeelref, '#')|json_encode }}{% endfor %}{% else %}{{ attribute(isGebaseerdOp.StukdeelRef, '#')|json_encode }}{% endif %}{% endif %}]",
+    "tenNameVan": "{% if tenNameVan.NatuurlijkPersoonRef is defined and tenNameVan.NatuurlijkPersoonRef is not empty %}{\"type\": \"kadaster_natuurlijk_persoon\", \"identificatie\": \"{{ attribute(tenNameVan.NatuurlijkPersoonRef, '#') }}\"}{% elseif tenNameVan.NietNatuurlijkPersoonRef is defined and tenNameVan.NietNatuurlijkPersoonRef is not empty %}{\"type\": \"kadaster_niet_natuurlijk_persoon\", \"identificatie\": \"{{ attribute(tenNameVan.NietNatuurlijkPersoonRef, '#') }}\"}{% endif %}",
     "parent": "van.ZakelijkRechtRef.#",
     "identificatie": "identificatie.#"
   },
   "cast": {
-    "isGebaseerdOpStukdeelIdentificaties": "jsonToArray"
+    "isGebaseerdOpStukdeelIdentificaties": "jsonToArray",
+    "tenNameVan": "jsonToArray"
   }
 }

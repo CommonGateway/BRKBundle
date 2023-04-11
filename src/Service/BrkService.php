@@ -219,19 +219,27 @@ class BrkService
         if (isset($snapshot['Tenaamstelling']) === true && $this->isAssociative($snapshot['Tenaamstelling']) === false) {
             $tenaamstellingen = $this->mapMultiple($tenaamstellingMapping, $snapshot['Tenaamstelling']);
         } else if (isset($snapshot['Tenaamstelling']) === true) {
-            $tenaamstellingen = [$this->mapSingle($snapshot['Tenaamstelling'], $snapshot['Tenaamstelling'])];
+            $tenaamstellingen = [$this->mapSingle($tenaamstellingMapping, $snapshot['Tenaamstelling'])];
         }
 
         if (isset($snapshot['Aantekening']) === true && $this->isAssociative($snapshot['Aantekening']) === false) {
             $aantekeningen = $this->mapMultiple($aantekeningMapping, $snapshot['Aantekening']);
         } else if (isset($snapshot['Aantekening']) === true) {
-            $aantekeningen = [$this->mapSingle($snapshot['Aantekening'], $snapshot['Tenaamstelling'])];
+            $aantekeningen = [$this->mapSingle($aantekeningMapping, $snapshot['Tenaamstelling'])];
         }
 
         $tenaamstellingen     = $this
             ->connectInversed($tenaamstellingen, $aantekeningen, 'aantekeningen', false);
         $zakelijkGerechtigden = $this
             ->connectInversed($zakelijkGerechtigden, $tenaamstellingen, 'tenaamstelling');
+
+        foreach($zakelijkGerechtigden as $key => $value) {
+            if(isset($value['tenaamstelling']['tenNameVan'])) {
+                $value['persoon'] = $value['tenaamstelling']['tenNameVan'];
+                unset($value['tenaamstelling']['tenNameVan']);
+                $zakelijkGerechtigden[$key] = $value;
+            }
+        }
 
         $objects = [];
 
@@ -268,14 +276,14 @@ class BrkService
 
         $onroerendeZaken = [];
 
-        if (isset($snapshot['Perceel']) === true && $this->isAssociative($snapshot['Perceel']) === true) {
+        if (isset($snapshot['Perceel']) === true && $this->isAssociative($snapshot['Perceel']) === false) {
             $onroerendeZaken = array_merge($this->mapMultiple($perceelMapping, $snapshot['Perceel']), $onroerendeZaken);
         } else if (isset($snapshot['Perceel']) === true) {
             $onroerendeZaken[] = $this->mapSingle($perceelMapping, $snapshot['Perceel']);
         }
 
         if (isset($snapshot['Appartementsrecht']) === true
-            && $this->isAssociative($snapshot['Appartementsrecht']) === true
+            && $this->isAssociative($snapshot['Appartementsrecht']) === false
         ) {
             $onroerendeZaken = array_merge($this->mapMultiple($arMapping, $snapshot['Appartementsrecht']), $onroerendeZaken);
         } else if (isset($snapshot['Appartementsrecht']) === true) {
@@ -334,7 +342,7 @@ class BrkService
             $objects[] = $this->handleRefObject($npSchema, $this->mapSingle($npMapping, $snapshot['NatuurlijkPersoon']));
         } else if (isset($snapshot['NatuurlijkPersoon']) === true) {
             $objects = array_merge(
-                $this->handleRefObjects($npMapping, $this->mapMultiple($npMapping, $snapshot['NatuurlijkPersoon'])),
+                $this->handleRefObjects($npSchema, $this->mapMultiple($npMapping, $snapshot['NatuurlijkPersoon'])),
                 $objects
             );
         }
@@ -394,13 +402,18 @@ class BrkService
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\SyntaxError
      */
-    public function mapBrkObjects(array $objects): array
+    public function mapBrkObjects(array $objects, int $start = 0, int $length = 10000): array
     {
+        if($start > 0) {
+            $objects = array_slice($start, $start, $length);
+        }
 
         $onroerendeZaken      = [];
         $personen             = [];
         $publiekeBeperkingen  = [];
         $zakelijkGerechtigden = [];
+
+        $iterator = 0;
 
         foreach ($objects as $object) {
             $onroerendeZaken      = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
@@ -409,6 +422,8 @@ class BrkService
             $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
 
             $this->entityManager->flush();
+            var_dump($iterator);
+            $iterator++;
         }//end foreach
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
@@ -444,9 +459,10 @@ class BrkService
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
-        $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
-
-        return $objects;
+        if(isset($data['start']) === true && isset($data['length']) === true) {
+            return $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot'], $data['start'], $data['length']);
+        }
+        return $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
 
     }//end brkHandler()
 
