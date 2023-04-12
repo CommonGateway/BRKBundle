@@ -1,7 +1,0 @@
-TODO
-
-All mapping is still in todo, idea now is that much data looks a lot like the schemas but in the property keys it has a xml tag at the start of each key
- which makes mapping 1 on 1 needing a trick like:
-  "cast": {
-    "*": "replaceKey==Stuk:"
-  }
