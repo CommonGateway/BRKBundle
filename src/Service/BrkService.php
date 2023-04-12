@@ -426,7 +426,7 @@ class BrkService
             $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
 
             $this->entityManager->flush();
-            var_dump("Objects Mapped: " . $iterator);
+            var_dump("Objects Mapped: ".$iterator);
             $iterator++;
         }//end foreach
 
