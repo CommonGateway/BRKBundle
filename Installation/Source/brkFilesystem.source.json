@@ -6,14 +6,5 @@
     "location": "ftp://domain-changeMe.nl",
     "auth": "username-password",
     "username": "!ChangeMe!",
-    "password": "!ChangeMe!",
-    "endpointsConfig": {
-        "global": {
-            "in": {
-                "root": {
-                    "mapping": "https://brk.commonground.nu/mapping/brkSourceInRoot.mapping.json"
-                }
-            }
-        }
-    }
+    "password": "!ChangeMe!"
 }
