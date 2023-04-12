@@ -19,6 +19,8 @@ use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
 
 class BrkService
 {
@@ -401,13 +403,13 @@ class BrkService
      * @param int   $length  The maximum number of elements to map.
      *
      * @return array
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\SyntaxError
+     * @throws LoaderError
+     * @throws SyntaxError
      */
     public function mapBrkObjects(array $objects, int $start=0, int $length=10000): array
     {
         if ($start > 0) {
-            $objects = array_slice($start, $start, $length);
+            $objects = array_slice($objects, $start, $length);
         }
 
         $onroerendeZaken      = [];
@@ -424,7 +426,7 @@ class BrkService
             $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
 
             $this->entityManager->flush();
-            var_dump($iterator);
+            var_dump("Objects Mapped: " . $iterator);
             $iterator++;
         }//end foreach
 
