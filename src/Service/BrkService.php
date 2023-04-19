@@ -473,11 +473,11 @@ class BrkService
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
-        foreach($fileDataSet['stand']['KadastraalObjectSnapshot'] as $object) {
+        foreach ($fileDataSet['stand']['KadastraalObjectSnapshot'] as $object) {
             $snapshot = new ObjectEntity($this->configuration['schema']);
-            $snapshot->hydrate([
-                'snapshot' => $object,
-            ]);
+            $snapshot->hydrate(
+                ['snapshot' => $object]
+            );
             $this->entityManager->persist($snapshot);
             $this->entityManager->flush();
 
@@ -485,8 +485,7 @@ class BrkService
             $this->eventDispatcher->dispatch($event, 'commongateway.action.event');
         }
 
-//        $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
-
+        // $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
         return $data;
 
     }//end brkHandler()
