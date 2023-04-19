@@ -13,11 +13,13 @@ use App\Entity\Entity;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
+use App\Event\ActionEvent;
 use App\Service\SynchronizationService;
 use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
@@ -65,6 +67,11 @@ class BrkService
      */
     private MappingService $mappingService;
 
+    /**
+     * @var EventDispatcherInterface The event dispatcher.
+     */
+    private EventDispatcherInterface $eventDispatcher;
+
 
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
@@ -80,8 +87,10 @@ class BrkService
         FileSystemHandleService $fileSystemService,
         GatewayResourceService $resourceService,
         SynchronizationService $syncService,
-        MappingService $mappingService
+        MappingService $mappingService,
+        EventDispatcherInterface $eventDispatcher
     ) {
+        $this->eventDispatcher   = $eventDispatcher;
         $this->entityManager     = $entityManager;
         $this->brkpluginLogger   = $brkpluginLogger;
         $this->fileSystemService = $fileSystemService;
@@ -459,15 +468,26 @@ class BrkService
 
         $endpoint                      = $this->data['query']['filename'];
         $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+        $this->configuration['schema'] = $this->resourceService->getSource('https://brk.commonground.nu/source/snapshot.schema.json', 'common-gateway/brk-bundle');
         $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
-        if (isset($data['start']) === true && isset($data['length']) === true) {
-            return $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot'], $data['start'], $data['length']);
+        foreach($fileDataSet['stand']['KadastraalObjectSnapshot'] as $object) {
+            $snapshot = new ObjectEntity($this->configuration['schema']);
+            $snapshot->hydrate([
+                'snapshot' => $object,
+            ]);
+            $this->entityManager->persist($snapshot);
+            $this->entityManager->flush();
+
+            $event = new ActionEvent('commongateway.action.event', ['snapshotId' => $snapshot->getId()->toString()], 'brk.snapshot.stored');
+            $this->eventDispatcher->dispatch($event, 'commongateway.action.event');
         }
 
-        return $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
+//        $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
+
+        return $data;
 
     }//end brkHandler()
 
