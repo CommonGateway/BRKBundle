@@ -6,6 +6,11 @@
                 "reference": "https://brk.commonground.nu/action/brk.BRKAction.action.json",
                 "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\BrkHandler",
                 "listens": ["brk.file.system.trigger"]
+            },
+            {
+                "reference": "https://brk.commonground.nu/action/brk.SnapshotAction.action.json",
+                "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\SnapshotHandler",
+                "listens": ["brk.snapshot.stored"]
             }
         ]
     },

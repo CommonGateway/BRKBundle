@@ -407,7 +407,7 @@ class BrkService
     /**
      * Maps BRK object arrays to the desired resources.
      *
-     * @param array $objects The objects to map.
+     * @param array $object The objects to map.
      * @param int   $start   The start of the array to map.
      * @param int   $length  The maximum number of elements to map.
      *
@@ -415,29 +415,19 @@ class BrkService
      * @throws LoaderError
      * @throws SyntaxError
      */
-    public function mapBrkObjects(array $objects, int $start=0, int $length=10000): array
+    public function mapBrkObject(array $object, int $start=0, int $length=10000): array
     {
-        if ($start > 0) {
-            $objects = array_slice($objects, $start, $length);
-        }
-
         $onroerendeZaken      = [];
         $personen             = [];
         $publiekeBeperkingen  = [];
         $zakelijkGerechtigden = [];
 
-        $iterator = 0;
+        $onroerendeZaken      = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
+        $personen             = array_merge($this->mapPersonen($object), $personen);
+        $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden);
+        $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
 
-        foreach ($objects as $object) {
-            $onroerendeZaken      = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
-            $personen             = array_merge($this->mapPersonen($object), $personen);
-            $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden);
-            $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
-
-            $this->entityManager->flush();
-            var_dump("Objects Mapped: ".$iterator);
-            $iterator++;
-        }//end foreach
+        $this->entityManager->flush();
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
 
@@ -467,8 +457,10 @@ class BrkService
         }
 
         $endpoint                      = $this->data['query']['filename'];
-        $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
-        $this->configuration['schema'] = $this->resourceService->getSchema('https://brk.commonground.nu/schema/snapshot.schema.json', 'common-gateway/brk-bundle');
+        $this->configuration['source'] = $this->resourceService
+            ->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+        $this->configuration['schema'] = $this->resourceService
+            ->getSchema('https://brk.commonground.nu/schema/snapshot.schema.json', 'common-gateway/brk-bundle');
         $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
@@ -481,7 +473,11 @@ class BrkService
             $this->entityManager->persist($snapshot);
             $this->entityManager->flush();
 
-            $event = new ActionEvent('commongateway.action.event', ['snapshotId' => $snapshot->getId()->toString()], 'brk.snapshot.stored');
+            $event = new ActionEvent(
+                'commongateway.action.event',
+                ['snapshotId' => $snapshot->getId()->toString()],
+                'brk.snapshot.stored'
+            );
             $this->eventDispatcher->dispatch($event, 'commongateway.action.event');
         }
 
@@ -489,6 +485,27 @@ class BrkService
         return $data;
 
     }//end brkHandler()
+
+
+    /**
+     * Maps a single snapshot object to BRK objects.
+     *
+     * @param array $data          The action data.
+     * @param array $configuration The action configuration.
+     *
+     * @return array
+     */
+    public function snapshotHandler(array $data, array $configuration): array
+    {
+        $snapshotId = $data['snapshotId'];
+        $snapshot   = $this->entityManager->getRepository('App:ObjectEntity')->find($snapshotId);
+
+        $this->mapBrkObject($snapshot->getValue('snapshot'));
+        $snapshot->hydrate(['processedDateTime' => new DateTime()]);
+
+        return $data;
+
+    }//end snapshotHandler()
 
 
     /**
