@@ -500,8 +500,11 @@ class BrkService
         $snapshotId = $data['snapshotId'];
         $snapshot   = $this->entityManager->getRepository('App:ObjectEntity')->find($snapshotId);
 
+        $this->configuration['source'] = $this->resourceService
+            ->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
+
         $this->mapBrkObject($snapshot->getValue('snapshot'));
-        $snapshot->hydrate(['processedDateTime' => new DateTime()]);
+        $snapshot->hydrate(['processedDateTime' => 'now']);
 
         return $data;
 
