@@ -408,8 +408,8 @@ class BrkService
      * Maps BRK object arrays to the desired resources.
      *
      * @param array $object The objects to map.
-     * @param int   $start   The start of the array to map.
-     * @param int   $length  The maximum number of elements to map.
+     * @param int   $start  The start of the array to map.
+     * @param int   $length The maximum number of elements to map.
      *
      * @return array
      * @throws LoaderError
@@ -431,7 +431,7 @@ class BrkService
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
 
-    }//end mapBrkObjects()
+    }//end mapBrkObject()
 
 
     /**
