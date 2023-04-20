@@ -468,7 +468,7 @@ class BrkService
 
         $endpoint                      = $this->data['query']['filename'];
         $this->configuration['source'] = $this->resourceService->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
-        $this->configuration['schema'] = $this->resourceService->getSource('https://brk.commonground.nu/source/snapshot.schema.json', 'common-gateway/brk-bundle');
+        $this->configuration['schema'] = $this->resourceService->getSchema('https://brk.commonground.nu/schema/snapshot.schema.json', 'common-gateway/brk-bundle');
         $fileDataSet                   = $this->fileSystemService->call($this->configuration['source'], $endpoint);
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
