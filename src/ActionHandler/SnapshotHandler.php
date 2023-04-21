@@ -52,7 +52,6 @@ class SnapshotHandler implements ActionHandlerInterface
             'description' => 'This handler converts a single snapshot into multiple BRK objects',
             'required'    => [],
             'properties'  => [],
-        ],
         ];
 
     }//end getConfiguration()
