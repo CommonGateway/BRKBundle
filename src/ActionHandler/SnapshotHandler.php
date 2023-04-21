@@ -50,14 +50,8 @@ class SnapshotHandler implements ActionHandlerInterface
             '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
             'title'       => 'Brk ActionHandler',
             'description' => 'This handler converts a single snapshot into multiple BRK objects',
-            'required'    => ['snapshotId'],
-            'properties'  => [
-                'snapshotId' => [
-                    'type'        => 'uuid',
-                    'description' => 'The id of the huwelijks entity',
-                    'nullable'    => true,
-                    '$ref'        => 'https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json',
-                ],
+            'required'    => [],
+            'properties'  => [],
             ],
         ];
 
