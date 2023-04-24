@@ -29,7 +29,8 @@
                     "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
                     "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
                     "https://brk.commonground.nu/schema/stuk.schema.json",
-                    "https://brk.commonground.nu/schema/stukdeel.schema.json"
+                    "https://brk.commonground.nu/schema/stukdeel.schema.json",
+                    "https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json"
                 ],
                 "path": ["search"],
                 "pathRegex": "^(search)$",

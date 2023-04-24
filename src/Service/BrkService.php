@@ -15,6 +15,7 @@ use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use App\Event\ActionEvent;
 use App\Service\SynchronizationService;
+use CommonGateway\CoreBundle\Service\CacheService;
 use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
@@ -72,6 +73,11 @@ class BrkService
      */
     private EventDispatcherInterface $eventDispatcher;
 
+    /**
+     * @var CacheService The cache service.
+     */
+    private CacheService $cacheService;
+
 
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
@@ -88,6 +94,7 @@ class BrkService
         GatewayResourceService $resourceService,
         SynchronizationService $syncService,
         MappingService $mappingService,
+        CacheService $cacheService,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->eventDispatcher   = $eventDispatcher;
@@ -97,6 +104,7 @@ class BrkService
         $this->resourceService   = $resourceService;
         $this->syncService       = $syncService;
         $this->mappingService    = $mappingService;
+        $this->cacheService      = $cacheService;
         $this->configuration     = [];
         $this->data              = [];
 
@@ -466,9 +474,22 @@ class BrkService
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
         foreach ($fileDataSet['stand']['KadastraalObjectSnapshot'] as $object) {
+            $snapshots = $this->cacheService->searchObjects(
+                null,
+                ['referentie' => $object['referentie']],
+                [$this->configuration['schema']->getId()->toString()]
+            )['results'];
+
+            if (count($snapshots) !== 0) {
+                continue;
+            }
+
             $snapshot = new ObjectEntity($this->configuration['schema']);
             $snapshot->hydrate(
-                ['snapshot' => $object]
+                [
+                    'snapshot'   => $object,
+                    'referentie' => $object['referentie'],
+                ]
             );
             $this->entityManager->persist($snapshot);
             $this->entityManager->flush();
@@ -479,7 +500,7 @@ class BrkService
                 'brk.snapshot.stored'
             );
             $this->eventDispatcher->dispatch($event, 'commongateway.action.event');
-        }
+        }//end foreach
 
         // $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
         return $data;

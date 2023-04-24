@@ -8,7 +8,7 @@
     "identificatie": "identificatie.#",
     "domein": "identificatie.@domein",
     "type": "perceel",
-    "kadastraleAanduiding": "kadastraleAanduiding.akrKadastraleGemeenteCode.waarde",
+    "kadastraleAanduiding": "{{kadastraleAanduiding.akrKadastraleGemeenteCode.waarde}}{{kadastraleAanduiding.sectie}}{{kadastraleAanduiding.perceelnummer}}{%if kadastraleAanduiding.appartementsrechtVolgnummer is defined %}{{kadastraleAanduiding.appartementsrechtVolgnummer}}{%endif%}",
     "begrenzingPerceel.type": "Polygon",
     "begrenzingPerceel.coordinates": "begrenzingPerceel.Surface.patches.PolygonPatch.exterior.LinearRing.posList.#",
     "plaatscoordinaten.type": "Point",
