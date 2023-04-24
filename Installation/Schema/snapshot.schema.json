@@ -9,6 +9,9 @@
     "snapshot": {
       "type": "array"
     },
+    "referentie": {
+      "type": "string"
+    },
     "processedDateTime": {
       "type": "datetime",
       "description": "The date and time this object has been processed"
