@@ -188,7 +188,18 @@ class GdsService
 
         $xmlEncoder = new XmlEncoder(['xml_root_node_name' => 'soapenv:Envelope']);
         $body       = $xmlEncoder->encode($message, 'xml');
-        $response   = $this->callService->call($source, $location, 'POST', ['body' => $body]);
+        $response   = $this->callService->call(
+            $source,
+            $location,
+            'POST',
+            [
+                'body'    => $body,
+                'headers' => [
+                    'SOAPAction'   => "",
+                    'Content-Type' => 'text/xml;charset="utf-8"',
+                ],
+            ]
+        );
         $result     = $this->callService->decodeResponse($source, $response);
 
         $locations = $this->getDataUrls($result);
