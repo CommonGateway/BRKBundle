@@ -15,7 +15,7 @@ use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 /**
  * Convert xml file from the BRK fileSystem to ObjectEntities.
  */
-class BrkHandler implements ActionHandlerInterface
+class SnapshotHandler implements ActionHandlerInterface
 {
 
     /**
@@ -46,10 +46,10 @@ class BrkHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'         => 'https://brk.commonground.nu/ActionHandler/BrkHandler.ActionHandler.json',
+            '$id'         => 'https://brk.commonground.nu/ActionHandler/SnapshotHandler.ActionHandler.json',
             '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
             'title'       => 'Brk ActionHandler',
-            'description' => 'This handler converts a xml file from the BRK fileSystem to ObjectEntities or updates existing ObjectEntities',
+            'description' => 'This handler converts a single snapshot into multiple BRK objects',
             'required'    => [],
             'properties'  => [],
         ];
@@ -67,7 +67,7 @@ class BrkHandler implements ActionHandlerInterface
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->brkService->brkHandler($data, $configuration);
+        return $this->brkService->snapshotHandler($data, $configuration);
 
     }//end run()
 

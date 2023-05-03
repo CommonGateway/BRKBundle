@@ -1,0 +1,20 @@
+{
+  "$id": "https://brk.commonground.nu/schema/snapshot.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "version": "0.1",
+  "title": "Snapshot",
+  "type": "object",
+  "description": "Een snapshot is een object dat de informatie bevat over objecten die bij elkaar horen in de oude BRK leveringen. Dit schema bevat deze snapshots om het mappen van deze snapshots naar objecten te kunnen offloaden.",
+  "properties": {
+    "snapshot": {
+      "type": "array"
+    },
+    "referentie": {
+      "type": "string"
+    },
+    "processedDateTime": {
+      "type": "datetime",
+      "description": "The date and time this object has been processed"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "title": "brkNp",
+  "$id": "https://brk.commonground.nu/mapping/brkNp.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.1",
+  "passTrough": true,
+  "mapping": {
+    "identificatie": "identificatie.#",
+    "domein": "identificatie.@domein",
+    "geheimhoudingPersoonsgegevens": "indicatieAfschermingPersoonsgegevens",
+    "geslacht": "betreft.GeregistreerdPersoon.geslacht.Geslacht.geslachtsaanduiding.waarde",
+    "geboorte.plaats": "betreft.GeregistreerdPersoon.geboorte.Geboorte.geboorteplaats",
+    "geboorte.datum.datum": "betreft.GeregistreerdPersoon.geboorte.Geboorte.geboortedatum.datum",
+    "naam": "betreft.GeregistreerdPersoon.naam.Naam"
+  },
+  "cast": {
+    "indicatieNietToonbareDiakriet": "bool",
+    "geheimhoudingPersoonsgegevens": "bool"
+  }
+}

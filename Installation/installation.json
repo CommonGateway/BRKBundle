@@ -3,6 +3,16 @@
     "actions": {
         "handlers": [
             {
+                "reference": "https://brk.commonground.nu/action/brk.BRKAction.action.json",
+                "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\BrkHandler",
+                "listens": ["brk.file.system.trigger"]
+            },
+            {
+                "reference": "https://brk.commonground.nu/action/brk.SnapshotAction.action.json",
+                "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\SnapshotHandler",
+                "listens": ["brk.snapshot.stored"]
+            },
+            {
                 "reference": "https://brk.commonground.nu/actions/gdsAction.action.json",
                 "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\GdsHandler",
                 "listens": "brk.default.listens"
@@ -24,7 +34,8 @@
                     "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
                     "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
                     "https://brk.commonground.nu/schema/stuk.schema.json",
-                    "https://brk.commonground.nu/schema/stukdeel.schema.json"
+                    "https://brk.commonground.nu/schema/stukdeel.schema.json",
+                    "https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json"
                 ],
                 "path": [
                     "search"

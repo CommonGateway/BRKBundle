@@ -1,7 +1,7 @@
 {
     "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json": [
       {
-        "identificatie": "12345678901234",
+        "identificatie": "123456789012341",
         "domein": ".KadastraalObject",
         "indicatieVervallen": false,
         "begrenzingPerceel": null,
@@ -33,7 +33,7 @@
     "https://brk.commonground.nu/schema/beslag.schema.json": [
       {
         "description": "Reden van beslag",
-        "identificatie": "12345678901234",
+        "identificatie": "123456789012342",
         "domein": ".KadastraalObject",
         "aandeelInBetrokkenRecht": null,
         "gedeeltelijkeBezwaringOudObject": false,
@@ -63,7 +63,7 @@
     "https://brk.commonground.nu/schema/hypotheek.schema.json": [
       {
         "description": "Bij een hypotheek op de kadastraal onroerende zaak dient het eigendomsrecht van de hypotheekgever als onderpand voor een geldlening of krediet bij de hypotheekhouder (geldverstrekker).",
-        "identificatie": "12345678901234",
+        "identificatie": "123456789012343",
         "domein": ".KadastraalObject",
         "aandeelInBetrokkenRecht": null,
         "gedeeltelijkeBezwaringOudObject": false,
@@ -87,7 +87,7 @@
     ],
     "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json": [
       {
-        "identificatie": "12345678901234",
+        "identificatie": "123456789012344",
         "domein": ".KadastraalObject",
         "grondslag": null,
         "datumInWerking": "01-01-1990",
@@ -100,7 +100,7 @@
     ],
     "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json": [
         {
-            "identificatie": "12345678901234",
+            "identificatie": "123456789012345",
             "omschrijving": "Omschrijving van de person",
             "domein": ".KadastraalObject",
             "indicatieNietToonbareDiakriet": false,
@@ -119,7 +119,7 @@
     ],
     "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json": [
         {
-            "identificatie": "12345678901234",
+            "identificatie": "123456789012346",
             "omschrijving": "Omschrijving van de person",
             "domein": ".KadastraalObject",
             "indicatieNietToonbareDiakriet": false,
@@ -136,7 +136,7 @@
     ],
     "https://brk.commonground.nu/schema/stuk.schema.json": [
         {
-            "identificatie": "12345678901234",
+            "identificatie": "123456789012347",
             "deelEnNummer": null,
             "domein": ".KadastraalObject",
             "toelichtingbewaarder": "Toelichting bewaarder",
@@ -151,7 +151,7 @@
     ],
     "https://brk.commonground.nu/schema/stukdeel.schema.json": [
         {
-            "identificatie": "12345678901234",
+            "identificatie": "123456789012348",
             "domein": ".KadastraalObject",
             "aard": null,
             "bedragTransactiesomLevering": null,
