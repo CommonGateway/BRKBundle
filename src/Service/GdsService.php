@@ -74,12 +74,12 @@ class GdsService
      * @param EventDispatcherInterface $eventDispatcher The event dispatcher.
      */
     public function __construct(
-        CallService              $callService,
-        GatewayResourceService   $resourceService,
-        FileSystemHandleService  $fshService,
-        BrkService               $brkService,
-        CacheService             $cacheService,
-        EntityManagerInterface   $entityManager,
+        CallService $callService,
+        GatewayResourceService $resourceService,
+        FileSystemHandleService $fshService,
+        BrkService $brkService,
+        CacheService $cacheService,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->resourceService = $resourceService;
@@ -301,10 +301,10 @@ class GdsService
             }
 
             if (str_contains($location['url'], $source->getLocation())) {
-                $endpoint               = substr($location['url'], strlen($source->getLocation()));
-                $file                   = $this->callService->call($source, $endpoint, 'GET')->getBody()->getContents();
-                $fileData               = $this->fshService->decodeFile($file, '', 'zip');
-                $data                   = array_merge($this->getSnapshotsForFiles($fileData), $data);
+                $endpoint = substr($location['url'], strlen($source->getLocation()));
+                $file     = $this->callService->call($source, $endpoint, 'GET')->getBody()->getContents();
+                $fileData = $this->fshService->decodeFile($file, '', 'zip');
+                $data     = array_merge($this->getSnapshotsForFiles($fileData), $data);
             }
         }
 
@@ -343,7 +343,6 @@ class GdsService
             ]
         );
         $result     = $this->callService->decodeResponse($source, $response);
-
 
         $locations = $this->getDataUrls($result);
         $data      = array_merge_recursive($data, $this->fetchData($locations, $configuration));
