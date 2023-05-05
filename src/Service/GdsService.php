@@ -155,24 +155,6 @@ class GdsService
 
 
     /**
-     * Determines if an array is associative.
-     *
-     * @param array $array The array to check.
-     *
-     * @return bool Whether the array is associative.
-     */
-    private function isAssociative(array $array): bool
-    {
-        if ($array === []) {
-            return false;
-        }
-
-        return array_keys($array) !== range(0, (count($array) - 1));
-
-    }//end isAssociative()
-
-
-    /**
      * Get urls for data from the response from GDS2.
      *
      * @param array $result The GDS2 response.
@@ -192,7 +174,7 @@ class GdsService
 
         $files = $result['SOAP-ENV:Body']['ns9:BestandenlijstOpvragenResponse']['ns9:antwoord']['ns5:BestandenLijst']['ns5:Afgifte'];
 
-        if ($this->isAssociative($files) === true) {
+        if ($this->brkService->isAssociative($files) === true) {
             $fileUrl     = $files['ns8:digikoppeling-external-datareferences']['ns8:data-reference']['ns8:transport']['ns8:location']['ns8:senderUrl']['#'];
             $mime        = $files['ns8:digikoppeling-external-datareferences']['ns8:data-reference']['ns8:content']['@contentType'];
             $locations[] = [
@@ -236,7 +218,7 @@ class GdsService
 
         $snapshotsToMap[] = $data['wordt']['KadastraalObjectSnapshot'];
 
-        if ($this->isAssociative($data['wordt']['KadastraalObjectSnapshot']) === false) {
+        if ($this->brkService->isAssociative($data['wordt']['KadastraalObjectSnapshot']) === false) {
             $snapshotsToMap = [];
             foreach ($data['wordt']['KadastraalObjectSnapshot'] as $snapshot) {
                 $snapshotsToMap[] = $snapshot;
