@@ -29,42 +29,58 @@ class GdsService
 {
 
     /**
-     * @var CallService The call service.
+     * The call service.
+     *
+     * @var CallService
      */
     private CallService $callService;
 
     /**
-     * @var GatewayResourceService The gateway resource service.
+     * The gateway resource service.
+     *
+     * @var GatewayResourceService
      */
     private GatewayResourceService $resourceService;
 
     /**
-     * @var FileSystemHandleService The file system handle service.
+     * The file system handle service.
+     *
+     * @var FileSystemHandleService
      */
     private FileSystemHandleService $fshService;
 
     /**
-     * @var BrkService The BRK service
+     * The BRK service.
+     *
+     * @var BrkService
      */
     private BrkService $brkService;
 
     /**
-     * @var CacheService The cache service
+     * The cache service.
+     *
+     * @var CacheService
      */
     private CacheService $cacheService;
 
     /**
-     * @var EntityManagerInterface The entity manager.
+     * The entity manager.
+     *
+     * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
 
     /**
-     * @var EventDispatcherInterface The event dispatcher.
+     * The event dispatcher.
+     *
+     * @var EventDispatcherInterface
      */
     private EventDispatcherInterface $eventDispatcher;
 
 
     /**
+     * The service constructor.
+     *
      * @param CallService              $callService     The call service.
      * @param GatewayResourceService   $resourceService The resource service.
      * @param FileSystemHandleService  $fshService      The file system handle service.
@@ -103,7 +119,7 @@ class GdsService
      */
     private function createRequestMessage(DateTime $lastSynced, array $configuration): array
     {
-        $now            = new \DateTime();
+        $now            = new DateTime();
         $notYetReported = 'true';
 
         if ($configuration['test'] === true) {
