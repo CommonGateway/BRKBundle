@@ -15,7 +15,7 @@
             {
                 "reference": "https://brk.commonground.nu/actions/gdsAction.action.json",
                 "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\GdsHandler",
-                "listens": "brk.default.listens"
+                "listens": ["brk.default.listens"]
             }
         ]
     },
