@@ -332,8 +332,8 @@ class GdsService
     /**
      * Calls the GDS source with configured data
      *
-     * @param  array $data          The data for the action.
-     * @param  array $configuration The configuration of the action.
+     * @param array $data          The data for the action.
+     * @param array $configuration The configuration of the action.
      *
      * @return array The data downloaded from the GDS service.
      */
