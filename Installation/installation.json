@@ -11,6 +11,11 @@
                 "reference": "https://brk.commonground.nu/action/brk.SnapshotAction.action.json",
                 "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\SnapshotHandler",
                 "listens": ["brk.snapshot.stored"]
+            },
+            {
+                "reference": "https://brk.commonground.nu/actions/gdsAction.action.json",
+                "actionHandler": "CommonGateway\\BRKBundle\\ActionHandler\\GdsHandler",
+                "listens": ["brk.default.listens"]
             }
         ]
     },
@@ -32,61 +37,89 @@
                     "https://brk.commonground.nu/schema/stukdeel.schema.json",
                     "https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json"
                 ],
-                "path": ["search"],
+                "path": [
+                    "search"
+                ],
                 "pathRegex": "^(search)$",
-                "methods": ["GET"]
+                "methods": [
+                    "GET"
+                ]
             }
         ],
         "schemas": [
             {
                 "reference": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
                 "path": "kadastraalonroerendezaken",
-                "methods": ["GET"],
+                "methods": [
+                    "GET"
+                ],
                 "subSchemaEndpoints": [
                     {
                         "reference": "https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json",
                         "path": "zakelijkgerechtigden",
-                        "methods": ["GET"],
-                        "throws": ["brk.get.zakelijkgerechtigden"]
+                        "methods": [
+                            "GET"
+                        ],
+                        "throws": [
+                            "brk.get.zakelijkgerechtigden"
+                        ]
                     },
                     {
                         "reference": "https://brk.commonground.nu/schema/beslag.schema.json",
                         "path": "beslagen",
-                        "methods": ["GET"],
-                        "throws": ["brk.get.beslagen"]
+                        "methods": [
+                            "GET"
+                        ],
+                        "throws": [
+                            "brk.get.beslagen"
+                        ]
                     },
                     {
                         "reference": "https://brk.commonground.nu/schema/hypotheek.schema.json",
                         "path": "hypotheken",
-                        "methods": ["GET"],
-                        "throws": ["brk.get.hypotheken"]
+                        "methods": [
+                            "GET"
+                        ],
+                        "throws": [
+                            "brk.get.hypotheken"
+                        ]
                     }
                 ]
             },
             {
                 "reference": "https://brk.commonground.nu/schema/publiekrechtelijkeBeperking.schema.json",
                 "path": "publiekrechtelijkebeperkingen",
-                "methods": ["GET"]
+                "methods": [
+                    "GET"
+                ]
             },
             {
                 "reference": "https://brk.commonground.nu/schema/kadasterNatuurlijkPersoon.schema.json",
                 "path": "kadasternatuurlijkpersonen",
-                "methods": ["GET"]
+                "methods": [
+                    "GET"
+                ]
             },
             {
                 "reference": "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
                 "path": "kadasternietnatuurlijkpersonen",
-                "methods": ["GET"]
+                "methods": [
+                    "GET"
+                ]
             },
             {
                 "reference": "https://brk.commonground.nu/schema/stuk.schema.json",
                 "path": "stukken",
-                "methods": ["GET"]
+                "methods": [
+                    "GET"
+                ]
             },
             {
                 "reference": "https://brk.commonground.nu/schema/stukdeel.schema.json",
                 "path": "stukdelen",
-                "methods": ["GET"]
+                "methods": [
+                    "GET"
+                ]
             }
         ]
     }
