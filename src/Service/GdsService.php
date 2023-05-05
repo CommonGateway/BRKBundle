@@ -192,7 +192,7 @@ class GdsService
 
         $files = $result['SOAP-ENV:Body']['ns9:BestandenlijstOpvragenResponse']['ns9:antwoord']['ns5:BestandenLijst']['ns5:Afgifte'];
 
-        if ($this->isAssociative($files)) {
+        if ($this->isAssociative($files) === true) {
             $fileUrl     = $files['ns8:digikoppeling-external-datareferences']['ns8:data-reference']['ns8:transport']['ns8:location']['ns8:senderUrl']['#'];
             $mime        = $files['ns8:digikoppeling-external-datareferences']['ns8:data-reference']['ns8:content']['@contentType'];
             $locations[] = [
@@ -316,7 +316,7 @@ class GdsService
                 continue;
             }
 
-            if (str_contains($location['url'], $source->getLocation())) {
+            if (str_contains($location['url'], $source->getLocation()) === true) {
                 $endpoint = substr($location['url'], strlen($source->getLocation()));
                 $file     = $this->callService->call($source, $endpoint, 'GET')->getBody()->getContents();
                 $fileData = $this->fshService->decodeFile($file, '', 'zip');
@@ -334,6 +334,7 @@ class GdsService
      *
      * @param  array $data          The data for the action.
      * @param  array $configuration The configuration of the action.
+     *
      * @return array The data downloaded from the GDS service.
      */
     public function gdsDataHandler(array $data, array $configuration): array
