@@ -1,7 +1,7 @@
 {
     "$id": "https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.1.1",
     "title": "KadastraalOnroerendeZaak",
     "description": "Een kadastraal onroerende zaak is een perceel of een appartementsrecht. Een perceel is een stuk grond waarvan het Kadaster de grenzen heeft gemeten en dat bij het Kadaster een eigen nummer heeft. Een appartementsrecht is het recht dat iemand of een organisatie heeft om eigenaar te zijn van een deel van een gebouw of een stuk grond. In de praktijk wordt dit deel meestal een appartement genoemd.\n\nWaardelijst in dit component :\n  [aardCultuurBebouwd](http://www.kadaster.nl/schemas/waardelijsten/CultuurcodeBebouwd/) en [aardCultuurOnbebouwd](http://www.kadaster.nl/schemas/waardelijsten/CultuurcodeOnbebouwd/)",
     "type": "object",
@@ -95,7 +95,8 @@
             "type": "array",
             "description": "Alle personen en rechtspersonen die een zakelijk recht hebben op deze kadastraal onroerende zaak.",
             "items": {
-                "type": "string"
+                "type": "string",
+                "$ref": "https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json"
             }
         },
         "privaatrechtelijkeBeperkingIdentificaties": {

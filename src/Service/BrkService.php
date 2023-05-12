@@ -197,6 +197,26 @@ class BrkService
 
     }//end connectInversed()
 
+    private function addZGtoOZs(ObjectEntity $object, array $onroerendeZaken): ObjectEntity
+    {
+        var_dump(count($onroerendeZaken));
+        foreach($onroerendeZaken as $onroerendeZaak) {
+            var_Dump($onroerendeZaak['_id']);
+            $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak['_id']);
+            if($ozObject !== null) {
+                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $object]);
+                $this->entityManager->persist($ozObject);
+            } else {
+                var_dump('object not found');
+                die;
+            }
+        }
+        die;
+
+        $this->entityManager->flush();
+
+        return $object;
+    }
 
     /**
      * Maps zakelijk gerechtigden within an snapshot.
@@ -263,8 +283,12 @@ class BrkService
         $objects = [];
 
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
-            $objects[] = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            $object = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            $onroerendeZaken = $this->cacheService->searchObjects('', ['identificatie' => $zakelijkGerechtigde['parent'], '_self.schema.ref' => 'https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json'])['results'];
+            $this->addZGtoOZs($object, $onroerendeZaken);
+            $objects[] = $object;
         }
+
 
         return $objects;
 
@@ -431,9 +455,14 @@ class BrkService
         $zakelijkGerechtigden = [];
 
         $onroerendeZaken      = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
+        $this->entityManager->flush();
+        $this->entityManager->flush();
+
         $personen             = array_merge($this->mapPersonen($object), $personen);
-        $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden);
+        $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden, $onroerendeZaken);
         $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
+
+
 
         $this->entityManager->flush();
 

@@ -2,11 +2,12 @@
   "title": "brkZakelijkRechtToZakelijkGerechtigde",
   "$id": "https://brk.commonground.nu/mapping/brkZakelijkRechtToZakelijkGerechtigde.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "passTrough": true,
   "mapping": {
     "identificatie": "identificatie.#",
     "type": "{{ aard.waarde|trans({'Beklemrecht': 'beklemrechthouder', 'Eigendom (recht van)': 'eigenaar', 'Erfpacht (recht van)': 'erfpachter', 'Gebruik en bewoning (recht van)': 'gebruik_bewoning', 'Grondrente (recht van)': 'grondrente', 'Opstal (recht van)': 'opstalhouder', 'Oud-vaderlandsrecht': 'vaderlandsrecht', 'Zakelijk recht als bedoeld in artikel 5, lid 3, onder b, van de Belemmeringenwet Privaatrecht': 'artikel5_3b_geheel', 'Stadsmeierrecht': 'stadsmeierrecht', 'Vruchtgebruik (recht van)': 'vruchtgebruiker', 'Erfpacht en Opstal (recht van)': 'erfpachter_opstalhouder', 'Opstalrecht Nutsvoorzieningen': 'nutsvoorzieningen', 'Raadpleeg brondocument': 'brondocument','Zakelijk recht na twee of meer zakelijke belastingen': 'twee_belastingen', 'Zakelijke belasting derde of volgende': 'belasting_derde', 'BP-recht': 'bp_recht', 'Opstalrecht Nutsvoorzieningen op gedeelte van perceel': 'nutsvoorzieningen_gedeelte', 'Zakelijk recht als bedoeld in artikel 5, lid 3, onder b, van de Belemmeringenwet Privaatrecht op gedeelte van perceel': 'artikel5_3b'}, '', 'en') }}",
-    "zakelijkRecht.isGebaseerdOpStukdeelIdentificatie": "isGebaseerdOp.StukdeelRef.#"
+    "zakelijkRecht.isGebaseerdOpStukdeelIdentificatie": "isGebaseerdOp.StukdeelRef.#",
+    "parent": "{% if attribute(rustOp.PerceelRef, '#') is defined and attribute(rustOp.PerceelRef, '#') is not null %}{{ attribute(rustOp.PerceelRef, '#') }}{% elseif attribute(rustOp.AppartementsrechtRef, '#')is defined and attribute(rustOp.AppartementsrechtRef, '#') is not null %}{{ attribute(rustOp.AppartementsrechtRef, '#') }}{% endif %}"
   }
 }
