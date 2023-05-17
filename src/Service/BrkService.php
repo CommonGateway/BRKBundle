@@ -198,6 +198,14 @@ class BrkService
     }//end connectInversed()
 
 
+    /**
+     * Connects Zakelijk Gerechtigden objects to onroerende zaak objects.
+     *
+     * @param ObjectEntity $object          The Zakelijk Gerechtigde object.
+     * @param array        $onroerendeZaken The oroerende zaak objects that the Zakelijk Gerechtigde should connect to.
+     *
+     * @return ObjectEntity The updated zakelijk gerechtigde object.
+     */
     private function addZGtoOZs(ObjectEntity $object, array $onroerendeZaken): ObjectEntity
     {
         foreach ($onroerendeZaken as $onroerendeZaak) {
@@ -281,7 +289,13 @@ class BrkService
 
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
             $object          = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
-            $onroerendeZaken = $this->cacheService->searchObjects('', ['identificatie' => $zakelijkGerechtigde['parent'], '_self.schema.ref' => 'https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json'])['results'];
+            $onroerendeZaken = $this->cacheService->searchObjects(
+                '',
+                [
+                    'identificatie'    => $zakelijkGerechtigde['parent'],
+                    '_self.schema.ref' => 'https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json',
+                ]
+            )['results'];
             $this->addZGtoOZs($object, $onroerendeZaken);
             $objects[] = $object;
         }
