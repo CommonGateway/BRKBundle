@@ -199,6 +199,31 @@ class BrkService
 
 
     /**
+     * Connects Zakelijk Gerechtigden objects to onroerende zaak objects.
+     *
+     * @param ObjectEntity $object          The Zakelijk Gerechtigde object.
+     * @param array        $onroerendeZaken The oroerende zaak objects that the Zakelijk Gerechtigde should connect to.
+     *
+     * @return ObjectEntity The updated zakelijk gerechtigde object.
+     */
+    private function addZGtoOZs(ObjectEntity $object, array $onroerendeZaken): ObjectEntity
+    {
+        foreach ($onroerendeZaken as $onroerendeZaak) {
+            $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak['_id']);
+            if ($ozObject !== null) {
+                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => [$object]]);
+                $this->entityManager->persist($ozObject);
+            }
+        }
+
+        $this->entityManager->flush();
+
+        return $object;
+
+    }//end addZGtoOZs()
+
+
+    /**
      * Maps zakelijk gerechtigden within an snapshot.
      *
      * @param array $snapshot The snapshot to map zakelijk gerechtigden for.
@@ -263,7 +288,16 @@ class BrkService
         $objects = [];
 
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
-            $objects[] = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            $object          = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            $onroerendeZaken = $this->cacheService->searchObjects(
+                '',
+                [
+                    'identificatie'    => $zakelijkGerechtigde['parent'],
+                    '_self.schema.ref' => 'https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json',
+                ]
+            )['results'];
+            $this->addZGtoOZs($object, $onroerendeZaken);
+            $objects[] = $object;
         }
 
         return $objects;
@@ -430,11 +464,15 @@ class BrkService
         $publiekeBeperkingen  = [];
         $zakelijkGerechtigden = [];
 
-        $onroerendeZaken      = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
+        $onroerendeZaken = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
+        $this->entityManager->flush();
+        $this->entityManager->flush();
+
         $personen             = array_merge($this->mapPersonen($object), $personen);
-        $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden);
+        $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden, $onroerendeZaken);
         $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
 
+        $this->entityManager->flush();
         $this->entityManager->flush();
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
@@ -526,7 +564,6 @@ class BrkService
 
         $this->mapBrkObject($snapshot->getValue('snapshot'));
         $snapshot->hydrate(['processedDateTime' => 'now']);
-
         return $data;
 
     }//end snapshotHandler()
