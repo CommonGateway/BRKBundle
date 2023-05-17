@@ -199,19 +199,13 @@ class BrkService
 
     private function addZGtoOZs(ObjectEntity $object, array $onroerendeZaken): ObjectEntity
     {
-        var_dump(count($onroerendeZaken));
         foreach($onroerendeZaken as $onroerendeZaak) {
-            var_Dump($onroerendeZaak['_id']);
             $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak['_id']);
             if($ozObject !== null) {
-                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $object]);
+                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => [$object]]);
                 $this->entityManager->persist($ozObject);
-            } else {
-                var_dump('object not found');
-                die;
             }
         }
-        die;
 
         $this->entityManager->flush();
 
@@ -465,6 +459,7 @@ class BrkService
 
 
         $this->entityManager->flush();
+        $this->entityManager->flush();
 
         return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
 
@@ -555,7 +550,6 @@ class BrkService
 
         $this->mapBrkObject($snapshot->getValue('snapshot'));
         $snapshot->hydrate(['processedDateTime' => 'now']);
-
         return $data;
 
     }//end snapshotHandler()
