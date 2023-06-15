@@ -185,13 +185,26 @@ class BrkService
             if (isset($parent['identificatie']) === true) {
                 $childrenOfParent = $this->getChildren($children, $parent['identificatie']);
                 if ($singular === true) {
-                    $parents[$key][$property] = $childrenOfParent[0];
-                    continue;
-                }
+                    $last  = end($childrenOfParent);
+                    $index = 0;
+                    foreach ($childrenOfParent as $child) {
+                        $parent[$property]       = $child;
+                        $parent['identificatie'] = $parent['identificatie'].$index;
+                        if ($child !== $last) {
+                            $parents[] = $parent;
+                        } else {
+                            $parents[$key] = $parent;
+                        }
 
-                $parents[$key][$property] = $childrenOfParent;
-            }
-        }
+                        $index++;
+                    }
+
+                    continue;
+                } else {
+                    $parents[$key][$property] = $childrenOfParent;
+                }
+            }//end if
+        }//end foreach
 
         return $parents;
 
@@ -211,7 +224,8 @@ class BrkService
         foreach ($onroerendeZaken as $onroerendeZaak) {
             $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak['_id']);
             if ($ozObject !== null) {
-                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => [$object]]);
+                $value = array_merge([$object], $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects()->toArray());
+                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $value]);
                 $this->entityManager->persist($ozObject);
             }
         }
@@ -288,6 +302,12 @@ class BrkService
         $objects = [];
 
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
+            if ($zakelijkGerechtigde['parent'] !== '') {
+                $previousParent = $zakelijkGerechtigde['parent'];
+            } else {
+                $zakelijkGerechtigde['parent'] = $previousParent;
+            }
+
             $object          = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
             $onroerendeZaken = $this->cacheService->searchObjects(
                 '',
@@ -296,6 +316,7 @@ class BrkService
                     '_self.schema.ref' => 'https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json',
                 ]
             )['results'];
+
             $this->addZGtoOZs($object, $onroerendeZaken);
             $objects[] = $object;
         }
