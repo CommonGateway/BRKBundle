@@ -185,24 +185,27 @@ class BrkService
             if (isset($parent['identificatie']) === true) {
                 $childrenOfParent = $this->getChildren($children, $parent['identificatie']);
                 if ($singular === true) {
-                    $last = end($childrenOfParent);
+                    $last  = end($childrenOfParent);
                     $index = 0;
                     foreach ($childrenOfParent as $child) {
-                        $parent[$property] = $child;
+                        $parent[$property]       = $child;
                         $parent['identificatie'] = $parent['identificatie'].$index;
-                        if($child !== $last) {
+                        if ($child !== $last) {
                             $parents[] = $parent;
                         } else {
                             $parents[$key] = $parent;
                         }
+
                         $index++;
                     }
+
                     continue;
                 } else {
                     $parents[$key][$property] = $childrenOfParent;
                 }
-            }
-        }
+            }//end if
+        }//end foreach
+
         return $parents;
 
     }//end connectInversed()
@@ -299,7 +302,7 @@ class BrkService
         $objects = [];
 
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
-            if($zakelijkGerechtigde['parent'] !== '') {
+            if ($zakelijkGerechtigde['parent'] !== '') {
                 $previousParent = $zakelijkGerechtigde['parent'];
             } else {
                 $zakelijkGerechtigde['parent'] = $previousParent;
