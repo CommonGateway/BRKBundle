@@ -78,7 +78,6 @@ class BrkService
      */
     private CacheService $cacheService;
 
-
     /**
      * @var array An array of identifiers translated to
      */
@@ -313,11 +312,10 @@ class BrkService
                 $zakelijkGerechtigde['parent'] = $previousParent;
             }
 
-
-            $object          = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            $object         = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
             $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
 
-            if(isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
+            if (isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
                 $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
             }
 
@@ -365,9 +363,10 @@ class BrkService
         ) {
             $onroerendeZaken = array_merge($this->mapMultiple($arMapping, $snapshot['Appartementsrecht']), $onroerendeZaken);
         } else if (isset($snapshot['Appartementsrecht']) === true) {
-            if(isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
+            if (isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
                 $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']);
             }
+
             $onroerendeZaken[] = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
         }
 
@@ -477,12 +476,13 @@ class BrkService
 
     }//end mapPubliekrechtelijkeBeperkingen()
 
+
     public function processHoofdsplitsingen(array $snapshot): array
     {
         if (isset($snapshot['Hoofdsplitsing']) === true && $this->isAssociative($snapshot['Hoofdsplitsing'])) {
-
         }
-    }
+
+    }//end processHoofdsplitsingen()
 
 
     /**
