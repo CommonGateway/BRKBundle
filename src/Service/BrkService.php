@@ -80,6 +80,12 @@ class BrkService
 
 
     /**
+     * @var array An array of identifiers translated to
+     */
+    private array $onroerendeZaken;
+
+
+    /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
      * @param LoggerInterface         $brkpluginLogger   The BRK plugin version of the logger interface.
      * @param FileSystemHandleService $fileSystemService The fileSystem Service.
@@ -107,6 +113,7 @@ class BrkService
         $this->cacheService      = $cacheService;
         $this->configuration     = [];
         $this->data              = [];
+        $this->onroerendeZaken   = [];
 
     }//end __construct()
 
@@ -219,15 +226,13 @@ class BrkService
      *
      * @return ObjectEntity The updated zakelijk gerechtigde object.
      */
-    private function addZGtoOZs(ObjectEntity $object, array $onroerendeZaken): ObjectEntity
+    private function addZGtoOZs(ObjectEntity $object, string $onroerendeZaak): ObjectEntity
     {
-        foreach ($onroerendeZaken as $onroerendeZaak) {
-            $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak['_id']);
-            if ($ozObject !== null) {
-                $value = array_merge([$object], $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects()->toArray());
-                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $value]);
-                $this->entityManager->persist($ozObject);
-            }
+        $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak);
+        if ($ozObject !== null) {
+            $value = array_merge([$object], $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects()->toArray());
+            $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $value]);
+            $this->entityManager->persist($ozObject);
         }
 
         $this->entityManager->flush();
@@ -308,16 +313,15 @@ class BrkService
                 $zakelijkGerechtigde['parent'] = $previousParent;
             }
 
-            $object          = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
-            $onroerendeZaken = $this->cacheService->searchObjects(
-                '',
-                [
-                    'identificatie'    => $zakelijkGerechtigde['parent'],
-                    '_self.schema.ref' => 'https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json',
-                ]
-            )['results'];
 
-            $this->addZGtoOZs($object, $onroerendeZaken);
+            $object          = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
+
+            if(isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
+                $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
+            }
+
+            $this->addZGtoOZs($object, $onroerendeZaak);
             $objects[] = $object;
         }
 
@@ -361,13 +365,20 @@ class BrkService
         ) {
             $onroerendeZaken = array_merge($this->mapMultiple($arMapping, $snapshot['Appartementsrecht']), $onroerendeZaken);
         } else if (isset($snapshot['Appartementsrecht']) === true) {
+            if(isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
+                $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']);
+            }
             $onroerendeZaken[] = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
         }
 
         $objects = [];
 
         foreach ($onroerendeZaken as $onroerendeZaak) {
-            $objects[] = $this->handleRefObject($ozSchema, $onroerendeZaak);
+            $object = $this->handleRefObject($ozSchema, $onroerendeZaak);
+
+            $this->onroerendeZaken[$onroerendeZaak['identificatie']] = $object->getId()->toString();
+
+            $objects[] = $object;
         }
 
         return $objects;
@@ -466,6 +477,13 @@ class BrkService
 
     }//end mapPubliekrechtelijkeBeperkingen()
 
+    public function processHoofdsplitsingen(array $snapshot): array
+    {
+        if (isset($snapshot['Hoofdsplitsing']) === true && $this->isAssociative($snapshot['Hoofdsplitsing'])) {
+
+        }
+    }
+
 
     /**
      * Maps BRK object arrays to the desired resources.
@@ -492,6 +510,8 @@ class BrkService
         $personen             = array_merge($this->mapPersonen($object), $personen);
         $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden, $onroerendeZaken);
         $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
+
+        $this->processHoofdSplitsingen($object);
 
         $this->entityManager->flush();
         $this->entityManager->flush();
