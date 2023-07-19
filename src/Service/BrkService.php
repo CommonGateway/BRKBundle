@@ -20,8 +20,10 @@ use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\AdapterInterface as CacheInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 
@@ -83,6 +85,7 @@ class BrkService
      */
     private array $onroerendeZaken;
 
+    private CacheInterface $cache;
 
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
@@ -100,7 +103,8 @@ class BrkService
         SynchronizationService $syncService,
         MappingService $mappingService,
         CacheService $cacheService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        CacheInterface $cache
     ) {
         $this->eventDispatcher   = $eventDispatcher;
         $this->entityManager     = $entityManager;
@@ -113,9 +117,34 @@ class BrkService
         $this->configuration     = [];
         $this->data              = [];
         $this->onroerendeZaken   = [];
+        $this->cache             = $cache;
 
     }//end __construct()
 
+    public function getFromCache(string $id): string
+    {
+        $item = $this->cache->getItem($id);
+        if($item->isHit() === true) {
+            return $item->get();
+        }
+
+        throw new Exception('Item not found in cache, rerun this mapping later');
+    }
+
+    public function addToCache(string $id, string $value): string
+    {
+
+        $item = $this->cache->getItem($id);
+        if($item->isHit() === true) {
+            return $item->get();
+        }
+
+        $item->set($value);
+        $item->expiresAt(new \DateTime('+10 days'));
+        $this->cache->save($item);
+
+        return $item->get();
+    }
 
     /**
      * Map a single instance of one mapping.
@@ -334,6 +363,8 @@ class BrkService
      * @param array $snapshot The snapshot to map onroerende zaken for.
      *
      * @return array The resulting onroerende zaken.
+     *
+     * @throws Exception In case an object contains a split that is not in the cache yet.
      */
     public function mapOnroerendeZaken(array $snapshot): array
     {
@@ -489,12 +520,13 @@ class BrkService
      * Maps BRK object arrays to the desired resources.
      *
      * @param array $object The objects to map.
-     * @param int   $start  The start of the array to map.
-     * @param int   $length The maximum number of elements to map.
+     * @param int $start The start of the array to map.
+     * @param int $length The maximum number of elements to map.
      *
      * @return array
      * @throws LoaderError
      * @throws SyntaxError
+     * @throws Exception
      */
     public function mapBrkObject(array $object, int $start=0, int $length=10000): array
     {
@@ -590,10 +622,12 @@ class BrkService
     /**
      * Maps a single snapshot object to BRK objects.
      *
-     * @param array $data          The action data.
+     * @param array $data The action data.
      * @param array $configuration The action configuration.
      *
      * @return array
+     * 
+     * @throws Exception
      */
     public function snapshotHandler(array $data, array $configuration): array
     {
