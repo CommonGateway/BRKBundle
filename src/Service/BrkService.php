@@ -87,6 +87,7 @@ class BrkService
 
     private CacheInterface $cache;
 
+
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
      * @param LoggerInterface         $brkpluginLogger   The BRK plugin version of the logger interface.
@@ -121,21 +122,24 @@ class BrkService
 
     }//end __construct()
 
+
     public function getFromCache(string $id): string
     {
         $item = $this->cache->getItem($id);
-        if($item->isHit() === true) {
+        if ($item->isHit() === true) {
             return $item->get();
         }
 
         throw new Exception('Item not found in cache, rerun this mapping later');
-    }
+
+    }//end getFromCache()
+
 
     public function addToCache(string $id, string $value): string
     {
 
         $item = $this->cache->getItem($id);
-        if($item->isHit() === true) {
+        if ($item->isHit() === true) {
             return $item->get();
         }
 
@@ -144,7 +148,9 @@ class BrkService
         $this->cache->save($item);
 
         return $item->get();
-    }
+
+    }//end addToCache()
+
 
     /**
      * Map a single instance of one mapping.
@@ -520,8 +526,8 @@ class BrkService
      * Maps BRK object arrays to the desired resources.
      *
      * @param array $object The objects to map.
-     * @param int $start The start of the array to map.
-     * @param int $length The maximum number of elements to map.
+     * @param int   $start  The start of the array to map.
+     * @param int   $length The maximum number of elements to map.
      *
      * @return array
      * @throws LoaderError
@@ -622,11 +628,11 @@ class BrkService
     /**
      * Maps a single snapshot object to BRK objects.
      *
-     * @param array $data The action data.
+     * @param array $data          The action data.
      * @param array $configuration The action configuration.
      *
      * @return array
-     * 
+     *
      * @throws Exception
      */
     public function snapshotHandler(array $data, array $configuration): array
