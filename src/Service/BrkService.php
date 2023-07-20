@@ -123,6 +123,15 @@ class BrkService
     }//end __construct()
 
 
+    /**
+     * Fetches an key-value pair from the cache
+     *
+     * @param string $id The key to look for in the cache.
+     *
+     * @return string The value found in the cache for given key.
+     *
+     * @throws Exception
+     */
     public function getFromCache(string $id): string
     {
         $item = $this->cache->getItem($id);
@@ -135,6 +144,14 @@ class BrkService
     }//end getFromCache()
 
 
+    /**
+     * Adds or overwrites a key value pair to the cache.
+     *
+     * @param string $id    The key of the pair to add or overwrite in the cache.
+     * @param string $value The value of the pair to add or overwrite in the cache.
+     *
+     * @return string The value of the key-value pair.
+     */
     public function addToCache(string $id, string $value): string
     {
 
@@ -252,8 +269,8 @@ class BrkService
     /**
      * Connects Zakelijk Gerechtigden objects to onroerende zaak objects.
      *
-     * @param ObjectEntity $object          The Zakelijk Gerechtigde object.
-     * @param array        $onroerendeZaken The oroerende zaak objects that the Zakelijk Gerechtigde should connect to.
+     * @param ObjectEntity $object         The Zakelijk Gerechtigde object.
+     * @param string       $onroerendeZaak The oroerende zaak object id that the Zakelijk Gerechtigde should connect to.
      *
      * @return ObjectEntity The updated zakelijk gerechtigde object.
      */
@@ -347,15 +364,16 @@ class BrkService
             }
 
             $object         = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
-            if (isset($this->onroerendeZaken[$zakelijkGerechtigde['parent']]) === true) {
-                $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
-
-                if (isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
-                    $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
-                }
-
-                $this->addZGtoOZs($object, $onroerendeZaak);
+            if (isset($this->onroerendeZaken[$zakelijkGerechtigde['parent']]) === false) {
+                continue;
             }
+
+            $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
+            if (isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
+                $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
+            }
+
+            $this->addZGtoOZs($object, $onroerendeZaak);
 
             $objects[] = $object;
         }
@@ -406,8 +424,6 @@ class BrkService
                 $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']);
             }
             $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
-
-            var_dump(\Safe\json_encode($appartementsrecht));
         }
 
         $objects = [];
