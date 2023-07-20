@@ -2,19 +2,20 @@
   "title": "brkAppartementsrecht",
   "$id": "https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "passTrough": true,
   "mapping": {
     "identificatie": "identificatie.#",
     "domein": "identificatie.@domein",
     "type": "appartementsrecht",
-    "kadastraleAanduiding": "{{kadastraleAanduiding.akrKadastraleGemeenteCode.waarde}}{{kadastraleAanduiding.sectie}}{{kadastraleAanduiding.perceelnummer}}{%if kadastraleAanduiding.appartementsrechtVolgnummer is defined %}{{kadastraleAanduiding.appartementsrechtVolgnummer}}{%endif%}",
+    "kadastraleAanduiding": "{{kadastraleAanduiding.akrKadastraleGemeenteCode.waarde}}{{kadastraleAanduiding.sectie}}{{ '%05d'|format(kadastraleAanduiding.perceelnummer) }}{%if kadastraleAanduiding.appartementsrechtVolgnummer is defined %}A{{ '%04d'|format(kadastraleAanduiding.appartementsrechtVolgnummer) }}{%endif%}",
     "begrenzingPerceel.type": "Polygon",
     "begrenzingPerceel.coordinates": "begrenzingPerceel.Surface.patches.PolygonPatch.exterior.LinearRing.posList.#",
     "plaatscoordinaten.type": "Point",
     "plaatscoordinaten.coordinates": "plaatscoordinaten.Point.pos",
     "koopsom.koopjaar": "koopsom.TypeKoopsom.koopjaar",
-    "koopsom.koopsom": "koopsom.TypeKoopsom.bedrag.som"
+    "koopsom.koopsom": "koopsom.TypeKoopsom.bedrag.som",
+    "bijbehorendeGrondpercelen": "hoofdsplitsing.HoofdsplitsingRef.#"
   },
   "cast": {
     "koopsom.koopjaar": "int",

@@ -20,8 +20,10 @@ use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\AdapterInterface as CacheInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 
@@ -78,6 +80,13 @@ class BrkService
      */
     private CacheService $cacheService;
 
+    /**
+     * @var array An array of identifiers translated to
+     */
+    private array $onroerendeZaken;
+
+    private CacheInterface $cache;
+
 
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
@@ -95,7 +104,8 @@ class BrkService
         SynchronizationService $syncService,
         MappingService $mappingService,
         CacheService $cacheService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        CacheInterface $cache
     ) {
         $this->eventDispatcher   = $eventDispatcher;
         $this->entityManager     = $entityManager;
@@ -107,8 +117,53 @@ class BrkService
         $this->cacheService      = $cacheService;
         $this->configuration     = [];
         $this->data              = [];
+        $this->onroerendeZaken   = [];
+        $this->cache             = $cache;
 
     }//end __construct()
+
+
+    /**
+     * Fetches an key-value pair from the cache
+     *
+     * @param string $id The key to look for in the cache.
+     *
+     * @return string The value found in the cache for given key.
+     *
+     * @throws Exception
+     */
+    public function getFromCache(string $id): string
+    {
+        $item = $this->cache->getItem($id);
+        if ($item->isHit() === true) {
+            return $item->get();
+        }
+
+        throw new Exception('Item not found in cache, rerun this mapping later');
+
+    }//end getFromCache()
+
+
+    /**
+     * Adds or overwrites a key value pair to the cache.
+     *
+     * @param string $id    The key of the pair to add or overwrite in the cache.
+     * @param string $value The value of the pair to add or overwrite in the cache.
+     *
+     * @return string The value of the key-value pair.
+     */
+    public function addToCache(string $id, string $value): string
+    {
+
+        $item = $this->cache->getItem($id);
+
+        $item->set($value);
+        $item->expiresAt(new \DateTime('+10 days'));
+        $this->cache->save($item);
+
+        return $item->get();
+
+    }//end addToCache()
 
 
     /**
@@ -214,20 +269,18 @@ class BrkService
     /**
      * Connects Zakelijk Gerechtigden objects to onroerende zaak objects.
      *
-     * @param ObjectEntity $object          The Zakelijk Gerechtigde object.
-     * @param array        $onroerendeZaken The oroerende zaak objects that the Zakelijk Gerechtigde should connect to.
+     * @param ObjectEntity $object         The Zakelijk Gerechtigde object.
+     * @param string       $onroerendeZaak The oroerende zaak object id that the Zakelijk Gerechtigde should connect to.
      *
      * @return ObjectEntity The updated zakelijk gerechtigde object.
      */
-    private function addZGtoOZs(ObjectEntity $object, array $onroerendeZaken): ObjectEntity
+    private function addZGtoOZs(ObjectEntity $object, string $onroerendeZaak): ObjectEntity
     {
-        foreach ($onroerendeZaken as $onroerendeZaak) {
-            $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak['_id']);
-            if ($ozObject !== null) {
-                $value = array_merge([$object], $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects()->toArray());
-                $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $value]);
-                $this->entityManager->persist($ozObject);
-            }
+        $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak);
+        if ($ozObject !== null) {
+            $value = array_merge([$object], $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects()->toArray());
+            $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $value]);
+            $this->entityManager->persist($ozObject);
         }
 
         $this->entityManager->flush();
@@ -304,22 +357,26 @@ class BrkService
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
             if ($zakelijkGerechtigde['parent'] !== '') {
                 $previousParent = $zakelijkGerechtigde['parent'];
+            } else if (isset($previousParent) === false) {
+                $zakelijkGerechtigde['parent'] = null;
             } else {
                 $zakelijkGerechtigde['parent'] = $previousParent;
             }
 
-            $object          = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
-            $onroerendeZaken = $this->cacheService->searchObjects(
-                '',
-                [
-                    'identificatie'    => $zakelijkGerechtigde['parent'],
-                    '_self.schema.ref' => 'https://brk.commonground.nu/schema/kadastraalOnroerendeZaak.schema.json',
-                ]
-            )['results'];
+            $object = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            if (isset($this->onroerendeZaken[$zakelijkGerechtigde['parent']]) === false) {
+                continue;
+            }
 
-            $this->addZGtoOZs($object, $onroerendeZaken);
+            $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
+            if (isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
+                $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
+            }
+
+            $this->addZGtoOZs($object, $onroerendeZaak);
+
             $objects[] = $object;
-        }
+        }//end foreach
 
         return $objects;
 
@@ -332,6 +389,8 @@ class BrkService
      * @param array $snapshot The snapshot to map onroerende zaken for.
      *
      * @return array The resulting onroerende zaken.
+     *
+     * @throws Exception In case an object contains a split that is not in the cache yet.
      */
     public function mapOnroerendeZaken(array $snapshot): array
     {
@@ -361,13 +420,21 @@ class BrkService
         ) {
             $onroerendeZaken = array_merge($this->mapMultiple($arMapping, $snapshot['Appartementsrecht']), $onroerendeZaken);
         } else if (isset($snapshot['Appartementsrecht']) === true) {
-            $onroerendeZaken[] = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
+            if (isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
+                $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']);
+            }
+
+            $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
         }
 
         $objects = [];
 
         foreach ($onroerendeZaken as $onroerendeZaak) {
-            $objects[] = $this->handleRefObject($ozSchema, $onroerendeZaak);
+            $object = $this->handleRefObject($ozSchema, $onroerendeZaak);
+
+            $this->onroerendeZaken[$onroerendeZaak['identificatie']] = $object->getId()->toString();
+
+            $objects[] = $object;
         }
 
         return $objects;
@@ -477,6 +544,7 @@ class BrkService
      * @return array
      * @throws LoaderError
      * @throws SyntaxError
+     * @throws Exception
      */
     public function mapBrkObject(array $object, int $start=0, int $length=10000): array
     {
@@ -574,6 +642,8 @@ class BrkService
      * @param array $configuration The action configuration.
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function snapshotHandler(array $data, array $configuration): array
     {
