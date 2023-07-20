@@ -363,7 +363,7 @@ class BrkService
                 $zakelijkGerechtigde['parent'] = $previousParent;
             }
 
-            $object         = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
+            $object = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
             if (isset($this->onroerendeZaken[$zakelijkGerechtigde['parent']]) === false) {
                 continue;
             }
