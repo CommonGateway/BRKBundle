@@ -357,7 +357,7 @@ class BrkService
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
             if ($zakelijkGerechtigde['parent'] !== '') {
                 $previousParent = $zakelijkGerechtigde['parent'];
-            } elseif (isset($previousParent) === false) {
+            } else if (isset($previousParent) === false) {
                 $zakelijkGerechtigde['parent'] = null;
             } else {
                 $zakelijkGerechtigde['parent'] = $previousParent;
@@ -376,7 +376,7 @@ class BrkService
             $this->addZGtoOZs($object, $onroerendeZaak);
 
             $objects[] = $object;
-        }
+        }//end foreach
 
         return $objects;
 
@@ -423,6 +423,7 @@ class BrkService
             if (isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
                 $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']);
             }
+
             $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
         }
 
