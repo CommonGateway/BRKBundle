@@ -139,9 +139,6 @@ class BrkService
     {
 
         $item = $this->cache->getItem($id);
-        if ($item->isHit() === true) {
-            return $item->get();
-        }
 
         $item->set($value);
         $item->expiresAt(new \DateTime('+10 days'));
@@ -343,18 +340,23 @@ class BrkService
         foreach ($zakelijkGerechtigden as $zakelijkGerechtigde) {
             if ($zakelijkGerechtigde['parent'] !== '') {
                 $previousParent = $zakelijkGerechtigde['parent'];
+            } elseif (isset($previousParent) === false) {
+                $zakelijkGerechtigde['parent'] = null;
             } else {
                 $zakelijkGerechtigde['parent'] = $previousParent;
             }
 
             $object         = $this->handleRefObject($zgSchema, $zakelijkGerechtigde);
-            $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
+            if (isset($this->onroerendeZaken[$zakelijkGerechtigde['parent']]) === true) {
+                $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
 
-            if (isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
-                $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
+                if (isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
+                    $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
+                }
+
+                $this->addZGtoOZs($object, $onroerendeZaak);
             }
 
-            $this->addZGtoOZs($object, $onroerendeZaak);
             $objects[] = $object;
         }
 
@@ -403,8 +405,9 @@ class BrkService
             if (isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
                 $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']);
             }
+            $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
 
-            $onroerendeZaken[] = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
+            var_dump(\Safe\json_encode($appartementsrecht));
         }
 
         $objects = [];
@@ -514,14 +517,6 @@ class BrkService
     }//end mapPubliekrechtelijkeBeperkingen()
 
 
-    public function processHoofdsplitsingen(array $snapshot): array
-    {
-        if (isset($snapshot['Hoofdsplitsing']) === true && $this->isAssociative($snapshot['Hoofdsplitsing'])) {
-        }
-
-    }//end processHoofdsplitsingen()
-
-
     /**
      * Maps BRK object arrays to the desired resources.
      *
@@ -548,8 +543,6 @@ class BrkService
         $personen             = array_merge($this->mapPersonen($object), $personen);
         $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden, $onroerendeZaken);
         $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
-
-        $this->processHoofdSplitsingen($object);
 
         $this->entityManager->flush();
         $this->entityManager->flush();
