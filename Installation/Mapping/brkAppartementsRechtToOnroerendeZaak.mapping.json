@@ -2,7 +2,7 @@
   "title": "brkAppartementsrecht",
   "$id": "https://brk.commonground.nu/mapping/brkAppartementsrecht.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "passTrough": true,
   "mapping": {
     "identificatie": "identificatie.#",
@@ -15,12 +15,13 @@
     "plaatscoordinaten.coordinates": "plaatscoordinaten.Point.pos",
     "koopsom.koopjaar": "koopsom.TypeKoopsom.koopjaar",
     "koopsom.koopsom": "koopsom.TypeKoopsom.bedrag.som",
-    "bijbehorendeGrondpercelen": "hoofdsplitsing.HoofdsplitsingRef.#"
+    "bijbehorendeGrondpercelen": "[{{attribute(hoofdsplitsing.HoofdsplitsingRef, '#')|json_encode}}]"
   },
   "cast": {
     "koopsom.koopjaar": "int",
     "koopsom.koopsom": "int",
     "begrenzingPerceel.coordinates": "coordinateStringToArray",
-    "plaatscoordinaten.coordinates": "coordinateStringToArray"
+    "plaatscoordinaten.coordinates": "coordinateStringToArray",
+    "bijbehorendeGrondpercelen": "jsonToArray"
   }
 }
