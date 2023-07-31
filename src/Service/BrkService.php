@@ -132,12 +132,14 @@ class BrkService
      *
      * @throws Exception
      */
-    public function getFromCache(string $id): string
+    public function getFromCache(string $id): ?string
     {
         $item = $this->cache->getItem($id);
         if ($item->isHit() === true) {
             return $item->get();
         }
+
+        return null;
 
         throw new Exception('Item not found in cache, rerun this mapping later');
 
@@ -421,7 +423,21 @@ class BrkService
             $onroerendeZaken = array_merge($this->mapMultiple($arMapping, $snapshot['Appartementsrecht']), $onroerendeZaken);
         } else if (isset($snapshot['Appartementsrecht']) === true) {
             if (isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
-                $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']);
+                $splitsingId = $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'];
+
+//                $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($splitsingId);
+                $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = null;
+
+                if($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] === null) {
+                    $percelen = $this->cacheService->searchObjects(
+                        null,
+                        ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
+                        [$ozSchema->getId()->toString()]
+                    )['results'];
+                    if(count($percelen) > 0) {
+                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $percelen[0]['_id'];
+                    }
+                }
             }
 
             $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
