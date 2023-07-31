@@ -1,7 +1,7 @@
 {
     "$id": "https://brk.commonground.nu/schema/zakelijkGerechtigde.schema.json",
     "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-    "version": "0.1",
+    "version": "0.1.1",
     "title": "Zakelijk Gerechtigde",
     "type": "object",
     "properties": {
@@ -49,6 +49,10 @@
         },
         "persoon": {
             "$ref": "https://brk.commonground.nu/schema/persoonBeperkt.schema.json"
+        },
+        "hoofdsplitsing": {
+            "type": "string",
+            "description": "The hoofdsplitsing id that this item is contained for as grondperceel."
         }
     }
 }
