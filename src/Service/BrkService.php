@@ -425,23 +425,23 @@ class BrkService
             if (isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
                 $splitsingId = $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'];
 
-//                $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($splitsingId);
+                // $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $this->getFromCache($splitsingId);
                 $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = null;
 
-                if($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] === null) {
+                if ($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] === null) {
                     $percelen = $this->cacheService->searchObjects(
                         null,
                         ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
                         [$ozSchema->getId()->toString()]
                     )['results'];
-                    if(count($percelen) > 0) {
+                    if (count($percelen) > 0) {
                         $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $percelen[0]['_id'];
                     }
                 }
             }
 
             $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
-        }
+        }//end if
 
         $objects = [];
 
