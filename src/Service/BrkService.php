@@ -385,8 +385,6 @@ class BrkService
     }//end mapZakelijkGerechtigden()
 
 
-
-
     /**
      * Maps onroerende zaken within a snapshot.
      *
@@ -439,10 +437,15 @@ class BrkService
                     if (count($percelen) === 1) {
                         $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = [$percelen[0]['_id']];
                     } else if (count($percelen) > 1) {
-                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = array_map(function(array $perceel){return $perceel['_id'];}, $percelen);
+                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = array_map(
+                            function (array $perceel) {
+                                return $perceel['_id'];
+                            },
+                            $percelen
+                        );
                     }
                 }
-            }
+            }//end if
 
             $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
         }//end if
@@ -814,7 +817,6 @@ class BrkService
         } catch (Exception $exception) {
             $this->brkpluginLogger->critical($exception->getMessage());
         }
-
 
         return $synchronization->getObject();
 
