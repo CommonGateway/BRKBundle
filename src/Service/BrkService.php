@@ -98,7 +98,7 @@ class BrkService
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        LoggerInterface $brkpluginLogger,
+        LoggerInterface $pluginLogger,
         FileSystemHandleService $fileSystemService,
         GatewayResourceService $resourceService,
         SynchronizationService $syncService,
@@ -109,7 +109,7 @@ class BrkService
     ) {
         $this->eventDispatcher   = $eventDispatcher;
         $this->entityManager     = $entityManager;
-        $this->brkpluginLogger   = $brkpluginLogger;
+        $this->brkpluginLogger   = $pluginLogger;
         $this->fileSystemService = $fileSystemService;
         $this->resourceService   = $resourceService;
         $this->syncService       = $syncService;
@@ -385,6 +385,8 @@ class BrkService
     }//end mapZakelijkGerechtigden()
 
 
+
+
     /**
      * Maps onroerende zaken within a snapshot.
      *
@@ -434,8 +436,10 @@ class BrkService
                         ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
                         [$ozSchema->getId()->toString()]
                     )['results'];
-                    if (count($percelen) > 0) {
-                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $percelen[0]['_id'];
+                    if (count($percelen) === 1) {
+                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = [$percelen[0]['_id']];
+                    } else if (count($percelen) > 1) {
+                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = array_map(function(array $perceel){return $perceel['_id'];}, $percelen);
                     }
                 }
             }
@@ -805,7 +809,12 @@ class BrkService
             $refObject['identificatie']
         );
 
-        $synchronization = $this->syncService->synchronize($synchronization, $refObject);
+        try {
+            $synchronization = $this->syncService->synchronize($synchronization, $refObject);
+        } catch (Exception $exception) {
+            $this->brkpluginLogger->critical($exception->getMessage());
+        }
+
 
         return $synchronization->getObject();
 
