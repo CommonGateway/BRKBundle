@@ -442,10 +442,10 @@ class BrkService
                             },
                             $percelen
                         );
-                        $vves = array_map(
+                        $vves                                                                      = array_map(
                             function ($perceel) {
                                 return array_map(
-                                    function($vereniging) {
+                                    function ($vereniging) {
                                         return $vereniging['_self']['id'];
                                     },
                                     $perceel['verenigingenVanEigenaren']
@@ -456,9 +456,10 @@ class BrkService
                         if (isset($snapshot['verenigingenVanEigenaren']) === false) {
                             $snapshot['verenigingenVanEigenaren'] = [];
                         }
+
                         $snapshot['verenigingenVanEigenaren'] = array_merge($snapshot['verenigingenVanEigenaren'], $vves);
-                    }
-                }
+                    }//end if
+                }//end if
             }//end if
 
             $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
@@ -478,54 +479,59 @@ class BrkService
 
     }//end mapOnroerendeZaken()
 
+
     /**
-     * @param array $hoofdsplitsing
+     * @param  array $hoofdsplitsing
      * @return void
      * @throws Exception
      */
-    public function mapHoofdsplitsing (array $hoofdsplitsing): void
+    public function mapHoofdsplitsing(array $hoofdsplitsing): void
     {
-        $nnpSchema  = $this->resourceService->getSchema(
+        $nnpSchema = $this->resourceService->getSchema(
             "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
             'common-gateway/brk-bundle'
         );
 
         $splitsingId = $hoofdsplitsing['identificatie']['#'];
 
-        if(isset($hoofdsplitsing['heeftVerenigingVanEigenaren']['NietNatuurlijkPersoonRef'])) {
+        if (isset($hoofdsplitsing['heeftVerenigingVanEigenaren']['NietNatuurlijkPersoonRef'])) {
             $vveId = $hoofdsplitsing['heeftVerenigingVanEigenaren']['NietNatuurlijkPersoonRef']['#'];
-            $vves = $this->cacheService->searchObjects(null, ['identificatie' => $vveId], $nnpSchema->getId()->toString())['results'];
+            $vves  = $this->cacheService->searchObjects(null, ['identificatie' => $vveId], $nnpSchema->getId()->toString())['results'];
             if (count($vves) > 0) {
                 $vve = $vves[0]['_self']['id'];
             }
         }
+
         $percelen = $this->cacheService->searchObjects(
             null,
             ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
             [$ozSchema->getId()->toString()]
         )['results'];
 
-        foreach($results as $result) {
+        foreach ($results as $result) {
             $perceel = $this->entityManager->find('App:ObjectEntity', $result['_self']['id']);
-            if($perceel instanceof ObjectEntity === false) {
+            if ($perceel instanceof ObjectEntity === false) {
                 continue;
             }
+
             $perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
 
             $this->entityManager->persist($perceel);
         }
-    }
+
+    }//end mapHoofdsplitsing()
+
 
     /**
      * Open hoofdsplitsing objects and add verenigingen van eigenaren to percelen if applicable.
      *
-     * @param array $hoofdsplitsing
+     * @param  array $hoofdsplitsing
      * @return void
      * @throws Exception
      */
     public function mapHoofdsplitsingen(array $snapshot): void
     {
-        if(isset($snapshot['Hoofdsplitsing']) === false) {
+        if (isset($snapshot['Hoofdsplitsing']) === false) {
             return;
         }
 
@@ -535,12 +541,13 @@ class BrkService
             $hoofdsplitsingen = [$hoofdsplitsingen];
         }
 
-        foreach($hoofdsplitsingen as $hoofdsplitsing) {
+        foreach ($hoofdsplitsingen as $hoofdsplitsing) {
             $this->mapHoofdspliting($hoofdsplitsing);
         }
 
         return;
-    }
+
+    }//end mapHoofdsplitsingen()
 
 
     /**
