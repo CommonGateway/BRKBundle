@@ -21,6 +21,7 @@ use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use MongoDB\Model\BSONDocument;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface as CacheInterface;
@@ -98,7 +99,7 @@ class BrkService
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        LoggerInterface $brkpluginLogger,
+        LoggerInterface $pluginLogger,
         FileSystemHandleService $fileSystemService,
         GatewayResourceService $resourceService,
         SynchronizationService $syncService,
@@ -109,7 +110,7 @@ class BrkService
     ) {
         $this->eventDispatcher   = $eventDispatcher;
         $this->entityManager     = $entityManager;
-        $this->brkpluginLogger   = $brkpluginLogger;
+        $this->brkpluginLogger   = $pluginLogger;
         $this->fileSystemService = $fileSystemService;
         $this->resourceService   = $resourceService;
         $this->syncService       = $syncService;
@@ -338,7 +339,7 @@ class BrkService
         if (isset($snapshot['Aantekening']) === true && $this->isAssociative($snapshot['Aantekening']) === false) {
             $aantekeningen = $this->mapMultiple($aantekeningMapping, $snapshot['Aantekening']);
         } else if (isset($snapshot['Aantekening']) === true) {
-            $aantekeningen = [$this->mapSingle($aantekeningMapping, $snapshot['Tenaamstelling'])];
+            $aantekeningen = [$this->mapSingle($aantekeningMapping, $snapshot['Aantekening'])];
         }
 
         $tenaamstellingen     = $this
@@ -434,11 +435,18 @@ class BrkService
                         ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
                         [$ozSchema->getId()->toString()]
                     )['results'];
-                    if (count($percelen) > 0) {
-                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = $percelen[0]['_id'];
+                    if (count($percelen) === 1) {
+                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = [$percelen[0]['_id']];
+                    } else if (count($percelen) > 1) {
+                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = array_map(
+                            function ($perceel) {
+                                return $perceel['_id'];
+                            },
+                            $percelen
+                        );
                     }
                 }
-            }
+            }//end if
 
             $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
         }//end if
@@ -805,7 +813,11 @@ class BrkService
             $refObject['identificatie']
         );
 
-        $synchronization = $this->syncService->synchronize($synchronization, $refObject);
+        try {
+            $synchronization = $this->syncService->synchronize($synchronization, $refObject);
+        } catch (Exception $exception) {
+            $this->brkpluginLogger->critical($exception->getMessage());
+        }
 
         return $synchronization->getObject();
 
