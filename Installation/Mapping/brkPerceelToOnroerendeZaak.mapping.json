@@ -2,7 +2,7 @@
   "title": "brkPerceel",
   "$id": "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "passTrough": true,
   "mapping": {
     "identificatie": "identificatie.#",
