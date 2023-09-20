@@ -435,15 +435,28 @@ class BrkService
                         ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
                         [$ozSchema->getId()->toString()]
                     )['results'];
-                    if (count($percelen) === 1) {
-                        $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = [$percelen[0]['_id']];
-                    } else if (count($percelen) > 1) {
+                    if (count($percelen) > 0) {
                         $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = array_map(
                             function ($perceel) {
                                 return $perceel['_id'];
                             },
                             $percelen
                         );
+                        $vves = array_map(
+                            function ($perceel) {
+                                return array_map(
+                                    function($vereniging) {
+                                        return $vereniging['_self']['id'];
+                                    },
+                                    $perceel['verenigingenVanEigenaren']
+                                );
+                            },
+                            $percelen
+                        );
+                        if (isset($snapshot['verenigingenVanEigenaren']) === false) {
+                            $snapshot['verenigingenVanEigenaren'] = [];
+                        }
+                        $snapshot['verenigingenVanEigenaren'] = array_merge($snapshot['verenigingenVanEigenaren'], $vves);
                     }
                 }
             }//end if
@@ -464,6 +477,70 @@ class BrkService
         return $objects;
 
     }//end mapOnroerendeZaken()
+
+    /**
+     * @param array $hoofdsplitsing
+     * @return void
+     * @throws Exception
+     */
+    public function mapHoofdsplitsing (array $hoofdsplitsing): void
+    {
+        $nnpSchema  = $this->resourceService->getSchema(
+            "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json",
+            'common-gateway/brk-bundle'
+        );
+
+        $splitsingId = $hoofdsplitsing['identificatie']['#'];
+
+        if(isset($hoofdsplitsing['heeftVerenigingVanEigenaren']['NietNatuurlijkPersoonRef'])) {
+            $vveId = $hoofdsplitsing['heeftVerenigingVanEigenaren']['NietNatuurlijkPersoonRef']['#'];
+            $vves = $this->cacheService->searchObjects(null, ['identificatie' => $vveId], $nnpSchema->getId()->toString())['results'];
+            if (count($vves) > 0) {
+                $vve = $vves[0]['_self']['id'];
+            }
+        }
+        $percelen = $this->cacheService->searchObjects(
+            null,
+            ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
+            [$ozSchema->getId()->toString()]
+        )['results'];
+
+        foreach($results as $result) {
+            $perceel = $this->entityManager->find('App:ObjectEntity', $result['_self']['id']);
+            if($perceel instanceof ObjectEntity === false) {
+                continue;
+            }
+            $perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
+
+            $this->entityManager->persist($perceel);
+        }
+    }
+
+    /**
+     * Open hoofdsplitsing objects and add verenigingen van eigenaren to percelen if applicable.
+     *
+     * @param array $hoofdsplitsing
+     * @return void
+     * @throws Exception
+     */
+    public function mapHoofdsplitsingen(array $snapshot): void
+    {
+        if(isset($snapshot['Hoofdsplitsing']) === false) {
+            return;
+        }
+
+        $hoofdsplitsingen = $snapshot['Hoofdsplitsing'];
+
+        if ($this->isAssociative($hoofdsplitsingen)) {
+            $hoofdsplitsingen = [$hoofdsplitsingen];
+        }
+
+        foreach($hoofdsplitsingen as $hoofdsplitsing) {
+            $this->mapHoofdspliting($hoofdsplitsing);
+        }
+
+        return;
+    }
 
 
     /**
@@ -584,6 +661,8 @@ class BrkService
         $personen             = array_merge($this->mapPersonen($object), $personen);
         $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden, $onroerendeZaken);
         $publiekeBeperkingen  = array_merge($this->mapPubliekrechtelijkeBeperkingen($object), $publiekeBeperkingen);
+
+        $this->mapHoofdsplitsingen($object);
 
         $this->entityManager->flush();
         $this->entityManager->flush();
