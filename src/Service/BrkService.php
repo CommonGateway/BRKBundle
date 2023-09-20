@@ -21,6 +21,7 @@ use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use MongoDB\Model\BSONDocument;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface as CacheInterface;
@@ -438,7 +439,7 @@ class BrkService
                         $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = [$percelen[0]['_id']];
                     } else if (count($percelen) > 1) {
                         $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = array_map(
-                            function (array $perceel) {
+                            function ($perceel) {
                                 return $perceel['_id'];
                             },
                             $percelen
