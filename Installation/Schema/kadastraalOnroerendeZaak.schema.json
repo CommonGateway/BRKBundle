@@ -161,7 +161,6 @@
         },
         "verenigingenVanEigenaren": {
             "type": "array",
-            "format": "url",
             "items": {
                 "$ref": "https://brk.commonground.nu/schema/kadasterNietNatuurlijkPersoon.schema.json"
             }
