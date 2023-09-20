@@ -338,7 +338,7 @@ class BrkService
         if (isset($snapshot['Aantekening']) === true && $this->isAssociative($snapshot['Aantekening']) === false) {
             $aantekeningen = $this->mapMultiple($aantekeningMapping, $snapshot['Aantekening']);
         } else if (isset($snapshot['Aantekening']) === true) {
-            $aantekeningen = [$this->mapSingle($aantekeningMapping, $snapshot['Tenaamstelling'])];
+            $aantekeningen = [$this->mapSingle($aantekeningMapping, $snapshot['Aantekening'])];
         }
 
         $tenaamstellingen     = $this
