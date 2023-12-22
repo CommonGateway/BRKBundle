@@ -18,23 +18,25 @@ softwareType: softwareAddon
 description:
   en:
     localisedName: null
-    genericName: Symfony bundle for BRK functionality, getting data from the kadaster.
-    shortDescription: BRKBundle
-    longDescription: Symfony bundle for converting xml files from the BRK fileSystem to Gateway Objects. And for connecting to the GDS download service of the kadaster and retrieving new data from it.
+    genericName: null
+    shortDescription: "Symfony bundle for BRK functionality, getting data from the kadaster."
+    longDescription: "Symfony bundle for converting xml files from the BRK fileSystem to Gateway Objects. And for connecting to the GDS download service of the kadaster and retrieving new data from it."
     documentation: null
     apiDocumentation: null
-    features: []
+    features:
+      - Common Ground Gateway Plugin
     screenshots: []
     videos: []
     awards: []
   nl:
     localisedName: null
-    genericName: Symfony bundle voor ZGW standaard functionaliteit.
-    shortDescription: BRKBundle
-    longDescription: Symfony-bundle voor het converteren van XML-bestanden van het BRK-bestandssysteem naar Gateway Objects. En voor het aansluiten op de GDS downloadservice van het kadaster en het ophalen van nieuwe gegevens daaruit.
+    genericName: null
+    shortDescription: "Symfony bundle voor ZGW standaard functionaliteit."
+    longDescription: "Symfony-bundle voor het converteren van XML-bestanden van het BRK-bestandssysteem naar Gateway Objects. En voor het aansluiten op de GDS downloadservice van het kadaster en het ophalen van nieuwe gegevens daaruit."
     documentation: null
     apiDocumentation: null
-    features: []
+    features:
+      - Common Ground Gateway Plugin
     screenshots: []
     videos: []
     awards: []
