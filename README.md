@@ -1,99 +1,45 @@
-# BRKBundle
-An example repository for creating php symfony flex bundles
+# Over BRKregister
 
+Het BRKregister is ontworpen om sneller te werken met kadastrale gegevens en interacties met het Kadaster efficiënt te beheren. Het BRKregister is aanpasbaar aan de specifieke behoeften van verschillende overheidsorganisaties en voldoet aan alle relevante wet- en regelgeving met betrekking tot het beheer van kadastrale gegevens. Zoek en ontvangen ging nog nooit zo makkelijk.
 
-### Using this bundle
+## Kernvoordelen
 
-#### Installing with common-gateway admin user-interface
-@todo!
+- **Centraal Overzicht:** Biedt één centrale locatie voor alle kadastrale gegevens en transacties.
+- **Efficiëntie in Beheer:** Vereenvoudigt het beheer van kadastrale registraties en gerelateerde interacties.
+- **Interoperabiliteit:** Faciliteert naadloze integratie met andere overheidsystemen via gestandaardiseerde API's.
+- **Toegankelijkheid:** Verzekert dat kadastrale gegevens toegankelijk zijn voor geautoriseerde gebruikers, met strikte naleving van privacy en beveiligingsstandaarden.
+- **Flexibiliteit:** Aanpasbaar aan de specifieke behoeften van verschillende overheidsorganisaties.
+- **Compliance:** Voldoet aan alle relevante wet- en regelgeving met betrekking tot het beheer van kadastrale gegevens.
 
-#### Installing with php commands
+## Installatie
 
-To execute the following command you will need [Composer](https://getcomposer.org/download/) or a dockerized installation which already has php and composer.
+### Lokale Installatie
 
-U can install this plugin by installing with command:
-`composer require common-gateway/brk-bundle:dev-main` or dockerized: `docker-compose exec php composer require common-gateway/brk-bundle:dev-main`
-in the directory where your composer.json lives.
+#### Vereisten
 
-If you also want to install the schemas as entities you can install them with command:
-`php bin/console commongateway:install common-gateway/brk-bundle` or dockerized: `docker-compose exec php bin/console commongateway:install common-gateway/brk-bundle`
+- PHP 7.4 of hoger
+- Symfony 5 of hoger
+- Toegang tot relevante kadastrale data-API's
 
-### Creating your own bundle
+#### Stap-voor-stap Installatie
 
-##### Requirements
-- [GitHub](https://github.com/login) account or organization
-- [Packagist](https://packagist.org/login/) account
-- [Composer](https://getcomposer.org/download/) or if your project is dockerized, [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+1. Clone het BRKregister repository: `git clone https://github.com/CommonGround/BRKregister.git`
+2. Voer `composer install` uit om alle benodigde afhankelijkheden te installeren.
+3. Stel uw omgevingsvariabelen (.env) in voor toegang tot de kadastrale data-API's.
+4. Volg de systeemspecifieke configuratie-instructies om het BRKregister volledig in te richten.
 
-#### Using this template
+## Gebruik
 
-To create your own symfony bundle. You can copy this repository for a fast start.
+Na de installatie en configuratie kan het BRKregister worden ingericht naar de behoeften van uw organisatie. Beheer kadastrale registraties en gerelateerde interacties via een intuïtieve interface, met volledige controle over de datastructuur en datatoegang.
 
-1. Login on [GitHub](https://github.com)
-2. Use [this template](https://github.com/CommonGateway/BRKBundle/generate)
-3. Name your bundle (CamelCase)
-4. Press the green button `Create repository from template`
-5. Update file names and namespace to your fitting 
-   - Open composer.json, and change the name to your fitting. The first word should be the namespace and the second the name of your bundle. Check the autoload field to be set accordingly. Note: this is kebab-case. Also read: [naming your package](https://packagist.org/about#naming-your-package)
-   - Open BRKBundle.php and change the Bundle name and namespace. The namespace should be the same as your package name in composer.json but in CamelCase. So common-gateway/brk-bundle becomes CommonGateway/BRKBundle
-   - Rename the /Service and /ActionHandler accordingly (or delete if not used).
-   - Rename the /DependencyInjection/BRKExtension.php to your BundleNameExtension.php
-   - Rename the /Resources/config/services.yaml namespaces  
+## Bijdragen
 
-##### Adding schemas
-If you use your bundel with the common-gateway, you can add your own schemas that will be loaded as Entities. 
-These Entities will be loaded into the database so you can work with your own objects/data.
+Interesse om bij te dragen aan de ontwikkeling van het BRKregister? We waarderen alle soorten bijdragen, van foutmeldingen en verbetervoorstellen tot codebijdragen. Raadpleeg onze `CONTRIBUTING.md` voor richtlijnen over hoe u kunt deelnemen.
 
-These schemas are [json schema's](https://json-schema.org/learn/getting-started-step-by-step.html#starting-the-schema).
+## Licentie
 
-You can add existing schemas or create your own and add them in /Schema. There is also an example as /Schema/example.json.
+Het BRKregister is gelicenseerd onder de EUPL 1.2 licentie. Voor meer details, zie het `LICENSE.md` bestand in onze GitHub repository.
 
-Make sure your schema's have a `version` property (required) so you can update your schema's!
-Also make sure they have a unique `$id` so that they can be related to other schema's.
+## Contact
 
-All required properties are: 
-- 'version' can start on '0.1.0'
-- '$schema' (https://json-schema.org/draft/2020-12/schema)
-- '$id' (https://opencatalogi.nl/example.schema.json)
-- 'type' must be 'object'
-- 'properties' muste be schema properties
-
-If you don't have all required properties in your schema the gateway won't install that schema and will claim it is invalid.
-
-If you have added schema's you can also add objects/data for them, in /Data is an example you can use.
-
-#### Upload to packagist
-
-Before we can use our bundle and code, we must have it online on packagist so we can install with composer.
-
-1. Upload to packagist  
-   - Go to [Packagist](https://packagist.org)
-   - Press `submit` in the top menu bar and paste your bundle's github repository link, the name from you composer.json will be used as package name.
-   - If valid press `Submit`
-2. Auto-update package
-   - Go to your [packagist profile](https://packagist.org/profile/).
-   - Press `Show API Token` and copy
-   - Go to your new bundle's github repository
-   - Go to your repository settings
-   - Go to webhooks, and press `Add webhook`
-   - As Payload URL, set https://packagist.org/api/github?username=yourPackagistUsername  
-   - Keep SSL verification enabled
-   - As secret, paste the copied API token from packagist
-   - Set event on `Just push the event`
-   - Press `Add webhook`
-   - If you push new code it will now push to packagis. On packagist you should not see the auto-update warning anymore. If its still there check if your username and secret are set properly on the github webhook.
-
-#### Using your code
-
-To use the code in your library we first have to install it with composer.
-
-Note: for docker add `docker-compose exec php` before all commands
-
-1. Navigate with a command line to where your composer.json lives in the project you want to use this bundle.
-   - Execute `composer require {full package name}:dev-main`
-   - Docker users: restart your containers so symfony can recognize the new Bundle's namespace
-2. Open a php file where you want to use a class.
-   - Add the correct use statement (example `use CommonGateway\BRKBundle\Service\BrkService;`)
-   - U can now use your class!
-
-In the common gateway, if you want to use your code when triggered by an event with a action, make sure the class of the action object is set as the handler name including the namespace. For example if I want to use the BrkService I can set the BrkHandler as `CommonGateway\BRKBundle\ActionHandler\BrkHandler`.
+Voor meer informatie over het BRKregister en de ondersteuning die het kan bieden aan uw organisatie, neem contact op via <info@conduction.nl>.
