@@ -13,6 +13,7 @@ use App\Entity\Entity;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
+use App\Entity\Value;
 use App\Event\ActionEvent;
 use App\Service\SynchronizationService;
 use CommonGateway\CoreBundle\Service\CacheService;
@@ -24,7 +25,9 @@ use Exception;
 use MongoDB\Model\BSONDocument;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Cache\Adapter\AdapterInterface as CacheInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 
@@ -91,7 +94,7 @@ class BrkService
 
     /**
      * @param EntityManagerInterface  $entityManager     The Entity Manager.
-     * @param LoggerInterface         $brkpluginLogger   The BRK plugin version of the logger interface.
+     * @param LoggerInterface         $pluginLogger      The BRK plugin version of the logger interface.
      * @param FileSystemHandleService $fileSystemService The fileSystem Service.
      * @param GatewayResourceService  $resourceService   The Gateway Resource Service.
      * @param SynchronizationService  $syncService       The Synchronization Service.
@@ -106,7 +109,7 @@ class BrkService
         MappingService $mappingService,
         CacheService $cacheService,
         EventDispatcherInterface $eventDispatcher,
-        CacheInterface $cache
+        CacheInterface $cache,
     ) {
         $this->eventDispatcher   = $eventDispatcher;
         $this->entityManager     = $entityManager;
@@ -133,7 +136,7 @@ class BrkService
      *
      * @throws Exception
      */
-    public function getFromCache(string $id): ?string
+    public function getFromCache(string $id): ?ObjectEntity
     {
         $item = $this->cache->getItem($id);
         if ($item->isHit() === true) {
@@ -277,16 +280,20 @@ class BrkService
      *
      * @return ObjectEntity The updated zakelijk gerechtigde object.
      */
-    private function addZGtoOZs(ObjectEntity $object, string $onroerendeZaak): ObjectEntity
+    private function addZGtoOZs(ObjectEntity $object, ObjectEntity $ozObject): ObjectEntity
     {
-        $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak);
+
+//        $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak);
         if ($ozObject !== null) {
-            $value = array_merge([$object], $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects()->toArray());
-            $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $value]);
+            $value = $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects();
+            $value->add($object);
+            $ozObject->hydrate(['zakelijkGerechtigdeIdentificaties' => $value->toArray()]);
             $this->entityManager->persist($ozObject);
+
+            $this->cacheService->cacheObject($ozObject);
         }
 
-        $this->entityManager->flush();
+//        $this->entityManager->flush();
 
         return $object;
 
@@ -373,10 +380,10 @@ class BrkService
 
             $onroerendeZaak = $this->onroerendeZaken[$zakelijkGerechtigde['parent']];
             if (isset($zakelijkGerechtigde['hoofdsplitsing']) === true) {
-                $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak);
+                $this->addToCache($zakelijkGerechtigde['hoofdsplitsing'], $onroerendeZaak['object']);
             }
 
-            $this->addZGtoOZs($object, $onroerendeZaak);
+            $this->addZGtoOZs($object, $onroerendeZaak['object']);
 
             $objects[] = $object;
         }//end foreach
@@ -437,8 +444,16 @@ class BrkService
                     )['results'];
                     if (count($percelen) > 0) {
                         $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] = array_map(
-                            function ($perceel) {
-                                return $perceel['_id'];
+                            function ($perceel) use ($ozSchema) {
+                                $perceelObject = new ObjectEntity($ozSchema);
+                                $this->entityManager->persist($perceelObject);
+                                $perceelObject->setId(Uuid::fromString($perceel['_id']));
+                                $this->entityManager->persist($perceelObject);
+                                $perceelObject->hydrate(\Safe\json_decode(\Safe\json_encode($perceel), true));
+                                $this->entityManager->persist($perceelObject);
+                                $this->cacheService->cacheObject($perceelObject);
+
+                                return $perceelObject;
                             },
                             $percelen
                         );
@@ -472,7 +487,9 @@ class BrkService
                 }//end if
             }//end if
 
-            $onroerendeZaken[] = $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
+            $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
+            $appartementsrecht['bijbehorendeGrondpercelen'] = $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'];
+            $onroerendeZaken[] = $appartementsrecht;
         }//end if
 
         $objects = [];
@@ -480,7 +497,19 @@ class BrkService
         foreach ($onroerendeZaken as $onroerendeZaak) {
             $object = $this->handleRefObject($ozSchema, $onroerendeZaak);
 
-            $this->onroerendeZaken[$onroerendeZaak['identificatie']] = $object->getId()->toString();
+            if(isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
+                foreach($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] as $perceel) {
+                    $perceel->getValueObject('bijbehorendeAppartementsrechten')->getObjects()->add($object);
+                    $this->entityManager->persist($perceel);
+
+                    $this->cacheService->cacheObject($perceel);
+                }
+            }
+
+            $this->onroerendeZaken[$onroerendeZaak['identificatie']]['id'] = $object->getId()->toString();
+            $this->onroerendeZaken[$onroerendeZaak['identificatie']]['object'] = $object;
+
+
 
             $objects[] = $object;
         }
@@ -532,14 +561,26 @@ class BrkService
         )['results'];
 
         foreach ($results as $result) {
-            $perceel = $this->entityManager->find('App:ObjectEntity', $result['_self']['id']);
-            if ($perceel instanceof ObjectEntity === false) {
-                continue;
-            }
+            $perceel = new ObjectEntity($ozSchema);
+            $this->entityManager->persist($perceel);
+            $perceel->setId(Uuid::fromString($result['_id']));
+            $this->entityManager->persist($perceel);
 
-            $perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
+            $perceel->hydrate(\Safe\json_decode(\Safe\json_encode($result), true));
+
+            $vveObject = new ObjectEntity($nnpSchema);
+            $this->entityManager->persist($vveObject);
+            $vveObject->setId(Uuid::fromString($vve));
+            $this->entityManager->persist($vveObject);
+            $vveObject->hydrate(\Safe\json_decode(\Safe\json_encode($vves[0]), true));
+            $this->entityManager->persist($vveObject);
+            $this->cacheService->cacheObject($vveObject);
+
+            //$perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
+            $perceel->getValueObject('verenigingenVanEigenaren')->getObjects()->add($vveObject);
 
             $this->entityManager->persist($perceel);
+            $this->cacheService->cacheObject($perceel);
         }
 
     }//end mapHoofdsplitsing()
@@ -685,8 +726,6 @@ class BrkService
         $zakelijkGerechtigden = [];
 
         $onroerendeZaken = array_merge($this->mapOnroerendeZaken($object), $onroerendeZaken);
-        $this->entityManager->flush();
-        $this->entityManager->flush();
 
         $personen             = array_merge($this->mapPersonen($object), $personen);
         $zakelijkGerechtigden = array_merge($this->mapZakelijkGerechtigden($object), $zakelijkGerechtigden, $onroerendeZaken);
@@ -694,10 +733,9 @@ class BrkService
 
         $this->mapHoofdsplitsingen($object);
 
-        $this->entityManager->flush();
-        $this->entityManager->flush();
+        $objects = array_merge($onroerendeZaken, $personen, $zakelijkGerechtigden, $publiekeBeperkingen);
 
-        return array_merge($onroerendeZaken, $publiekeBeperkingen, $personen, $zakelijkGerechtigden);
+        return $objects;
 
     }//end mapBrkObject()
 
@@ -733,6 +771,8 @@ class BrkService
 
         $fileDataSet = $this->clearXmlNamespace($fileDataSet);
 
+        $i = 0;
+
         foreach ($fileDataSet['stand']['KadastraalObjectSnapshot'] as $object) {
             $snapshots = $this->cacheService->searchObjects(
                 null,
@@ -752,7 +792,8 @@ class BrkService
                 ]
             );
             $this->entityManager->persist($snapshot);
-            $this->entityManager->flush();
+
+            $this->cacheService->cacheObject($snapshot);
 
             $event = new ActionEvent(
                 'commongateway.action.event',
@@ -760,6 +801,7 @@ class BrkService
                 'brk.snapshot.stored'
             );
             $this->eventDispatcher->dispatch($event, 'commongateway.action.event');
+
         }//end foreach
 
         // $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
@@ -781,13 +823,24 @@ class BrkService
     public function snapshotHandler(array $data, array $configuration): array
     {
         $snapshotId = $data['snapshotId'];
-        $snapshot   = $this->entityManager->getRepository('App:ObjectEntity')->find($snapshotId);
+        $snapshot   = $this->cacheService->getObject($snapshotId);
 
         $this->configuration['source'] = $this->resourceService
             ->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
 
-        $this->mapBrkObject($snapshot->getValue('snapshot'));
-        $snapshot->hydrate(['processedDateTime' => 'now']);
+        $this->mapBrkObject($snapshot['snapshot']);
+        $now = new \DateTime('now');
+        $snapshot['processedDateTime'] = $now->format('c');
+
+        $this->entityManager->clear(ObjectEntity::class);
+        $this->entityManager->clear(Value::class);
+
+//        $object = new ObjectEntity($this->resourceService
+//            ->getSchema('https://brk.commonground.nu/schema/snapshot.schema.json', 'common-gateway/brk-bundle'));
+//        $object->hydrate($snapshot);
+//
+//        $this->cacheService->cacheObject($object);
+
         return $data;
 
     }//end snapshotHandler()
@@ -916,19 +969,31 @@ class BrkService
             ];
         }
 
-        $synchronization = $this->syncService->findSyncBySource(
-            $this->configuration['source'],
-            $schema,
-            $refObject['identificatie']
-        );
+//        $synchronization = $this->syncService->findSyncBySource(
+//            $this->configuration['source'],
+//            $schema,
+//            $refObject['identificatie']
+//        );
+//
+//        if($synchronization->getObject() === null) {
+//            $synchronization->setObject();
+//        }
+//        $synchronization->getObject()->hydrate($refObject);
 
-        try {
-            $synchronization = $this->syncService->synchronize($synchronization, $refObject);
-        } catch (Exception $exception) {
-            $this->brkpluginLogger->critical($exception->getMessage());
-        }
+        $object = new ObjectEntity($schema);
+        $object->hydrate($refObject);
 
-        return $synchronization->getObject();
+        $this->entityManager->persist($object);
+        $this->cacheService->cacheObject($object);
+
+//        try {
+//            $synchronization = $this->syncService->synchronize($synchronization, $refObject);
+//        } catch (Exception $exception) {
+//            $this->brkpluginLogger->critical($exception->getMessage());
+//        }
+
+        return $object;
+//        return $synchronization->getObject();
 
     }//end handleRefObject()
 

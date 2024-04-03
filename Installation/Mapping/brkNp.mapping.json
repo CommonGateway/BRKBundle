@@ -11,10 +11,12 @@
     "geslacht": "betreft.GeregistreerdPersoon.geslacht.Geslacht.geslachtsaanduiding.waarde",
     "geboorte.plaats": "betreft.GeregistreerdPersoon.geboorte.Geboorte.geboorteplaats",
     "geboorte.datum.datum": "betreft.GeregistreerdPersoon.geboorte.Geboorte.geboortedatum.datum",
-    "naam": "betreft.GeregistreerdPersoon.naam.Naam"
+    "naam": "betreft.GeregistreerdPersoon.naam.Naam",
+    "overlijden.datum.datum": "betreft.GeregistreerdPersoon.overlijden.Overlijden.datumOverlijden.datum"
   },
   "cast": {
     "indicatieNietToonbareDiakriet": "bool",
-    "geheimhoudingPersoonsgegevens": "bool"
+    "geheimhoudingPersoonsgegevens": "bool",
+    "overlijden.datum.datum": "unsetIfValue==betreft.GeregistreerdPersoon.overlijden.Overlijden.datumOverlijden.datum"
   }
 }
