@@ -283,7 +283,7 @@ class BrkService
     private function addZGtoOZs(ObjectEntity $object, ObjectEntity $ozObject): ObjectEntity
     {
 
-        // $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak);
+//        $ozObject = $this->entityManager->getRepository('App:ObjectEntity')->find($onroerendeZaak);
         if ($ozObject !== null) {
             $value = $ozObject->getValueObject('zakelijkGerechtigdeIdentificaties')->getObjects();
             $value->add($object);
@@ -293,7 +293,8 @@ class BrkService
             $this->cacheService->cacheObject($ozObject);
         }
 
-        // $this->entityManager->flush();
+//        $this->entityManager->flush();
+
         return $object;
 
     }//end addZGtoOZs()
@@ -486,9 +487,9 @@ class BrkService
                 }//end if
             }//end if
 
-            $appartementsrecht                              = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
+            $appartementsrecht = $this->mapSingle($arMapping, $snapshot['Appartementsrecht']);
             $appartementsrecht['bijbehorendeGrondpercelen'] = $snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'];
-            $onroerendeZaken[]                              = $appartementsrecht;
+            $onroerendeZaken[] = $appartementsrecht;
         }//end if
 
         $objects = [];
@@ -496,16 +497,16 @@ class BrkService
         foreach ($onroerendeZaken as $onroerendeZaak) {
             $object = $this->handleRefObject($ozSchema, $onroerendeZaak);
 
-            if (isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
-                foreach ($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] as $perceel) {
+            if(isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
+                foreach($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] as $perceel) {
+
                     $perceel->getValueObject('bijbehorendeAppartementsrechten')->getObjects()->add($object);
                     $this->entityManager->persist($perceel);
-
                     $this->cacheService->cacheObject($perceel);
                 }
             }
 
-            $this->onroerendeZaken[$onroerendeZaak['identificatie']]['id']     = $object->getId()->toString();
+            $this->onroerendeZaken[$onroerendeZaak['identificatie']]['id'] = $object->getId()->toString();
             $this->onroerendeZaken[$onroerendeZaak['identificatie']]['object'] = $object;
 
             $objects[] = $object;
@@ -567,18 +568,20 @@ class BrkService
 
             $vveObject = new ObjectEntity($nnpSchema);
             $this->entityManager->persist($vveObject);
+
             $vveObject->setId(Uuid::fromString($vve));
             $this->entityManager->persist($vveObject);
+
             $vveObject->hydrate(\Safe\json_decode(\Safe\json_encode($vves[0]), true));
             $this->entityManager->persist($vveObject);
             $this->cacheService->cacheObject($vveObject);
 
-            // $perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
+            //$perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
             $perceel->getValueObject('verenigingenVanEigenaren')->getObjects()->add($vveObject);
 
             $this->entityManager->persist($perceel);
             $this->cacheService->cacheObject($perceel);
-        }//end foreach
+        }
 
     }//end mapHoofdsplitsing()
 
@@ -798,6 +801,7 @@ class BrkService
                 'brk.snapshot.stored'
             );
             $this->eventDispatcher->dispatch($event, 'commongateway.action.event');
+
         }//end foreach
 
         // $objects = $this->mapBrkObjects($fileDataSet['stand']['KadastraalObjectSnapshot']);
@@ -825,17 +829,18 @@ class BrkService
             ->getSource('https://brk.commonground.nu/source/brkFilesystem.source.json', 'common-gateway/brk-bundle');
 
         $this->mapBrkObject($snapshot['snapshot']);
-        $now                           = new \DateTime('now');
+        $now = new \DateTime('now');
         $snapshot['processedDateTime'] = $now->format('c');
 
         $this->entityManager->clear(ObjectEntity::class);
         $this->entityManager->clear(Value::class);
 
-        // $object = new ObjectEntity($this->resourceService
-        // ->getSchema('https://brk.commonground.nu/schema/snapshot.schema.json', 'common-gateway/brk-bundle'));
-        // $object->hydrate($snapshot);
-        //
-        // $this->cacheService->cacheObject($object);
+//        $object = new ObjectEntity($this->resourceService
+//            ->getSchema('https://brk.commonground.nu/schema/snapshot.schema.json', 'common-gateway/brk-bundle'));
+//        $object->hydrate($snapshot);
+//
+//        $this->cacheService->cacheObject($object);
+
         return $data;
 
     }//end snapshotHandler()
@@ -964,29 +969,40 @@ class BrkService
             ];
         }
 
-        // $synchronization = $this->syncService->findSyncBySource(
-        // $this->configuration['source'],
-        // $schema,
-        // $refObject['identificatie']
-        // );
-        //
-        // if($synchronization->getObject() === null) {
-        // $synchronization->setObject();
-        // }
-        // $synchronization->getObject()->hydrate($refObject);
+        $oldArray = $this->cacheService->searchObjects(null, ['identificatie' => $refObject['identificatie']], [$schema->getId()->toString()])['results'];
+        var_dump($oldArray);
+
+//        $synchronization = $this->syncService->findSyncBySource(
+//            $this->configuration['source'],
+//            $schema,
+//            $refObject['identificatie']
+//        );
+//
+//        if($synchronization->getObject() === null) {
+//            $synchronization->setObject();
+//        }
+//        $synchronization->getObject()->hydrate($refObject);
+
         $object = new ObjectEntity($schema);
+
+        if(count($oldArray) > 0) {
+            $object->setId(Uuid::fromString($oldArray[0]['_id']));
+            $this->entityManager->persist($object);
+        }
+
         $object->hydrate($refObject);
 
         $this->entityManager->persist($object);
         $this->cacheService->cacheObject($object);
 
-        // try {
-        // $synchronization = $this->syncService->synchronize($synchronization, $refObject);
-        // } catch (Exception $exception) {
-        // $this->brkpluginLogger->critical($exception->getMessage());
-        // }
+//        try {
+//            $synchronization = $this->syncService->synchronize($synchronization, $refObject);
+//        } catch (Exception $exception) {
+//            $this->brkpluginLogger->critical($exception->getMessage());
+//        }
+
         return $object;
-        // return $synchronization->getObject();
+//        return $synchronization->getObject();
 
     }//end handleRefObject()
 

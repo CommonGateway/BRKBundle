@@ -2,7 +2,7 @@
   "title": "brkPerceel",
   "$id": "https://brk.commonground.nu/mapping/brkPerceel.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "passTrough": true,
   "mapping": {
     "identificatie": "identificatie.#",
@@ -10,7 +10,7 @@
     "type": "perceel",
     "kadastraleAanduiding": "{{kadastraleAanduiding.akrKadastraleGemeenteCode.waarde}}{{kadastraleAanduiding.sectie}}{{ '%05d'|format(kadastraleAanduiding.perceelnummer) }}{%if kadastraleAanduiding.appartementsrechtVolgnummer is defined %}A{{ '%04d'|format(kadastraleAanduiding.appartementsrechtVolgnummer) }}{%endif%}",
     "begrenzingPerceel.type": "Polygon",
-    "begrenzingPerceel.coordinates": "{{ attribute(begrenzingPerceel.Surface.patches.PolygonPatch.exterior.LinearRing.posList, '#') }}{% if begrenzingPerceel.Surface.patches.PolygonPatch.interior|default %} {{ attribute(begrenzingPerceel.Surface.patches.PolygonPatch.interior.LinearRing.posList, '#') }}{% endif %}",
+    "begrenzingPerceel.coordinates": "{% if begrenzingPerceel.Surface.patches.PolygonPatch.exterior.LinearRing is defined %}{{ attribute(begrenzingPerceel.Surface.patches.PolygonPatch.exterior.LinearRing.posList, '#') }} {% else %}{% for patch in begrenzingPerceel.Surface.patches.PolygonPatch.exterior %}{{ attribute(patch.LinearRing.posList, '#') }} {% endfor %}{% endif %}{% if begrenzingPerceel.Surface.patches.PolygonPatch.interior|default %}{% if begrenzingPerceel.Surface.patches.PolygonPatch.interior.LinearRing is defined %}{{ attribute(begrenzingPerceel.Surface.patches.PolygonPatch.interior.LinearRing.posList, '#') }} {% else %}{% for patch in begrenzingPerceel.Surface.patches.PolygonPatch.interior %}{{ attribute(patch.LinearRing.posList, '#') }} {% endfor %}{% endif %}{% endif %}",
     "plaatscoordinaten.type": "Point",
     "plaatscoordinaten.coordinates": "plaatscoordinaten.Point.pos",
     "koopsom.koopjaar": "koopsom.TypeKoopsom.koopjaar",
