@@ -624,7 +624,6 @@ class BrkService
         )['results'];
 
         foreach ($results as $result) {
-            var_Dump($result);
             $perceel = new ObjectEntity($ozSchema);
             $this->entityManager->persist($perceel);
             $perceel->setId(Uuid::fromString($result['_id']));
