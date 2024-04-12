@@ -109,7 +109,7 @@ class BrkService
         MappingService $mappingService,
         CacheService $cacheService,
         EventDispatcherInterface $eventDispatcher,
-        CacheInterface $cache,
+        CacheInterface $cache
     ) {
         $this->eventDispatcher   = $eventDispatcher;
         $this->entityManager     = $entityManager;
@@ -170,6 +170,56 @@ class BrkService
         return $item->get();
 
     }//end addToCache()
+
+    /**
+     * Decides wether or not an array is associative.
+     *
+     * @param array $array The array to check
+     *
+     * @return bool Wether or not the array is associative
+     */
+    public function isAssociative(array $array)
+    {
+        if ([] === $array) {
+            return false;
+        }
+
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    private function reconnectIds(ObjectEntity $object, array $objectArray): ObjectEntity
+    {
+        $attributes = $object->getEntity()->getAttributes();
+
+        foreach($attributes as $attribute) {
+            if($attribute->getType() === 'object') {
+                $objects = $object->getValueObject($attribute->getName())->getObjects();
+
+                if($this->isAssociative($objectArray[$attributes->getName()])) {
+                    $subObject = $objects[0];
+                    $subObject->setId(Uuid::fromString($objectArray[$attribute->getName()]['_self']['id']));
+                    $this->entityManager->persist($subObject);
+
+                    $this->reconnectIds($subObject, $objectArray[$attribute->getName()]);
+                    $this->entityManager->persist($subObject);
+                    continue;
+                }
+
+                foreach($objects as $key => $subObject) {
+                    $subObject->setId(Uuid::fromString($objectArray[$attribute->getName()][$key]['_self']['id']));
+                    $this->entityManager->persist($subObject);
+
+                    $this->reconnectIds($subObject, $objectArray[$attribute->getName()][$key]);
+                    $this->entityManager->persist($subObject);
+                }
+            }
+        }
+
+        $this->cacheService->cacheObject($object);
+
+        return $object;
+
+    }
 
 
     /**
@@ -450,6 +500,8 @@ class BrkService
                                 $perceelObject->setId(Uuid::fromString($perceel['_id']));
                                 $this->entityManager->persist($perceelObject);
                                 $perceelObject->hydrate(\Safe\json_decode(\Safe\json_encode($perceel), true));
+
+                                $this->reconnectIds($perceelObject, \Safe\json_decode(\Safe\json_encode($perceel), true));
                                 $this->entityManager->persist($perceelObject);
                                 $this->cacheService->cacheObject($perceelObject);
 
@@ -565,6 +617,7 @@ class BrkService
             $this->entityManager->persist($perceel);
 
             $perceel->hydrate(\Safe\json_decode(\Safe\json_encode($result), true));
+            $this->reconnectIds($perceel, \Safe\json_decode(\Safe\json_encode($result), true));
 
             $vveObject = new ObjectEntity($nnpSchema);
             $this->entityManager->persist($vveObject);
@@ -574,6 +627,7 @@ class BrkService
 
             $vveObject->hydrate(\Safe\json_decode(\Safe\json_encode($vves[0]), true));
             $this->entityManager->persist($vveObject);
+            $this->reconnectIds($vveObject, \Safe\json_decode(\Safe\json_encode($vves[0]), true));
             $this->cacheService->cacheObject($vveObject);
 
             //$perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
@@ -844,24 +898,6 @@ class BrkService
         return $data;
 
     }//end snapshotHandler()
-
-
-    /**
-     * Determines if an array is associative.
-     *
-     * @param array $array The array to check.
-     *
-     * @return bool Whether the array is associative.
-     */
-    public function isAssociative(array $array): bool
-    {
-        if ($array === []) {
-            return false;
-        }
-
-        return array_keys($array) !== range(0, (count($array) - 1));
-
-    }//end isAssociative()
 
 
     /**
