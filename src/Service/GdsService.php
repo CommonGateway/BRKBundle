@@ -244,7 +244,6 @@ class GdsService
                 ]
             );
             $this->entityManager->persist($object);
-            $this->entityManager->flush();
 
             $event = new ActionEvent(
                 'commongateway.action.event',

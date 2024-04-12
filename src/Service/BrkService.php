@@ -180,7 +180,7 @@ class BrkService
      *
      * @return bool Wether or not the array is associative
      */
-    private function isAssociative(array $array)
+    public function isAssociative(array $array)
     {
         if ([] === $array) {
             return false;
