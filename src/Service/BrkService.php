@@ -20,6 +20,8 @@ use CommonGateway\CoreBundle\Service\CacheService;
 use CommonGateway\CoreBundle\Service\FileSystemHandleService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use MongoDB\Model\BSONDocument;
@@ -187,31 +189,41 @@ class BrkService
         return array_keys($array) !== range(0, count($array) - 1);
     }
 
+    /**
+     * Connects Correct ids to subobjects
+     *
+     * @param ObjectEntity $object The object to validate.
+     * @param array $objectArray The object as found in the cache, including correct IDs.
+     *
+     * @return ObjectEntity The validated object
+     */
     private function reconnectIds(ObjectEntity $object, array $objectArray): ObjectEntity
     {
         $attributes = $object->getEntity()->getAttributes();
 
         foreach($attributes as $attribute) {
-            if($attribute->getType() === 'object') {
+            if($attribute->getType() === 'object' && isset($objectArray['embedded']) === true) {
                 $objects = $object->getValueObject($attribute->getName())->getObjects();
 
-                if($this->isAssociative($objectArray[$attributes->getName()])) {
+                if (isset($objectArray['embedded'][$attribute->getName()]) === true
+                    && $this->isAssociative($objectArray['embedded'][$attribute->getName()])
+                ) {
                     $subObject = $objects[0];
-                    $subObject->setId(Uuid::fromString($objectArray[$attribute->getName()]['_self']['id']));
+                    $subObject->setId(Uuid::fromString($objectArray['embedded'][$attribute->getName()]['_self']['id']));
                     $this->entityManager->persist($subObject);
-
-                    $this->reconnectIds($subObject, $objectArray[$attribute->getName()]);
                     $this->entityManager->persist($subObject);
                     continue;
                 }
 
-                foreach($objects as $key => $subObject) {
-                    $subObject->setId(Uuid::fromString($objectArray[$attribute->getName()][$key]['_self']['id']));
-                    $this->entityManager->persist($subObject);
-
-                    $this->reconnectIds($subObject, $objectArray[$attribute->getName()][$key]);
-                    $this->entityManager->persist($subObject);
+                if(isset($objectArray['embedded'][$attribute->getName()]) === true) {
+                    foreach($objects as $key => $subObject) {
+                        $subObject->setId(Uuid::fromString($objectArray['embedded'][$attribute->getName()][$key]['_self']['id']));
+                        $this->entityManager->persist($subObject);
+                        $this->entityManager->persist($subObject);
+                    }
                 }
+
+                $objects = [];
             }
         }
 
@@ -498,10 +510,11 @@ class BrkService
                                 $perceelObject = new ObjectEntity($ozSchema);
                                 $this->entityManager->persist($perceelObject);
                                 $perceelObject->setId(Uuid::fromString($perceel['_id']));
+                                $perceelObject->setSelf(null);
                                 $this->entityManager->persist($perceelObject);
                                 $perceelObject->hydrate(\Safe\json_decode(\Safe\json_encode($perceel), true));
 
-                                $this->reconnectIds($perceelObject, \Safe\json_decode(\Safe\json_encode($perceel), true));
+                                $perceelObject = $this->reconnectIds($perceelObject, \Safe\json_decode(\Safe\json_encode($perceel), true));
                                 $this->entityManager->persist($perceelObject);
                                 $this->cacheService->cacheObject($perceelObject);
 
@@ -552,7 +565,7 @@ class BrkService
             if(isset($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#']) === true) {
                 foreach($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] as $perceel) {
 
-                    $perceel->getValueObject('bijbehorendeAppartementsrechten')->getObjects()->add($object);
+                    $perceel->getValueObject('bijbehorendeAppartementsrechten')->addObject($object);
                     $this->entityManager->persist($perceel);
                     $this->cacheService->cacheObject($perceel);
                 }
@@ -617,7 +630,7 @@ class BrkService
             $this->entityManager->persist($perceel);
 
             $perceel->hydrate(\Safe\json_decode(\Safe\json_encode($result), true));
-            $this->reconnectIds($perceel, \Safe\json_decode(\Safe\json_encode($result), true));
+            $perceel = $this->reconnectIds($perceel, \Safe\json_decode(\Safe\json_encode($result), true));
 
             $vveObject = new ObjectEntity($nnpSchema);
             $this->entityManager->persist($vveObject);
@@ -627,11 +640,28 @@ class BrkService
 
             $vveObject->hydrate(\Safe\json_decode(\Safe\json_encode($vves[0]), true));
             $this->entityManager->persist($vveObject);
-            $this->reconnectIds($vveObject, \Safe\json_decode(\Safe\json_encode($vves[0]), true));
+            $vveObject = $this->reconnectIds($vveObject, \Safe\json_decode(\Safe\json_encode($vves[0]), true));
+
+            $perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
+            $this->entityManager->persist($vveObject);
             $this->cacheService->cacheObject($vveObject);
 
-            //$perceel->hydrate(['verenigingenVanEigenaren' => [$vve]]);
-            $perceel->getValueObject('verenigingenVanEigenaren')->getObjects()->add($vveObject);
+            $arrayCollection = $perceel->getValueObject('verenigingenVanEigenaren')->getObjects();
+            $id = $vveObject->getId()->toString();
+            $arrayCollection->filter(
+                function (ObjectEntity $value) use ($id) {
+                    return ($id === $value->getId()->toString());
+                }
+            );
+
+            if($arrayCollection->count() === 0) {
+                $verenigingen = $perceel->getValueObject('verenigingenVanEigenaren')->getArrayValue();
+                $verenigingen[] = $vveObject->getId()->toString();
+
+                $perceel->getValueObject('verenigingenVanEigenaren')->setArrayValue($verenigingen);
+                $perceel->getValueObject('verenigingenVanEigenaren')->addObject($vveObject);
+            }
+
 
             $this->entityManager->persist($perceel);
             $this->cacheService->cacheObject($perceel);
@@ -1006,7 +1036,6 @@ class BrkService
         }
 
         $oldArray = $this->cacheService->searchObjects(null, ['identificatie' => $refObject['identificatie']], [$schema->getId()->toString()])['results'];
-        var_dump($oldArray);
 
 //        $synchronization = $this->syncService->findSyncBySource(
 //            $this->configuration['source'],
@@ -1023,6 +1052,7 @@ class BrkService
 
         if(count($oldArray) > 0) {
             $object->setId(Uuid::fromString($oldArray[0]['_id']));
+            $object->setSelf(null);
             $this->entityManager->persist($object);
         }
 
