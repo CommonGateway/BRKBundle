@@ -199,44 +199,59 @@ class GdsService
 
     }//end getDataUrls()
 
+
     private function getIdentifiers(array $data): array
     {
-        $ids = array_map(callback: function($item) {
-            if(is_array($item) === true && $this->brkService->isAssociative(array: $item) === true && isset($item['identificatie']['#']) === true) {
-                return $item['identificatie']['#'];
-            } elseif(is_array(value: $item) === true) {
-                $ids = [];
-                foreach($item as $subItem) {
-                    if(is_array($subItem) === true && $this->brkService->isAssociative($subItem) === true && isset($subItem['identificatie']['#']) === true) {
-                        $ids[] = isset($subItem['identificatie']['#']);
+        $ids = array_map(
+            callback: function ($item) {
+                if (is_array($item) === true && $this->brkService->isAssociative(array: $item) === true && isset($item['identificatie']['#']) === true) {
+                    return $item['identificatie']['#'];
+                } else if (is_array(value: $item) === true) {
+                    $ids = [];
+                    foreach ($item as $subItem) {
+                        if (is_array($subItem) === true && $this->brkService->isAssociative($subItem) === true && isset($subItem['identificatie']['#']) === true) {
+                            $ids[] = isset($subItem['identificatie']['#']);
+                        }
                     }
-                }
-                return $ids;
-            }
-            return null;
-        }, arrays: $data);
 
-        array_walk_recursive(array: $ids, callback: function($value){global $array; $array[] = $value;});
+                    return $ids;
+                }
+
+                return null;
+            },
+            arrays: $data
+        );
+
+        array_walk_recursive(
+            array: $ids,
+            callback: function ($value) {
+                global $array;
+                $array[] = $value;
+            }
+        );
 
         return $ids;
-    }
 
-    public function removeDeletedObjects(array $was, array $becomes) {
-        $wasIds = $this->getIdentifiers(data: $was);
+    }//end getIdentifiers()
+
+
+    public function removeDeletedObjects(array $was, array $becomes)
+    {
+        $wasIds     = $this->getIdentifiers(data: $was);
         $becomesIds = $this->getIdentifiers(data: $becomes);
 
-        foreach($wasIds as $wasId) {
-            if(in_array(needle: $wasId, haystack: $becomesIds) === false) {
+        foreach ($wasIds as $wasId) {
+            if (in_array(needle: $wasId, haystack: $becomesIds) === false) {
                 $objects = $this->cacheService->searchObject(filter: ['identificatie' => $wasId])['results'];
-                if(count(value: $objects) > 0) {
+                if (count(value: $objects) > 0) {
                     $object = new ObjectEntity($objects[0]['_self']['schema']['ref']);
                     $object->setId(Uuid::fromString($objects[0]['_id']));
                     $this->cacheService->removeObject(object: $object, softDelete: true);
                 }
-
             }
         }
-    }
+
+    }//end removeDeletedObjects()
 
 
     /**
@@ -255,7 +270,6 @@ class GdsService
 
         $snapshotsToMap   = [];
         $createdSnapshots = [];
-
 
         $this->removeDeletedObjects(was: $data['wordt']['KadastraalObjectSnapshot'], becomes: $data['was']['KadastraalObjectSnapshot']);
 
