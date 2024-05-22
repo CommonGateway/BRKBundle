@@ -1,0 +1,56 @@
+[
+    {
+      "label": "Home",
+      "type": "internal",
+      "current": {
+        "pathname": "/"
+      },
+      "handleClick": {
+        "link": "/"
+      }
+    },
+    {
+      "label": "Documentatie",
+      "current": {
+        "pathname": "/docs"
+      },
+      "subItems": [
+        
+        
+        {
+          "label": "Kosten",
+          "type": "internalMarkdown",
+          "current": {
+            "pathname": "/docs/Kosten"
+          },
+          "handleClick": {
+            "internalMarkdown": {
+              "fileName": "Kosten"
+            }
+          }
+        },
+        {
+            "label": "Installatie",
+            "type": "internalMarkdown",
+            "current": {
+              "pathname": "/docs/Installatie"
+            },
+            "handleClick": {
+              "internalMarkdown": {
+                "fileName": "Installatie"
+              }
+            }
+          }
+      ]
+    },
+    {
+      "label": "Open Registers",
+      "type": "external",
+      "current": {
+        "pathname": "/registers"
+      },
+      "handleClick": {
+        "link":  "https://openregisters.app/" 
+        }
+    }
+  ]
