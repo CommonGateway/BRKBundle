@@ -19,7 +19,10 @@ jobs:
           github_repository_name_as_prefix: false
           github_repository_url: https://github.com/CommonGateway/BRKBundle
           github_api_base_url: https://api.github.com/repos/CommonGateway/BRKBundle/contents
+          slack_url: "https://github.com/openwebconcept/"
+          read_the_docs_url: "false"
           navbar_content: 'https://raw.githubusercontent.com/CommonGateway/BRKBundle/master/docs/NavbarContent.json'
+          github_docs_directory_paths: '[{"name": "Documentatie", "location": "/docs"}]'
           footer_show_logo: true
           footer_logo_href: "https://opencatalogi.nl/"
           footer_content: 'https://raw.githubusercontent.com/CommonGateway/BRKBundle/master/docs/FooterContent.json'
