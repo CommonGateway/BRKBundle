@@ -12,19 +12,20 @@
     {
       "label": "Documentatie",
       "current": {
-        "pathname": "/docs"
+        "pathname": "/Documentatie"
       },
       "subItems": [
-        
+       
         
         {
           "label": "Kosten",
           "type": "internalMarkdown",
           "current": {
-            "pathname": "/docs/Kosten"
+            "pathname": "/Documentatie/Kosten"
           },
           "handleClick": {
             "internalMarkdown": {
+              "directoryName": "Documentatie",
               "fileName": "Kosten"
             }
           }
@@ -33,10 +34,11 @@
             "label": "Installatie",
             "type": "internalMarkdown",
             "current": {
-              "pathname": "/docs/Installatie"
+              "pathname": "/Documentatie/Installatie"
             },
             "handleClick": {
               "internalMarkdown": {
+                "directoryName": "Documentatie",
                 "fileName": "Installatie"
               }
             }
