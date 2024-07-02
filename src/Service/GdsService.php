@@ -284,7 +284,6 @@ class GdsService
 
         foreach ($snapshotsToMap as $snapshot) {
             $snapshots = $this->cacheService->searchObjects(
-                null,
                 ['referentie' => $snapshot['referentie']],
                 [$snapshotSchema->getId()->toString()]
             )['results'];
