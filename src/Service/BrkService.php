@@ -500,7 +500,6 @@ class BrkService
 
                 if ($snapshot['Appartementsrecht']['hoofdsplitsing']['HoofdsplitsingRef']['#'] === null) {
                     $percelen = $this->cacheService->searchObjects(
-                        null,
                         ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
                         [$ozSchema->getId()->toString()]
                     )['results'];
@@ -609,7 +608,7 @@ class BrkService
         }
 
         $vveId = $hoofdsplitsing['heeftVerenigingVanEigenaren']['NietNatuurlijkPersoonRef']['#'];
-        $vves  = $this->cacheService->searchObjects(null, ['identificatie' => $vveId], [$nnpSchema->getId()->toString()])['results'];
+        $vves  = $this->cacheService->searchObjects(['identificatie' => $vveId], [$nnpSchema->getId()->toString()])['results'];
 
         if (count($vves) === 0) {
             return;
@@ -618,7 +617,6 @@ class BrkService
         $vve = $vves[0]['_self']['id'];
 
         $results = $this->cacheService->searchObjects(
-            null,
             ['embedded.zakelijkGerechtigdeIdentificaties.hoofdsplitsing' => $splitsingId],
             [$ozSchema->getId()->toString()]
         )['results'];
@@ -859,7 +857,6 @@ class BrkService
 
         foreach ($fileDataSet['stand']['KadastraalObjectSnapshot'] as $object) {
             $snapshots = $this->cacheService->searchObjects(
-                null,
                 ['referentie' => $object['referentie']],
                 [$this->configuration['schema']->getId()->toString()]
             )['results'];
@@ -1035,7 +1032,7 @@ class BrkService
             ];
         }
 
-        $oldArray = $this->cacheService->searchObjects(null, ['identificatie' => $refObject['identificatie']], [$schema->getId()->toString()])['results'];
+        $oldArray = $this->cacheService->searchObjects(['identificatie' => $refObject['identificatie']], [$schema->getId()->toString()])['results'];
 
 //        $synchronization = $this->syncService->findSyncBySource(
 //            $this->configuration['source'],
